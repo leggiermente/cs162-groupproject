@@ -25,12 +25,12 @@ struct Student{
     bool FemaleGender;
     int DD,MM,YY;
     int Social_ID;
-    string Class_ID;
+    Class* ClassofStudent;
 };
 struct Class{
     string Class_ID;
     int Year_Studied;
-    Student* ClassStudent;
+    Student* ListStudent;
 };
 struct School_Year{
     string Period;
