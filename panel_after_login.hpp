@@ -10,7 +10,9 @@
 
 #include <stdio.h>
 #include <iostream>
+#include "Student.h"
+#include "Staff.h"
 
 using namespace std;
-void idle_login_panel();
+void idle_login_panel(Student *student[], Staff *staff[], int rank, bool &exit);
 #endif /* panel_after_login_hpp */
