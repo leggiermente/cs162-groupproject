@@ -76,3 +76,11 @@ Temporary Items
 ### macOS Patch ###
 # iCloud generated files
 *.icloud
+
+#ignore Visual Studio (izahai)
+*.vs
+*.sln
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+**/x64/
