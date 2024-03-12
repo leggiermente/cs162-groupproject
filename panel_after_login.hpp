@@ -14,5 +14,5 @@
 #include "Staff.h"
 
 using namespace std;
-void idle_login_panel(int rank, bool &exit, Student *student[], Staff *staff[], int ID);
+void idle_login_panel(int rank, bool &exit, Student *student, Staff *staff, int ID);
 #endif /* panel_after_login_hpp */

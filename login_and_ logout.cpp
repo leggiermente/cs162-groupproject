@@ -6,7 +6,7 @@
 //
 
 #include "login_and_ logout.hpp"
-bool login(Student *student[], int numStu, Staff *staff[], int numStaf, int &rank, int &ID) //student.student_ID student.Password
+bool login(Student *student, int numStu, Staff *staff, int numStaf, int &rank, int &ID) //student.student_ID student.Password
 {
     bool logged_in = false;
     int username; string password;
@@ -21,7 +21,7 @@ bool login(Student *student[], int numStu, Staff *staff[], int numStaf, int &ran
         {
             while (i < numStu)
             {
-                if (student[i]->Student_ID == username)
+                if (student[i].Student_ID == username)
                 {
                     break;
                 }
@@ -31,9 +31,9 @@ bool login(Student *student[], int numStu, Staff *staff[], int numStaf, int &ran
                 cout << "incorrect username" << endl;
             else
             {
-                if (student[i]->Password == password)
+                if (student[i].Password == password)
                 {
-                    student[i] -> Student_ID = ID;
+                    student[i] . Student_ID = ID;
                     logged_in = true;
                     break;
                 }
@@ -47,9 +47,9 @@ bool login(Student *student[], int numStu, Staff *staff[], int numStaf, int &ran
         {
             while (i < numStaf)
             {
-                if (staff[i] -> Staff_ID == username)
+                if (staff[i] . Staff_ID == username)
                 {
-                    staff[i] -> Staff_ID = ID;
+                    staff[i] . Staff_ID = ID;
                     logged_in = true;
                     break;
                 }
@@ -59,7 +59,7 @@ bool login(Student *student[], int numStu, Staff *staff[], int numStaf, int &ran
                 cout << "incorrect username" << endl;
             else
             {
-                if (staff[i] -> Password == password)
+                if (staff[i] . Password == password)
                 {
                     logged_in = true;
                     break;

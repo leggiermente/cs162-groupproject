@@ -2,13 +2,13 @@
 //  main.cpp
 //  login_system_CS162
 //
-//  Created by Le Hoang An on 11/3/24.
+//  Created by Le Hoang An on 12/3/24.
 //
 
-#include "login.h"
+#include <iostream>
 
-using namespace std;
 int main(int argc, const char * argv[]) {
-    login_logout login;
-    login.login(<#Student **student#>, <#int numStu#>, <#Staff **staff#>, <#int numStaf#>, <#int rank#>)
+    // insert code here...
+    std::cout << "Hello, World!\n";
+    return 0;
 }
