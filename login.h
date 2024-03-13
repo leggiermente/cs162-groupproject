@@ -15,9 +15,9 @@
 struct login_logout
 {
     int rank; int ID;
-    void login_stuff(Student *student[], int numStu, Staff *staff[], int numStaf, int rank);
+    void login_idle(Student *student[], int numStu, Staff *staff[], int numStaf, int rank);
 };
-void login_logout::login_stuff(Student *student[], int numStu, Staff *staff[], int numStaf, int rank)
+void login_logout::login_idle(Student *student[], int numStu, Staff *staff[], int numStaf, int rank)
 {
     bool exit = false;
     while (exit != true)
