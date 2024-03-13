@@ -1,12 +1,5 @@
-//
-//  login_and_ logout.cpp
-//  login_system_CS162
-//
-//  Created by Le Hoang An on 11/3/24.
-//
-
 #include "login_and_ logout.hpp"
-bool login(Student *student, int numStu, Staff *staff, int numStaf, int &rank, int &ID) //student.student_ID student.Password
+bool login(Student *student, int numStu, Staff *staff, int numStaf, int &rank, int &ID)
 {
     bool logged_in = false;
     int username; string password;

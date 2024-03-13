@@ -1,10 +1,3 @@
-//
-//  panel_after_login.cpp
-//  login_system_CS162
-//
-//  Created by Le Hoang An on 12/3/24.
-//
-
 #include "panel_after_login.hpp"
 void idle_login_panel(int rank, bool &exit, Student *student, Staff *staff, int ID)
 {

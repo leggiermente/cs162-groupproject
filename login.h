@@ -1,10 +1,3 @@
-//
-//  login.h
-//  login_system_CS162
-//
-//  Created by Le Hoang An on 12/3/24.
-//
-
 #ifndef login_h
 #define login_h
 
