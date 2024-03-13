@@ -1,3 +1,2 @@
-1 //year-studied
-0 //number of students
-<list of students below>
+2
+0
