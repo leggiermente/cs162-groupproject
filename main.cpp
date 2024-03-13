@@ -2,10 +2,9 @@
 
 int main()
 {
-    string filename = "SchoolYear.csv";
+    string filename = "SchoolYear.txt";
     School_Year targetSchool;
-    int numClass = 0;
-    createNewClass(targetSchool, numClass);
-    updateSchoolYearCSV(filename, targetSchool, numClass);
+    createNewClass(filename);
+    updateClassListOfSchoolYear(filename, targetSchool);
     return 0;
 }

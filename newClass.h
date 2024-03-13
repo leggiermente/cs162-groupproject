@@ -10,7 +10,8 @@
 #include <sstream>
 using namespace std;
 
-void createNewClass(School_Year& targetSchoolYear, int &numClass);
-void updateSchoolYearCSV ( string &filename, School_Year& targetSchoolYear, int &numClass);
+int countLine (string filename);
+void createNewClass(string& filename);
+void updateClassListOfSchoolYear ( string &filename, School_Year& targetSchoolYear);
 
 #endif /* newClass_h */
