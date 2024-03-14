@@ -26,6 +26,10 @@
 *.a
 *.lib
 
+# Codeblocks Debug and object folders
+bin
+obj
+
 # Executables
 *.exe
 *.out
