@@ -1,3 +1,4 @@
+
 #ifndef STUDENT_H_INCLUDED
 #define STUDENT_H_INCLUDED
 #include <string>
@@ -25,7 +26,7 @@ struct Student {
     string Password;
     string FirstName, LastName;
     bool FemaleGender;
-    int DD,MM,YY;
+    int DD, MM, YY;
     int Social_ID;
     string Class_ID;
 };

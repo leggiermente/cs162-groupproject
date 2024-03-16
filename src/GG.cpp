@@ -2,7 +2,7 @@
 #include <iostream>
 
 #include "UI.h"
-#include "display.h"
+#include "run.h"
 int main()
 {
     RunApp();
