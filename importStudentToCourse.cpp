@@ -21,5 +21,7 @@ void ImportStudentsToCoursesInSemester(Student *students, int numStu, Course thi
         fout << thisCourse.ID << endl;
         fin.close();
         fout.close();
+        delete(students->studentID + ".txt");
+        rename(students->studentID + "2.txt", students->studentID + ".txt");
     }
 }
