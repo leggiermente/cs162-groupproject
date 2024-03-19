@@ -5,13 +5,14 @@
 #include "Student.h"
 #include "Staff.h"
 #include <iostream>
-#include <string.h>
+#include <string>
 #include <fstream>
 #include <sstream>
 using namespace std;
 
 int countLine (string filename);
-void createNewClass(string& filename);
-void updateClassListOfSchoolYear ( string &filename, School_Year& targetSchoolYear);
+void loadClassFromFile(string &filename, schoolYear &targetSchoolYear);
+void createNewClass(schoolYear &targetSchoolYear);
+void updateFileSchoolYear ( string &filename, schoolYear& targetSchoolYear);
 
 #endif /* newClass_h */

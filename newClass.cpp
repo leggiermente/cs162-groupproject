@@ -19,61 +19,64 @@ int countLine (string filename)
         return 0;
     }
 }
-//this function to create new Class and add this Class to file  School Year
-void createNewClass(string& filename)
-{
-    Class newClass;
-    cout << "Enter Class ID: ";
-    cin >> newClass.Class_ID;
-    cout << "Enter Year Studied: ";
-    cin >> newClass.Year_Studied;
-    
-    ofstream file(filename, ios::app);
-    if (file.is_open())
-    {
-        file << newClass.Class_ID <<","<< newClass.Year_Studied <<"\n";
-        file.close();
-        cout << "School year information updated in "<< filename << " succcessfully\n";
-    }
-    else
-    {
-        cerr << "Can not open file: "<< filename <<"\n";
-    }
-}
-
-//this function to update ClassList of School Year after create new Class
-void updateClassListOfSchoolYear(string &filename, School_Year &targetSchoolYear)
-{
+void loadClassFromFile(string &filename, schoolYear &targetSchoolYear) {
+    targetSchoolYear.classCount = countLine(filename);
     ifstream file(filename);
     if (file.is_open())
     {
-        int numClass = 0;
         string line;
-        while (getline(file, line))
-            numClass++;
-
-        if (targetSchoolYear.ClassList != nullptr)
+        targetSchoolYear.classList = new Class[targetSchoolYear.classCount];
+        for (int i = 0; i<targetSchoolYear.classCount; i++)
         {
-            delete[] targetSchoolYear.ClassList;
-            targetSchoolYear.ClassList = nullptr;
-        }
-
-        targetSchoolYear.ClassList = new Class[numClass];
-
-        file.clear();
-        file.seekg(0, ios::beg);
-
-        for (int i = 0; i < numClass; i++)
-        {
-            getline(file, line);
+            getline(file,line);
             stringstream ss(line);
             char comma;
-            ss >> targetSchoolYear.ClassList[i].Class_ID >> comma >> targetSchoolYear.ClassList[i].Year_Studied;
+            ss>> targetSchoolYear.classList[i].classID;
+            ss>>comma;
+            ss>> targetSchoolYear.classList[i].yearStudied;
         }
-
         file.close();
-        cout << "Update ClassList successfully\n";
+    } else {
+        cout << "Cannot open file: " << filename << "\n";
     }
+}
+
+void createNewClass(schoolYear &targetSchoolYear)
+{
+    Class* newClassList = new Class[targetSchoolYear.classCount +1];
+    
+    for (int i=0; i < targetSchoolYear.classCount; i++)
+    {
+        newClassList[i] = targetSchoolYear.classList[i];
+    }
+    
+    cout <<"Input Class ID: ";
+    cin >> newClassList[targetSchoolYear.classCount].classID;
+    cout <<"Input Year Studied: ";
+    cin >> newClassList[targetSchoolYear.classCount].yearStudied;
+    
+    if(targetSchoolYear.classCount > 0) delete [] targetSchoolYear.classList;
+    targetSchoolYear.classList = newClassList;
+    targetSchoolYear.classCount++;
+}
+
+void updateFileSchoolYear(string &filename, schoolYear &targetSchoolYear)
+{
+    ofstream file(filename);
+    
+    if (!file.is_open()) cout <<"Can not open file\n";
     else
-        cerr << "Can not open file: " << filename << "\n";
+    {
+        for (int i=0; i<targetSchoolYear.classCount; i++)
+        {
+            file <<targetSchoolYear.classList[i].classID <<",";
+            file <<targetSchoolYear.classList[i].yearStudied<<"\n";
+        }
+        if (file.good())
+        {
+            cout <<"School year information updated in "<< filename <<" successfully\n";
+        }
+        else cout <<"Error: Writing to file failed: "<<filename <<"\n";
+        file.close();
+    }
 }

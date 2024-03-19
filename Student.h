@@ -1,42 +1,50 @@
 #ifndef STUDENT_H_INCLUDED
 #define STUDENT_H_INCLUDED
+
 #include <string>
 using namespace std;
-//struct Course{
-//    string ID;
-//    string CourseName;
-//    string ClassName;
-//    string Teacher;
-//    int numCredits;
-//    int maxStudents=50;
-//};
-//struct Semester{
-//    int NumSemesterInSchoolYear;
-//    int StartDate,StartMonth,StartYear;
-//    int EndDate,EndMonth,EndYear;
-//    Course *CoursesListInSemester;
-//};
+
 struct Student;
 struct Class;
-struct School_Year;
-struct Student {
-    int Student_ID;
-    int Year_Studied;
-    string Password;
-    string FirstName, LastName;
-    bool FemaleGender;
-    int DD,MM,YY;
-    int Social_ID;
-    string Class_ID;
+struct schoolYear;
+struct Course;
+struct Semester;
+struct Student{
+    int studentID=0;
+    int semesterStudied=0;
+    string password="";
+    string firstName="",lastName="";
+    bool femaleGender=0;
+    int DD=0,MM=0,YY=0;
+    int socialID=0;
+    double overallGPA=0; //updating overallGPA in student.csv
+    Class* classOfStudent;
 };
-struct Class {
-    string Class_ID;
-    int Year_Studied;
-    Student* ClassStudent;
+struct Class{
+    string classID="";
+    int yearStudied=0;
+    int numStudent=0; //updating number of Student in a class.
+    Student* listStudent;
 };
-struct School_Year {
-    string Period;
-    Class* ClassList;
-    //Semester SemesterInSchoolYear[3];
+struct schoolYear{
+    string period="";
+    int classCount=0; //count the number of class in a school year.
+    Class* classList;
+};
+struct Course{
+    string ID="";
+    string courseName="";
+    string className="";
+    string teacher="";
+    int numCredits=0;
+    int maxStudents=50;
+    Student* listStudentInCourse;
+};
+struct Semester{
+    int numSemesterInSchoolYear=0;
+    int startDate=0,startMonth=0,startYear=0;
+    int endDate=0,endMonth=0,endYear=0;
+    int numCourses = 0;
+    Course *coursesListInSemester;
 };
 #endif // STUDENT_H_INCLUDED
