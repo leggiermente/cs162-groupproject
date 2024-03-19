@@ -16,12 +16,24 @@ void ImportStudentsToCoursesInSemester(Student *students, int numStu, Course thi
         fin.open(students->studentID + ".txt");
         fout.open(students->studentID + "2.txt");
         string line;
-        getline(fin, line);
-        fout << line << endl;
-        fout << thisCourse.ID << endl;
+        for (int i = 0; i < 9; i++) // chừa 9 dòng đầu
+        {
+            getline(fin, line);
+            fout << line << endl;
+        }
+        int numCourse;
+        fin >> numCourse;
+        for (int i = 0; i < numCourse; ++i)
+        {
+            fout << thisCourse.ID << endl;
+        }
+        while (getline(fin, line))
+        {
+            fout << line << endl;
+        }
         fin.close();
         fout.close();
         delete(students->studentID + ".txt");
         rename(students->studentID + "2.txt", students->studentID + ".txt");
     }
-}
+}G
