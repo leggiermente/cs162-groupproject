@@ -1,5 +1,7 @@
 #include "newSemester.h"
-
+#include <iostream>
+#include <fstream>
+using namespace std;
 void createNewSemesterToFile(string &filename)
 {
     Semester s;

@@ -12,7 +12,7 @@ using namespace std;
 
 int countLine (string filename);
 void loadClassFromFile(string &filename, schoolYear &targetSchoolYear);
-void createNewClass(schoolYear &targetSchoolYear);
+void createNewClassToFile(string &filename);
 void updateFileSchoolYear ( string &filename, schoolYear& targetSchoolYear);
 
 #endif /* newClass_h */
