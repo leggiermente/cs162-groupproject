@@ -4,7 +4,7 @@
 #include <string>
 using namespace std;
 
-#include "funcLoginPage.h"
+#include "readCSV.h"
 #include "run.h"
 
 Student* readStudentCSV(string filename, int& numStu) {
@@ -31,13 +31,13 @@ Student* readStudentCSV(string filename, int& numStu) {
         //Pass No data in CSV
         getline(s, line, ',');
         getline(s, line, ',');
-        newStudent[indexStu].Student_ID = stoi(line);
+        newStudent[indexStu].studentID = stoi(line);
         getline(s, line, ',');
-        newStudent[indexStu].FirstName = line;
+        newStudent[indexStu].firstName = line;
         getline(s, line, ',');
-        newStudent[indexStu].LastName = line;
+        newStudent[indexStu].lastName = line;
         getline(s, line, ',');
-        newStudent[indexStu].FemaleGender = stoi(line);
+        newStudent[indexStu].femaleGender = stoi(line);
         getline(s, line, ',');
         newStudent[indexStu].DD = stoi(line);
         getline(s, line, ',');
@@ -45,10 +45,10 @@ Student* readStudentCSV(string filename, int& numStu) {
         getline(s, line, ',');
         newStudent[indexStu].YY = stoi(line);
         getline(s, line, ',');
-        newStudent[indexStu].Social_ID = stoi(line);
+        newStudent[indexStu].socialID = stoi(line);
 
         //Auto generate password = 1
-        newStudent[indexStu].Password = "1";
+        newStudent[indexStu].password = "1";
         indexStu++;
     }
     file.close();
@@ -78,16 +78,47 @@ Staff* readStaffCSV(string filename, int& numStaff) {
         //Pass No data in CSV
         getline(s, line, ',');
         getline(s, line, ',');
-        newStaff[indexStaff].Staff_ID = stoi(line);
+        newStaff[indexStaff].staffID = stoi(line);
         getline(s, line, ',');
-        newStaff[indexStaff].FirstName = line;
+        newStaff[indexStaff].firstName = line;
         getline(s, line, ',');
-        newStaff[indexStaff].LastName = line;
+        newStaff[indexStaff].lastName = line;
 
         //Auto generate password = 1
-        newStaff[indexStaff].Password = "1";
+        newStaff[indexStaff].password = "1";
         indexStaff++;
     }
     file.close();
     return newStaff;
+}
+Course* readDirectory(string path, int& numCourse) {
+    string line;
+    ifstream file(path + "/course.txt");
+    if (!file) cout << "Can't open file\n";
+
+    getline(file, line);
+    numCourse = stoi(line);
+
+    Course* course = new Course[numCourse];
+    for (int i = 0; i < numCourse; i++) {
+        getline(file, line);
+        course[i].ID = line;
+    }
+    file.close();
+
+    for (int i = 0; i < numCourse; ++i) {
+        ifstream file(path + "/" + course[i].ID + ".csv");
+        if (!file) cout << "Can't open file\n";
+        
+        file.seekg(0, ios::beg);
+        getline(file, line);
+        stringstream s(line);
+        getline(s, line, ',');
+        getline(s, line, ','); course[i].courseName = line;
+        getline(s, line, ','); course[i].className = line;
+        getline(s, line, ','); course[i].teacher = line;
+        getline(s, line, ','); course[i].numCredits = stoi(line);
+        getline(s, line, ','); course[i].maxStudents = stoi(line);
+    }
+    return course;
 }
