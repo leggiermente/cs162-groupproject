@@ -2,12 +2,12 @@
 
 #include <fstream>
 
-void ImportStudentsToCoursesInSemester(Student *students, int numStu, Course thisCourse)
+void addToCoursesInSemesterToStudentsFiles(Student *students, int numStu, Course thisCourse)
 {
     thisCourse.listStudentInCourse = students;
     for (int i = 0; i < numStu; i++)
     {
-        students[i]
+        students[i];
     }
     std::ifstream fin;
     std::ofstream fout;
@@ -36,4 +36,4 @@ void ImportStudentsToCoursesInSemester(Student *students, int numStu, Course thi
         delete(students->studentID + ".txt");
         rename(students->studentID + "2.txt", students->studentID + ".txt");
     }
-}G
+}
