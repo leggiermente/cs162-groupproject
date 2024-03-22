@@ -36,15 +36,18 @@ struct Course{
     string courseName="";
     string className="";
     string teacher="";
+    string dayoftheWeek="";
+    string sessionTime="";
     int numCredits=0;
     int maxStudents=50;
+    int numStudents=0;
     Student* listStudentInCourse;
 };
 struct Semester{
     int numSemesterInSchoolYear=0;
     int startDate=0,startMonth=0,startYear=0;
     int endDate=0,endMonth=0,endYear=0;
-    int numCourses = 0;
+    int numCourses=0; //update numCourses
     Course *coursesListInSemester;
 };
 #endif // STUDENT_H_INCLUDED
