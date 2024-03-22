@@ -3,7 +3,6 @@
 #include <fstream>
 
 void addToCoursesInSemesterToStudentsFiles(Student *students, int numStu, Course thisCourse)
-void ImportStudentsToCoursesInSemester(Student *students, int numStu, Course thisCourse)
 {
     thisCourse.listStudentInCourse = students;
     for (int i = 0; i < numStu; i++)
