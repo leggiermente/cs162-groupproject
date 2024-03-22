@@ -81,7 +81,17 @@ Temporary Items
 # iCloud generated files
 *.icloud
 
+<<<<<<< HEAD
 # CodeBlocks
 *.layout
 *.cbp
 *.depend
+=======
+#ignore Visual Studio (izahai)
+*.vs
+*.sln
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+**/x64/
+>>>>>>> main
