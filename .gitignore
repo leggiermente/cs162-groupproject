@@ -26,6 +26,10 @@
 *.a
 *.lib
 
+# Codeblocks Debug and object folders
+bin
+obj
+
 # Executables
 *.exe
 *.out
@@ -76,3 +80,8 @@ Temporary Items
 ### macOS Patch ###
 # iCloud generated files
 *.icloud
+
+# CodeBlocks
+*.layout
+*.cbp
+*.depend
