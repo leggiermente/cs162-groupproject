@@ -1,5 +1,6 @@
 #include "newClass.h"
 #include "newSemester.h"
+#include "removeStudent.h"
 int main()
 {
     

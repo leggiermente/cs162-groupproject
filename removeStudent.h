@@ -9,7 +9,7 @@
 #include <sstream>
 using namespace std;
 
-
+void removeStudentFromCourse(Student* student, Course* course );
 
 
 #endif
