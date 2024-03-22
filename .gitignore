@@ -81,7 +81,6 @@ Temporary Items
 # iCloud generated files
 *.icloud
 
-<<<<<<< HEAD
 # CodeBlocks
 *.layout
 *.cbp
@@ -94,4 +93,3 @@ Temporary Items
 *.vcxproj.filters
 *.vcxproj.user
 **/x64/
->>>>>>> main
