@@ -12,4 +12,5 @@ void addStudentToCourse(Course thisCourse, Student *student, int numStu)
     {
        fout << student[i].studentID << ", " << student[i].studentName << "\n";
     }
+    fout.close();
 }
