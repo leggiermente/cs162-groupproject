@@ -106,13 +106,6 @@ void ImportStudentsToCoursesInSemester(Student *students, int numStu, Course thi
 
 }
 void addNewSchoolYear(int &sems, schoolYear schyrs, bool &createClassOption){
-    if (sems!=3){ //Check if it's the last semester of last year.
-        system("CLS");
-        cout << "You cannot add a new school year, as this time is not the last semester of the last year." << endl;
-        Sleep(3000);
-        system("CLS");
-        return; //if not, don't add new school year.
-    }
     for (int i=0;i<schyrs.classCount;i++){
         Class curClass=schyrs.classList[i];
         curClass.yearStudied++; //increase year studied of a class.
@@ -182,6 +175,38 @@ void addStudentintoClass(schoolYear &schyrs, bool createClassOption){
     outputClass("../database/class/"+schyrs.classList[id].classID+".txt",schyrs.classList[id]);
     delete []lst;
 }
+void importSemesterandCourse(Semester &sems){ //not done delete pointer yet
+    ifstream inp;
+    inp.open("../database/semester.txt");
+    inp >> sems.numSemesterInSchoolYear;
+    inp >> sems.startDate >> sems.startMonth >> sems.startYear;
+    inp >> sems.endDate >> sems.endMonth >> sems.endYear;
+    inp >> sems.numCourses;
+    inp.get();
+    sems.coursesListInSemester=new Course[sems.numCourses];
+    for (int i=0;i<sems.numCourses;i++){
+        getline(inp,sems.coursesListInSemester[i].ID);
+    }
+    inp.close();
+    for (int i=0;i<sems.numCourses;i++){
+        inp.open("../database/course/"+sems.coursesListInSemester[i].ID+".txt");
+        getline(inp,sems.coursesListInSemester[i].ID);
+        getline(inp,sems.coursesListInSemester[i].courseName);
+        getline(inp,sems.coursesListInSemester[i].className);
+        getline(inp,sems.coursesListInSemester[i].teacher);
+        inp >> sems.coursesListInSemester[i].numCredits;
+        inp >> sems.coursesListInSemester[i].maxStudents;
+        inp.get();
+        getline(inp,sems.coursesListInSemester[i].dayoftheWeek);
+        getline(inp,sems.coursesListInSemester[i].sessionTime);
+        inp >> sems.coursesListInSemester[i].numStudents;
+        inp.get();
+        for (int j=0;j<sems.coursesListInSemester[i].numStudents;j++){
+            inp >> sems.coursesListInSemester[i].listStudentInCourse[j].studentID;
+        }
+        inp.close();
+    }
+}
 void addCourse(Semester &sems){
     Course* tmp=sems.coursesListInSemester;
     sems.numCourses++;
@@ -221,7 +246,60 @@ void addCourse(Semester &sems){
     }
     ImportStudentsToCoursesInSemester(sems.coursesListInSemester[curPos].listStudentInCourse,sems.coursesListInSemester[curPos].numStudents,
                                       sems.coursesListInSemester[curPos]); //import student.csv, merge later from the work of lehoangan02
+    outputSemester(sems);
     outputCourse("../database/course/"+sems.coursesListInSemester[curPos].ID+".txt",sems.coursesListInSemester[curPos]);
+}
+void removeCourse(Semester &sems){
+    if (sems.numCourses==0){
+        cout << "You don't have any classes to remove." << endl;
+        Sleep(3000);
+        return;
+    }
+    cout << "Please choose a course to remove: " << endl;
+    for (int i=0;i<sems.numCourses;i++){
+        cout << i+1 << ": " << sems.coursesListInSemester[i].ID << endl;
+    }
+    cout << "Please input a number to delete at this line: ";
+    int command=0;
+    while (cin >> command && (command<=0 || command>sems.numCourses)){
+        cout << "Invalid input! Please try again at this line: ";
+    }
+    command--;
+    //this line is left for the delete of information at the file that which student learns the course at this semester.
+    string tmpdir="../database/course/"+sems.coursesListInSemester[command].ID+".txt";
+    int dirsize=tmpdir.size()+1;
+    char dir[dirsize]="";
+    for (int i=0;i<dirsize-1;i++) dir[i]=tmpdir[i];
+    dir[dirsize-1]=0;
+    remove(dir);
+    sems.numCourses--;
+    if (sems.numCourses==0){
+        sems.coursesListInSemester=nullptr;
+    }
+    else{
+        Course *tmp=new Course[sems.numCourses];
+        int add=0;
+        for (int i=0;i<sems.numCourses+1;i++){
+            if (i!=command){
+                tmp[add++]=sems.coursesListInSemester[i];
+            }
+        }
+        //this line is left for the delete of old course list.
+        sems.coursesListInSemester=tmp;
+    }
+    outputSemester(sems);
+}
+void outputSemester(Semester sems){
+    ofstream out;
+    out.open("../database/semester.txt");
+    out << sems.numSemesterInSchoolYear << endl;
+    out << sems.startDate << " " << sems.startMonth << " " << sems.startYear << endl;
+    out << sems.endDate << " " << sems.endMonth << " " << sems.endYear << endl;
+    out << sems.numCourses << endl;
+    for (int i=0;i<sems.numCourses;i++){
+        out << sems.coursesListInSemester[i].ID << endl;
+    }
+    out.close();
 }
 void outputClass(string fileName,Class curClass){
     ofstream out;
