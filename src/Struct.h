@@ -3,27 +3,16 @@
 #include <string>
 using namespace std;
 
-struct Student;
 struct Class;
 struct schoolYear;
 struct Course;
 struct Semester;
-struct Student {
-    int studentID = 0;
-    int semesterStudied = 0;
-    string password = "";
-    string firstName = "", lastName = "";
-    bool femaleGender = 0;
-    int DD = 0, MM = 0, YY = 0;
-    int socialID = 0;
-    double overallGPA = 0; //updating overallGPA in student.csv
-    Class* classOfStudent;
-};
+struct Student;
 struct Class {
     string classID = "";
     int yearStudied = 0;
     int numStudent = 0; //updating number of Student in a class.
-    Student* listStudent;
+    Student* listStudent = nullptr;
 };
 struct schoolYear {
     string period = "";
@@ -45,6 +34,19 @@ struct Semester {
     int numSemesterInSchoolYear = 0;
     int startDate = 0, startMonth = 0, startYear = 0;
     int endDate = 0, endMonth = 0, endYear = 0;
-    Course* coursesListInSemester;
+    Course* coursesListInSemester = nullptr;
+    int numCourses = 0;
+};
+struct Student {
+    int studentID = 0;
+    int semesterStudied = 0;
+    string password = "";
+    string firstName = "", lastName = "";
+    bool femaleGender = 0;
+    int DD = 0, MM = 0, YY = 0;
+    int socialID = 0;
+    double overallGPA = 0; //updating overallGPA in student.csv
+    string classID;
+    Course* courseOfStudent = nullptr;
 };
 #endif // STRUCT_H_INCLUDED
