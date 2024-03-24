@@ -19,13 +19,13 @@ Button loginBox(xMid, yMid, "image/LoginBox.png");
 CheckStaffButton checkStaffButton(xMid - 285.0f, yMid + 110.0f, "image/CheckStaffButton.png", "image/CheckedStaffButton.png");
 Button menu(xMid, yMid, "image/MenuBackground.png");
 Button seeProfile(xMid - 190.0f, yMid, "image/SeeProfile.png");
-
+Button passwordChange(xMid, yMid + 80.0f, "image/Password.png");
+Button logOutButton(xMid, yMid + 140.0f, "image/LogOut.png");
 //Staff account
 Button profileStaff(207.0f, 185.0f, "image/ProfileStaff.png");
-Button classesButtonSelect(xMid, yMid, "image/ClassesButton.png");
-Button schoolyearsSelect(xMid, yMid - 50.0f, "image/SchoolyearsButton.png");
+Button classesButtonSelect(xMid, yMid + 20.0f, "image/ClassesButton.png");
+Button schoolyearsSelect(xMid, yMid - 40.0f, "image/SchoolyearsButton.png");
 ViewingPage viewingPage(xMid, yMid, "image/ViewingPage.png", "Viewing Schoolyears");
-Button logOutButton(xMid, yMid + 200.0f, "image/LogOut.png");
 Button backButton(118.0f, 106.5f, "image/BackButton.png");
 
 //Stu account
@@ -59,6 +59,8 @@ void RunApp()
     window.setFramerateLimit(60);
     while (window.isOpen()) 
     {
+        window.clear();
+        background.draw(window);
         switch (page) {
         case 0: // Login Page
         {
@@ -69,7 +71,7 @@ void RunApp()
                     window.close();
                 inputUserBox.handleEvent(event, window);
                 inputPassBox.handleEvent(event, window);
-                checkStaffButton.isClick(window,event,user.isStaff);
+                checkStaffButton.isClick(window, event, user.isStaff);
 
                 if (loginButton.isClicked(window, event, inputUserBox.text, inputPassBox.text, user.id, user.password)) {
                     if (validateUser()) {
@@ -81,15 +83,14 @@ void RunApp()
                         clearInput();
                     }
                 }
-                // Draw Element 
-                background.draw(window);
-                loginBox.draw(window);
-                loginButton.draw(window);
-                inputUserBox.draw(window);
-                inputPassBox.draw(window);
-                checkStaffButton.draw(window, user.isStaff);                
-                window.display();
             }
+            
+            // Draw Element 
+            loginBox.draw(window);
+            loginButton.draw(window);
+            inputUserBox.draw(window);
+            inputPassBox.draw(window);
+            checkStaffButton.draw(window, user.isStaff);                        
             break;
         }
         case 10: // Staff menu page (Page 10 - 29 / Staff)
@@ -97,20 +98,20 @@ void RunApp()
             while (window.pollEvent(event)) {
                 if (event.type == sf::Event::Closed)
                     window.close();
-                if (schoolyearsSelect.isClicked(window,event)) {
+                if (schoolyearsSelect.isClicked(window, event)) {
                     page = 12;
                     break;
                 }
-                if (classesButtonSelect.isClicked(window,event)) {
+                if (classesButtonSelect.isClicked(window, event)) {
                     page = 11;
                     break;
                 }
-                if (profileStaff.isClicked(window,event)) {
+                if (profileStaff.isClicked(window, event)) {
                     profileText = new ProfileText(user.staff->firstName, user.staff->lastName, to_string(user.staff->staffID));
                     page = 15;
                     break;
                 }
-                if (logOutButton.isClicked(window,event)) {
+                if (logOutButton.isClicked(window, event)) {
                     user.isStaff = false;
                     page = 0;
                     delete profileText;
@@ -119,15 +120,15 @@ void RunApp()
                     clearInput();
                     break;
                 }
-                // Draw
-                background.draw(window);
-                menu.draw(window);
-                profileStaff.draw(window);
-                classesButtonSelect.draw(window);
-                schoolyearsSelect.draw(window);
-                logOutButton.draw(window);
-                window.display();
+                if (passwordChange.isClicked(window, event));
             }
+            // Draw
+            menu.draw(window);
+            profileStaff.draw(window);
+            classesButtonSelect.draw(window);
+            schoolyearsSelect.draw(window);
+            logOutButton.draw(window);
+            passwordChange.draw(window);    
             break;
         }
         case 11: // Classes Page
@@ -140,20 +141,16 @@ void RunApp()
                     page = 10;
                     break;
                 }
-
-                background.draw(window);
-                viewingPage.draw(window);
-                backButton.draw(window);
-                for (int i = 0; i < 4; ++i) {
+                for (int i = 0; i < 4; ++i) 
                     if (classesButton[i]->isClicked(window,event)) {
                         user.indexClass = i;
                         page = 16;
                         break;
-                    }
-                    classesButton[i]->draw(window);
-                }
-                window.display();
+                    }              
             }
+            viewingPage.draw(window);
+            backButton.draw(window);
+            for (int i = 0; i < 4; ++i) classesButton[i]->draw(window);
             break;
         }
         case 12: // Schoolyears Page
@@ -165,47 +162,41 @@ void RunApp()
                     page = 10;
                     break;
                 }
-                //Draw
-                background.draw(window);
-                viewingPage.draw(window);
-                backButton.draw(window);
-                for (int i = 0; i < 2; ++i) {
+                for (int i = 0; i < 2; ++i) 
                     if (schoolyearButton[i]->isClicked(window,event)) {
                         page = 13;
                         user.indexSchoolyear = i;
                         break;
-                    }
-                    schoolyearButton[i]->draw(window);
-                }
-                window.display();
+                    }               
             }
+            //Draw
+            viewingPage.draw(window);
+            backButton.draw(window);
+            for (int i = 0; i < 2; ++i) schoolyearButton[i]->draw(window);
             break;
         }
         case 13: // Semester Page
         {
             viewingPage.text.setString("Viewing Schoolyears " + schoolyearArr[user.indexSchoolyear].period);
+            int size = schoolyearArr[user.indexSchoolyear].numSemester;
             while (window.pollEvent(event)) {
                 if (event.type == sf::Event::Closed) window.close();
                 if (backButton.isClicked(window,event)) {
                     page = 12;
                     break;
                 }
-
-                // Draw
-                background.draw(window);
-                viewingPage.draw(window);
-                backButton.draw(window);
-                int size = schoolyearArr[user.indexSchoolyear].numSemester;
-                for (int i = 0; i < size; ++i) {
+                for (int i = 0; i < size; ++i) 
                     if (schoolyearButton[user.indexSchoolyear]->linkedButton[i]->isClicked(window,event)) {
                         user.indexSemester = i;
                         page = 14;
                         break;
-                    }
-                    schoolyearButton[user.indexSchoolyear]->linkedButton[i]->draw(window);
-                }
-                window.display();
+                    }               
             }
+            // Draw
+            viewingPage.draw(window);
+            backButton.draw(window);
+            for (int i = 0; i < size; ++i) 
+                schoolyearButton[user.indexSchoolyear]->linkedButton[i]->draw(window);
             break;
         }
         case 14: // Course Page
@@ -213,23 +204,21 @@ void RunApp()
             viewingPage.text.setString(
             "Viewing Schoolyears " + schoolyearArr[user.indexSchoolyear].period + 
             " Semester " + to_string(user.indexSemester + 1));
+            int size = schoolyearArr[user.indexSchoolyear].listSemester[user.indexSemester].numCourses;
             while (window.pollEvent(event)) {
                 if (event.type == sf::Event::Closed) window.close();
                 if (backButton.isClicked(window, event)) {
                     page = 13;
                     break;
                 }
-                // Draw
-                background.draw(window);
-                viewingPage.draw(window);
-                backButton.draw(window);
-                int size = schoolyearArr[user.indexSchoolyear].listSemester[user.indexSemester].numCourses;
-                for (int i = 0; i < size; ++i) {
+                for (int i = 0; i < size; ++i) 
                     if (schoolyearButton[user.indexSchoolyear]->linkedButton[user.indexSemester]->linkedButton[i]->isClicked(window,event));
-                    schoolyearButton[user.indexSchoolyear]->linkedButton[user.indexSemester]->linkedButton[i]->draw(window);
-                }
-                window.display();
             }
+            // Draw
+            viewingPage.draw(window);
+            backButton.draw(window);
+            for (int i = 0; i < size; ++i) 
+                schoolyearButton[user.indexSchoolyear]->linkedButton[user.indexSemester]->linkedButton[i]->draw(window);
             break;
         }
         case 15: // Staff profile
@@ -241,41 +230,38 @@ void RunApp()
                     page = 10;
                     break;
                 }
-                // Draw
-                background.draw(window);
-                viewingPage.draw(window);
-                backButton.draw(window);
-                seeProfile.draw(window);
-                profileText->drawStaff(window);
-                window.display();
             }
+            // Draw
+            viewingPage.draw(window);
+            backButton.draw(window);
+            seeProfile.draw(window);
+            profileText->drawStaff(window);
             break;
         }
         case 16: // See list stu in class
         {
             viewingPage.text.setString("Viewing students in class " + classesArr[user.indexClass].classID);
+            int size = classesArr[user.indexClass].numStudent;
             while (window.pollEvent(event)) {
                 if (event.type == sf::Event::Closed) window.close();
                 if (backButton.isClicked(window,event)) {
                     page = 11;
                     break;
                 }
-                background.draw(window);
-                viewingPage.draw(window);
-                backButton.draw(window);
-                int size = classesArr[user.indexClass].numStudent;
-                if (size) {
-                    for (int i = 0; i < size; ++i) {
-                        if (classesButton[user.indexClass]->linkedButton[i]->isClicked(window,event)) {
-                            user.indexStudentInClass = i;
-                            page = 17;
-                            break;
-                        }
-                        classesButton[user.indexClass]->linkedButton[i]->draw(window);
+                for (int i = 0; i < size; ++i) {
+                    if (classesButton[user.indexClass]->linkedButton[i]->isClicked(window,event)) {
+                        user.indexStudentInClass = i;
+                        page = 17;
+                        break;
                     }
                 }
-                window.display();
+                
             }
+            //Draw
+            viewingPage.draw(window);
+            backButton.draw(window);
+            for (int i = 0; i < size; ++i) 
+                classesButton[user.indexClass]->linkedButton[i]->draw(window);
             break;
         }
         case 17: // See detail of stu
@@ -287,11 +273,10 @@ void RunApp()
                     page = 16;
                     break;
                 }
-                background.draw(window);
-                viewingPage.draw(window);
-                backButton.draw(window);
-                window.display();
             }
+            // Draw
+            viewingPage.draw(window);
+            backButton.draw(window);
             break;
         }
         case 30: // Student menu page (Page 30 -> Student)
@@ -317,13 +302,13 @@ void RunApp()
                     page = 31;
                     break;
                 }
-                // Draw
-                background.draw(window);
-                menu.draw(window);
-                profileStu.draw(window);
-                logOutButton.draw(window);
-                window.display();
+                if (passwordChange.isClicked(window, event));
             }
+            // Draw
+            menu.draw(window);
+            profileStu.draw(window);
+            passwordChange.draw(window);
+            logOutButton.draw(window);
             break;
         }
         case 31: // Stu profile
@@ -335,14 +320,12 @@ void RunApp()
                     page = 30;
                     break;
                 }
-                // Draw
-                background.draw(window);
-                viewingPage.draw(window);
-                backButton.draw(window);
-                seeProfile.draw(window);
-                profileText->drawStu(window);
-                window.display();
             }
+            // Draw
+            viewingPage.draw(window);
+            backButton.draw(window);
+            seeProfile.draw(window);
+            profileText->drawStu(window);
             break;
         }
         default: 
@@ -350,6 +333,7 @@ void RunApp()
             break;
         }
         }
+        window.display();
     }
     // Console check
     std::cout << "Username: " << user.id << std::endl;
