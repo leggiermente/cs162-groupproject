@@ -47,7 +47,7 @@ schoolYear* schoolyearArr = new schoolYear[2];
 
 // UI arrays
 LinkedButton** schoolyearButton = new LinkedButton * [2];
-ProfileText* profileText;
+ProfileText* profileText = nullptr;
 LinkedButton** classesButton = new LinkedButton * [4];
 
 
@@ -69,15 +69,17 @@ void RunApp()
                     window.close();
                 inputUserBox.handleEvent(event, window);
                 inputPassBox.handleEvent(event, window);
-                checkStaffButton.isClick(window, user.isStaff);
+                checkStaffButton.isClick(window,event,user.isStaff);
 
-                if (loginButton.isClicked(window, inputUserBox.text, inputPassBox.text, user.id, user.password)) {
+                if (loginButton.isClicked(window, event, inputUserBox.text, inputPassBox.text, user.id, user.password)) {
                     if (validateUser()) {
                         if (user.isStaff) page = 10;
                         else page = 30;
+                        break;
                     }
-                    else 
-                        clearInput();                   
+                    else {
+                        clearInput();
+                    }
                 }
                 // Draw Element 
                 background.draw(window);
@@ -95,16 +97,25 @@ void RunApp()
             while (window.pollEvent(event)) {
                 if (event.type == sf::Event::Closed)
                     window.close();
-                if (schoolyearsSelect.isClicked(window)) page = 12;
-                if (classesButtonSelect.isClicked(window)) page = 11;
-                if (profileStaff.isClicked(window)) {
-                    profileText = new ProfileText(user.staff.firstName, user.staff.lastName, to_string(user.staff.staffID));
-                    page = 15;
+                if (schoolyearsSelect.isClicked(window,event)) {
+                    page = 12;
+                    break;
                 }
-                if (logOutButton.isClicked(window)) {
+                if (classesButtonSelect.isClicked(window,event)) {
+                    page = 11;
+                    break;
+                }
+                if (profileStaff.isClicked(window,event)) {
+                    profileText = new ProfileText(user.staff->firstName, user.staff->lastName, to_string(user.staff->staffID));
+                    page = 15;
+                    break;
+                }
+                if (logOutButton.isClicked(window,event)) {
                     user.isStaff = false;
                     page = 0;
                     delete profileText;
+                    profileText = nullptr;
+                    user.staff = nullptr;
                     clearInput();
                     break;
                 }
@@ -125,7 +136,7 @@ void RunApp()
             while (window.pollEvent(event)) {
                 if (event.type == sf::Event::Closed)
                     window.close();
-                if (backButton.isClicked(window)) {
+                if (backButton.isClicked(window,event)) {
                     page = 10;
                     break;
                 }
@@ -134,9 +145,10 @@ void RunApp()
                 viewingPage.draw(window);
                 backButton.draw(window);
                 for (int i = 0; i < 4; ++i) {
-                    if (classesButton[i]->isClicked(window)) {
+                    if (classesButton[i]->isClicked(window,event)) {
                         user.indexClass = i;
                         page = 16;
+                        break;
                     }
                     classesButton[i]->draw(window);
                 }
@@ -149,7 +161,7 @@ void RunApp()
             viewingPage.text.setString("Viewing Schoolyears");
             while (window.pollEvent(event)) {
                 if (event.type == sf::Event::Closed) window.close();
-                if (backButton.isClicked(window)) {
+                if (backButton.isClicked(window,event)) {
                     page = 10;
                     break;
                 }
@@ -158,9 +170,10 @@ void RunApp()
                 viewingPage.draw(window);
                 backButton.draw(window);
                 for (int i = 0; i < 2; ++i) {
-                    if (schoolyearButton[i]->isClicked(window)) {
+                    if (schoolyearButton[i]->isClicked(window,event)) {
                         page = 13;
                         user.indexSchoolyear = i;
+                        break;
                     }
                     schoolyearButton[i]->draw(window);
                 }
@@ -173,7 +186,7 @@ void RunApp()
             viewingPage.text.setString("Viewing Schoolyears " + schoolyearArr[user.indexSchoolyear].period);
             while (window.pollEvent(event)) {
                 if (event.type == sf::Event::Closed) window.close();
-                if (backButton.isClicked(window)) {
+                if (backButton.isClicked(window,event)) {
                     page = 12;
                     break;
                 }
@@ -184,16 +197,16 @@ void RunApp()
                 backButton.draw(window);
                 int size = schoolyearArr[user.indexSchoolyear].numSemester;
                 for (int i = 0; i < size; ++i) {
-                    if (schoolyearButton[user.indexSchoolyear]->linkedButton[i]->isClicked(window)) {
+                    if (schoolyearButton[user.indexSchoolyear]->linkedButton[i]->isClicked(window,event)) {
                         user.indexSemester = i;
                         page = 14;
+                        break;
                     }
                     schoolyearButton[user.indexSchoolyear]->linkedButton[i]->draw(window);
                 }
                 window.display();
             }
             break;
-            
         }
         case 14: // Course Page
         {
@@ -202,7 +215,7 @@ void RunApp()
             " Semester " + to_string(user.indexSemester + 1));
             while (window.pollEvent(event)) {
                 if (event.type == sf::Event::Closed) window.close();
-                if (backButton.isClicked(window)) {
+                if (backButton.isClicked(window, event)) {
                     page = 13;
                     break;
                 }
@@ -212,7 +225,7 @@ void RunApp()
                 backButton.draw(window);
                 int size = schoolyearArr[user.indexSchoolyear].listSemester[user.indexSemester].numCourses;
                 for (int i = 0; i < size; ++i) {
-                    if (schoolyearButton[user.indexSchoolyear]->linkedButton[user.indexSemester]->linkedButton[i]->isClicked(window));
+                    if (schoolyearButton[user.indexSchoolyear]->linkedButton[user.indexSemester]->linkedButton[i]->isClicked(window,event));
                     schoolyearButton[user.indexSchoolyear]->linkedButton[user.indexSemester]->linkedButton[i]->draw(window);
                 }
                 window.display();
@@ -224,7 +237,7 @@ void RunApp()
             viewingPage.text.setString("Viewing profile");
             while (window.pollEvent(event)) {
                 if (event.type == sf::Event::Closed) window.close();
-                if (backButton.isClicked(window)) {
+                if (backButton.isClicked(window,event)) {
                     page = 10;
                     break;
                 }
@@ -243,7 +256,7 @@ void RunApp()
             viewingPage.text.setString("Viewing students in class " + classesArr[user.indexClass].classID);
             while (window.pollEvent(event)) {
                 if (event.type == sf::Event::Closed) window.close();
-                if (backButton.isClicked(window)) {
+                if (backButton.isClicked(window,event)) {
                     page = 11;
                     break;
                 }
@@ -253,9 +266,10 @@ void RunApp()
                 int size = classesArr[user.indexClass].numStudent;
                 if (size) {
                     for (int i = 0; i < size; ++i) {
-                        if (classesButton[user.indexClass]->linkedButton[i]->isClicked(window)) {
+                        if (classesButton[user.indexClass]->linkedButton[i]->isClicked(window,event)) {
                             user.indexStudentInClass = i;
                             page = 17;
+                            break;
                         }
                         classesButton[user.indexClass]->linkedButton[i]->draw(window);
                     }
@@ -269,7 +283,7 @@ void RunApp()
             viewingPage.text.setString("Viewing student profile");
             while (window.pollEvent(event)) {
                 if (event.type == sf::Event::Closed) window.close();
-                if (backButton.isClicked(window)) {
+                if (backButton.isClicked(window,event)) {
                     page = 16;
                     break;
                 }
@@ -284,21 +298,24 @@ void RunApp()
         {
             while (window.pollEvent(event)) {
                 if (event.type == sf::Event::Closed) window.close();
-                if (logOutButton.isClicked(window)) {
+                if (logOutButton.isClicked(window,event)) {
                     user.isStaff = false;
                     page = 0;
                     delete profileText;
+                    profileText = nullptr;
+                    user.student = nullptr;
                     clearInput();
                     break;
                 }
-                if (profileStu.isClicked(window)) {
-                    string DD_MM_YY = to_string(user.student.DD) + " - " + to_string(user.student.MM) + " - " + to_string(user.student.YY);
+                if (profileStu.isClicked(window,event)) {
+                    string DD_MM_YY = to_string(user.student->DD) + " - " + to_string(user.student->MM) + " - " + to_string(user.student->YY);
                     string gender;
-                    if (user.student.femaleGender) gender = "Female";
+                    if (user.student->femaleGender) gender = "Female";
                     else gender = "Male";
-                    profileText = new ProfileText(user.student.firstName, user.student.lastName,
-                        to_string(user.student.studentID), DD_MM_YY, gender, to_string(user.student.socialID));
+                    profileText = new ProfileText(user.student->firstName, user.student->lastName,
+                        to_string(user.student->studentID), DD_MM_YY, gender, to_string(user.student->socialID));
                     page = 31;
+                    break;
                 }
                 // Draw
                 background.draw(window);
@@ -314,7 +331,7 @@ void RunApp()
             viewingPage.text.setString("Viewing profile");
             while (window.pollEvent(event)) {
                 if (event.type == sf::Event::Closed) window.close();
-                if (backButton.isClicked(window)) {
+                if (backButton.isClicked(window,event)) {
                     page = 30;
                     break;
                 }
@@ -346,7 +363,7 @@ bool validateUser() {
     if (user.isStaff) {
         for (int i = 0; i < numStaff; ++i) {
             if (Iid == staffArr[i].staffID && user.password == staffArr[i].password) {
-                user.staff = staffArr[i];
+                user.staff = &staffArr[i];
                 return 1;
             }
         }
@@ -354,7 +371,7 @@ bool validateUser() {
     else {
         for (int i = 0; i < numStu; ++i) {
             if (Iid == stuArr[i].studentID && user.password == stuArr[i].password) {
-                user.student = stuArr[i];
+                user.student = &stuArr[i];
                 return 1;
             }
         }
@@ -378,11 +395,13 @@ void loadSchoolyears() {
     // Create button for semester in school year
     for (int i = 0; i < 2; i++) {
         int numSeme = schoolyearArr[i].numSemester;
-        schoolyearButton[i]->linkedButton = new LinkedButton * [numSeme];
-        x = 350.0f; y = 190.0f;
-        for (int j = 0; j < numSeme; ++j) {
-            schoolyearButton[i]->linkedButton[j] = new LinkedButton(x, y, "image/Button400x45.png", "Semester " + to_string(j + 1));
-            y += 65.0f;
+        if (numSeme) {
+            schoolyearButton[i]->linkedButton = new LinkedButton * [numSeme];
+            x = 350.0f; y = 190.0f;
+            for (int j = 0; j < numSeme; ++j) {
+                schoolyearButton[i]->linkedButton[j] = new LinkedButton(x, y, "image/Button400x45.png", "Semester " + to_string(j + 1));
+                y += 65.0f;
+            }
         }
     }
 
@@ -391,16 +410,16 @@ void loadSchoolyears() {
         int numSeme = schoolyearArr[i].numSemester;
         for (int j = 0; j < numSeme; ++j) {
             int numCourses = schoolyearArr[i].listSemester[j].numCourses;
-            if (numCourse == 0) continue;
-
-            schoolyearButton[i]->linkedButton[j]->linkedButton = new LinkedButton * [numCourses];
-            x = 200.0f; y = 190.0f;
-            for (int v = 0; v < numCourses; ++v) {
-                schoolyearButton[i]->linkedButton[j]->linkedButton[v]
-                    = new LinkedButton(x, y, "image/Button200x45.png",
-                        schoolyearArr[i].listSemester[j].coursesListInSemester[v].ID + " - " +
-                        schoolyearArr[i].listSemester[j].coursesListInSemester[v].className);
-                y += 65.0f;
+            if (numCourse) {
+                schoolyearButton[i]->linkedButton[j]->linkedButton = new LinkedButton * [numCourses];
+                x = 200.0f; y = 190.0f;
+                for (int v = 0; v < numCourses; ++v) {
+                    schoolyearButton[i]->linkedButton[j]->linkedButton[v]
+                        = new LinkedButton(x, y, "image/Button200x45.png",
+                            schoolyearArr[i].listSemester[j].coursesListInSemester[v].ID + " - " +
+                            schoolyearArr[i].listSemester[j].coursesListInSemester[v].className);
+                    y += 65.0f;
+                }
             }
         }
     }
@@ -448,7 +467,6 @@ void init() {
     schoolyearArr[0].listSemester[0].coursesListInSemester[2].ID = "CS162";
     schoolyearArr[0].listSemester[0].coursesListInSemester[2].className = "23APCS2";
 
-
     schoolyearArr[1].period = "2022 - 2023";
     schoolyearArr[1].numSemester = 2;
     schoolyearArr[1].listSemester = new Semester[2];
@@ -474,4 +492,40 @@ void init() {
     classesArr[2].classID = "22CLC01";
     classesArr[3].classID = "21CTC03";
     return;
+}
+void freeButtons() {
+    for (int i = 0; i < numClass; ++i) {
+        for (int j = 0; j < classesArr[i].numStudent; j++) 
+            delete classesButton[i]->linkedButton[j];
+        delete[] classesButton[i]->linkedButton;
+        delete classesButton[i];
+    }
+    delete[] classesButton;
+
+    for (int i = 0; i < 2; ++i) {
+        for (int j = 0; j < schoolyearArr[i].numSemester; j++) {
+            for (int v = 0; v < schoolyearArr[i].listSemester[j].numCourses; v++)
+                delete schoolyearButton[i]->linkedButton[j]->linkedButton[v];
+            delete[] schoolyearButton[i]->linkedButton[j]->linkedButton;
+            delete schoolyearButton[i]->linkedButton[j];
+        }
+        delete[] schoolyearButton[i]->linkedButton;
+        delete schoolyearButton[i];
+    }
+    delete[] schoolyearButton;
+
+    for (int i = 0; i < numClass; ++i) 
+        delete[] classesArr[i].listStudent;
+    delete[] classesArr;
+
+    for (int i = 0; i < 2; ++i) {
+        for (int j = 0; j < schoolyearArr[i].numSemester; j++) 
+                delete[] schoolyearArr[i].listSemester[j].coursesListInSemester;
+        delete[] schoolyearArr[i].listSemester;
+    }
+    delete[] schoolyearArr;
+    delete[] staffArr;
+    delete[] courseArr;
+
+    if (profileText) delete profileText;
 }

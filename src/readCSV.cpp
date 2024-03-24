@@ -27,7 +27,6 @@ Student* readStudentCSV(string filename, int& numStu) {
     int indexStu = 0;
     while (getline(file, line)) {
         stringstream s(line);
-
         //Pass No data in CSV
         getline(s, line, ',');
         getline(s, line, ',');

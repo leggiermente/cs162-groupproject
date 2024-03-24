@@ -6,7 +6,7 @@ struct Button {
     sf::Texture texture;
     sf::Sprite sprite;
     Button(float x, float y, const std::string& imagePath);
-    bool isClicked(sf::RenderWindow& window);
+    bool isClicked(sf::RenderWindow& window, sf::Event event);
     void draw(sf::RenderWindow& window);
 };
 struct LoginButton {
@@ -14,7 +14,7 @@ struct LoginButton {
 	sf::Sprite sprite;
     LoginButton(float x, float y, const std::string& imagePath);
 	void draw(sf::RenderWindow& window);
-    bool isClicked(sf::RenderWindow& window, sf::Text& username, sf::Text& password, std::string& user, std::string& pass);
+    bool isClicked(sf::RenderWindow& window, sf::Event event, sf::Text& username, sf::Text& password, std::string& user, std::string& pass);
 };
 struct UsernameBox {
     sf::Text text;
@@ -44,7 +44,7 @@ struct CheckStaffButton {
     sf::Sprite sprite2;
     CheckStaffButton(float x, float y, const std::string& imagePath1, const std::string& imagePath2);
     void draw(sf::RenderWindow& window,bool& checked);
-    bool isClick(sf::RenderWindow& window, bool& check);
+    bool isClick(sf::RenderWindow& window,sf::Event event, bool& check);
 };
 struct ProfileText {
     sf::Text firstName,
@@ -78,6 +78,6 @@ struct LinkedButton {
     sf::Font font;
     sf::Text text;
     LinkedButton(float x, float y, const std::string& imagePath, std::string sText);
-    bool isClicked(sf::RenderWindow& window);
+    bool isClicked(sf::RenderWindow& window, sf::Event event);
     void draw(sf::RenderWindow& window);
 };

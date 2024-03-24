@@ -15,8 +15,8 @@ Button::Button(float x, float y, const std::string& imagePath) {
     sprite.setTexture(texture);
     sprite.setPosition(x - sprite.getGlobalBounds().width / 2, y - sprite.getGlobalBounds().height / 2);
 }
-bool Button::isClicked(sf::RenderWindow& window) {
-    if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+bool Button::isClicked(sf::RenderWindow& window, sf::Event event) {
+    if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left) {
         sf::Vector2i mousePos = sf::Mouse::getPosition(window);
         if (sprite.getGlobalBounds().contains(window.mapPixelToCoords(mousePos)))
             return true;
@@ -41,10 +41,10 @@ void LoginButton::draw(sf::RenderWindow& window)
 {
 	window.draw(sprite);
 }
-bool LoginButton::isClicked(sf::RenderWindow& window, sf::Text& username, sf::Text& password, std::string& user, std::string& pass) {		
-	if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {		
-		sf::Vector2i mousePos = sf::Mouse::getPosition(window);
-		if (sprite.getGlobalBounds().contains(window.mapPixelToCoords(mousePos))) {
+bool LoginButton::isClicked(sf::RenderWindow& window,sf::Event event, sf::Text& username, sf::Text& password, std::string& user, std::string& pass) {		
+    if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left) {
+        sf::Vector2i mousePos = sf::Mouse::getPosition(window);
+        if (sprite.getGlobalBounds().contains(window.mapPixelToCoords(mousePos))) {
             user = username.getString().toAnsiString();
             pass = password.getString().toAnsiString();
             return true;
@@ -179,12 +179,13 @@ void CheckStaffButton::draw(sf::RenderWindow& window, bool& checked) {
     else
         window.draw(sprite1);
 }
-bool CheckStaffButton::isClick(sf::RenderWindow& window, bool& checked) {
-    if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+bool CheckStaffButton::isClick(sf::RenderWindow& window,sf::Event event, bool& checked) {
+    if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left) {
         sf::Vector2i mousePos = sf::Mouse::getPosition(window);
         if (sprite1.getGlobalBounds().contains(window.mapPixelToCoords(mousePos))) {
             if (checked) checked = false;
             else checked = true;
+
             return true;
         }
     }
@@ -240,8 +241,8 @@ LinkedButton::LinkedButton(float x, float y, const std::string& imagePath, std::
     text.setPosition(spriteRect.left + spriteRect.width / 2.0f, spriteRect.top + spriteRect.height / 2.0f);
     
 }
-bool LinkedButton::isClicked(sf::RenderWindow& window) {
-    if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+bool LinkedButton::isClicked(sf::RenderWindow& window,sf::Event event) {
+    if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left) {
         sf::Vector2i mousePos = sf::Mouse::getPosition(window);
         if (sprite.getGlobalBounds().contains(window.mapPixelToCoords(mousePos)))
             return true;
