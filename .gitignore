@@ -89,3 +89,10 @@ Temporary Items
 main
 main.dSYM/Contents/Resources/Relocations/aarch64/main.yml
 main.dSYM/Contents/Info.plist
+*.xd
+*.lck
+*.xml
+*.json
+.idea/copilot/chatSessions/blobs/version
+.vscode/.easycpp
+Makefile
