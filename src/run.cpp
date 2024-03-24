@@ -395,7 +395,7 @@ void loadSchoolyears() {
     // Create button for semester in school year
     for (int i = 0; i < 2; i++) {
         int numSeme = schoolyearArr[i].numSemester;
-        if (numSeme) {
+        if (numSeme != 0) {
             schoolyearButton[i]->linkedButton = new LinkedButton * [numSeme];
             x = 350.0f; y = 190.0f;
             for (int j = 0; j < numSeme; ++j) {
@@ -406,13 +406,12 @@ void loadSchoolyears() {
     }
 
     // Create button for course in semester
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < 2; i++) {
         int numSeme = schoolyearArr[i].numSemester;
         for (int j = 0; j < numSeme; ++j) {
-            int numCourses = 0;
-            if (schoolyearArr[i].listSemester != nullptr) 
-                numCourses = schoolyearArr[i].listSemester[j].numCourses;
-            if (numCourse) {
+            if (schoolyearArr[i].listSemester == nullptr) break;
+            int numCourses = schoolyearArr[i].listSemester[j].numCourses;
+            if (numCourse != 0) {
                 schoolyearButton[i]->linkedButton[j]->linkedButton = new LinkedButton * [numCourses];
                 x = 200.0f; y = 190.0f;
                 for (int v = 0; v < numCourses; ++v) {
@@ -437,7 +436,7 @@ void loadSchoolyears() {
     for (int i = 0; i < numClass; i++) {
         x = 200.0f; y = 190.0f;
         int numStuClass = classesArr[i].numStudent;
-        if (numStuClass) {
+        if (numStuClass != 0) {
             classesButton[i]->linkedButton = new LinkedButton * [numStuClass];
             for (int j = 0; j < numStuClass; j++) {
                 classesButton[i]->linkedButton[j] = new LinkedButton(x, y, "image/Button200x45.png", to_string(classesArr[i].listStudent[j].studentID));
