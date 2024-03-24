@@ -409,7 +409,9 @@ void loadSchoolyears() {
     for (int i = 0; i < 4; i++) {
         int numSeme = schoolyearArr[i].numSemester;
         for (int j = 0; j < numSeme; ++j) {
-            int numCourses = schoolyearArr[i].listSemester[j].numCourses;
+            int numCourses = 0;
+            if (schoolyearArr[i].listSemester != nullptr) 
+                numCourses = schoolyearArr[i].listSemester[j].numCourses;
             if (numCourse) {
                 schoolyearButton[i]->linkedButton[j]->linkedButton = new LinkedButton * [numCourses];
                 x = 200.0f; y = 190.0f;

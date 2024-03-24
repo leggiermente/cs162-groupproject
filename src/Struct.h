@@ -19,7 +19,7 @@ struct schoolYear {
     int classCount = 0; //count the number of class in a school year.
     Class* classList;
     int numSemester = 0;
-    Semester* listSemester;
+    Semester* listSemester = nullptr;
 };
 struct Course {
     string ID = "";
@@ -28,7 +28,7 @@ struct Course {
     string teacher = "";
     int numCredits = 0;
     int maxStudents = 50;
-    Student* listStudentInCourse;
+    Student* listStudentInCourse = nullptr;
 };
 struct Semester {
     int numSemesterInSchoolYear = 0;
