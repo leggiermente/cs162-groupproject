@@ -37,6 +37,7 @@ struct Course{
     string teacher="";
     int numCredits=0;
     int maxStudents=50;
+    int numStu = 0;
     Student* listStudentInCourse;
 };
 struct Semester{
