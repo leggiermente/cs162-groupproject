@@ -105,7 +105,7 @@ void updateStudentFromInput(Class &curClass){
 void ImportStudentsToCoursesInSemester(Student *students, int numStu, Course thisCourse){ //merge from the work of lehoangan02
 
 }
-void addNewSchoolYear(int &sems, schoolYear schyrs, bool &createClassOption){
+void addNewSchoolYear(schoolYear schyrs, bool &createClassOption){
     for (int i=0;i<schyrs.classCount;i++){
         Class curClass=schyrs.classList[i];
         curClass.yearStudied++; //increase year studied of a class.
@@ -114,7 +114,6 @@ void addNewSchoolYear(int &sems, schoolYear schyrs, bool &createClassOption){
     system("CLS");
     cout << "Please input the period of the new school year below: " << endl;
     getline(cin,schyrs.period);
-    sems=1;
     outputSchoolYear(schyrs);
     createClassOption=true; //allow staff to create class in the menu.
     system("CLS");

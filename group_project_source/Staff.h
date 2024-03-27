@@ -13,7 +13,7 @@ Student *readStudentCSV(string fileName, int& numStu);
 void updateStudentFromInput(Class &curClass);
 void ImportStudentsToCoursesInSemester(Student *students, int numStu, Course thisCourse);
 void importSemesterandCourse(Semester &sems);
-void addNewSchoolYear(int &sems, schoolYear schyrs, bool &createClassOption);
+void addNewSchoolYear(schoolYear schyrs, bool &createClassOption);
 void addStudentintoClass(schoolYear &schyrs, bool createClassOption);
 void addCourse(Semester &sems);
 void removeCourse(Semester &sems);
