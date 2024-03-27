@@ -283,7 +283,13 @@ void removeCourse(Semester &sems){
                 tmp[add++]=sems.coursesListInSemester[i];
             }
         }
-        //this line is left for the delete of old course list.
+        for (int i=0;i<=sems.numCourses;i++){
+            for (int j=0;j<sems.coursesListInSemester[i].numStudents;j++){
+                delete sems.coursesListInSemester[i].listStudentInCourse[j].classOfStudent;
+            }
+            delete [] sems.coursesListInSemester[i].listStudentInCourse;
+        }
+        delete []sems.coursesListInSemester;
         sems.coursesListInSemester=tmp;
     }
     outputSemester(sems);
