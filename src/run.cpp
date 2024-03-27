@@ -38,23 +38,38 @@ CurrentUser user;
 int numStu = 0,
     numStaff = 0,
     numCourse = 0,
-    numClass = 4;
-Student* stuArr = readStudentCSV("student.csv", numStu);
-Staff* staffArr = readStaffCSV("staff.csv", numStaff);
-Course* courseArr = readDirectory("course", numCourse);
-Class* classesArr = new Class[4];
-schoolYear* schoolyearArr = new schoolYear[2];
+    numClass = 0,
+    numSchoolYear = 0;
+//Student* stuArr = readStudentCSV("student.csv", numStu);
+Student* stuArr = nullptr;
+//Course* courseArr = readDirectory("database/course", numCourse);
+//Class* classesArr = new Class[4];
+//schoolYear* schoolyearArr = new schoolYear[2];
+
+schoolYear* schoolyearArr = nullptr;
+Class* classesArr = nullptr;
+Staff* staffArr = nullptr;
 
 // UI arrays
-LinkedButton** schoolyearButton = new LinkedButton * [2];
+LinkedButton** schoolyearButton = nullptr;
+LinkedButton** classesButton = nullptr;
 ProfileText* profileText = nullptr;
-LinkedButton** classesButton = new LinkedButton * [4];
 
 
 void RunApp() 
 {
-    init();
+    stuArr = readStudentText("database/student", numStu);
+    schoolyearArr = readSchoolYear("database/schoolyear", numSchoolYear);
+    classesArr = readClass("database/class", numClass);
+    staffArr = readStaffCSV("staff.csv", numStaff);
+    readCourseInSemester("database/course", schoolyearArr, numSchoolYear);
+    
+    schoolyearButton = new LinkedButton * [numSchoolYear];
+    classesButton = new LinkedButton * [numClass];
     loadSchoolyears();
+    
+    //init();
+    //printTest(classesArr, numClass, schoolyearArr, numSchoolYear);
 
     window.setFramerateLimit(60);
     while (window.isOpen()) 
@@ -107,7 +122,7 @@ void RunApp()
                     break;
                 }
                 if (profileStaff.isClicked(window, event)) {
-                    profileText = new ProfileText(user.staff->firstName, user.staff->lastName, to_string(user.staff->staffID));
+                    profileText = new ProfileText(user.staff->firstName, user.staff->lastName, user.staff->staffID);
                     page = 15;
                     break;
                 }
@@ -141,7 +156,7 @@ void RunApp()
                     page = 10;
                     break;
                 }
-                for (int i = 0; i < 4; ++i) 
+                for (int i = 0; i < numClass; ++i) 
                     if (classesButton[i]->isClicked(window,event)) {
                         user.indexClass = i;
                         page = 16;
@@ -150,7 +165,7 @@ void RunApp()
             }
             viewingPage.draw(window);
             backButton.draw(window);
-            for (int i = 0; i < 4; ++i) classesButton[i]->draw(window);
+            for (int i = 0; i < numClass; ++i) classesButton[i]->draw(window);
             break;
         }
         case 12: // Schoolyears Page
@@ -162,7 +177,7 @@ void RunApp()
                     page = 10;
                     break;
                 }
-                for (int i = 0; i < 2; ++i) 
+                for (int i = 0; i < numSchoolYear; ++i) 
                     if (schoolyearButton[i]->isClicked(window,event)) {
                         page = 13;
                         user.indexSchoolyear = i;
@@ -293,12 +308,11 @@ void RunApp()
                     break;
                 }
                 if (profileStu.isClicked(window,event)) {
-                    string DD_MM_YY = to_string(user.student->DD) + " - " + to_string(user.student->MM) + " - " + to_string(user.student->YY);
                     string gender;
                     if (user.student->femaleGender) gender = "Female";
                     else gender = "Male";
                     profileText = new ProfileText(user.student->firstName, user.student->lastName,
-                        to_string(user.student->studentID), DD_MM_YY, gender, to_string(user.student->socialID));
+                        user.student->studentID, user.student->dob, gender, user.student->socialID);
                     page = 31;
                     break;
                 }
@@ -343,10 +357,9 @@ void RunApp()
 bool validateUser() {
     if (user.id.empty()) return false;
     if (!isNumber(user.id)) return false;
-    int Iid = stoi(user.id);
     if (user.isStaff) {
         for (int i = 0; i < numStaff; ++i) {
-            if (Iid == staffArr[i].staffID && user.password == staffArr[i].password) {
+            if (user.id == staffArr[i].staffID && user.password == staffArr[i].password) {
                 user.staff = &staffArr[i];
                 return 1;
             }
@@ -354,7 +367,7 @@ bool validateUser() {
     }
     else {
         for (int i = 0; i < numStu; ++i) {
-            if (Iid == stuArr[i].studentID && user.password == stuArr[i].password) {
+            if (user.id == stuArr[i].studentID && user.password == stuArr[i].password) {
                 user.student = &stuArr[i];
                 return 1;
             }
@@ -369,45 +382,36 @@ bool isNumber(const std::string& str) {
     return true;
 }
 void loadSchoolyears() {
-    // Create button for school years
+    // Create button for school years & semesters & courses 
     float x = 200.0f, y = 190.0f;
-    for (int i = 0; i < 2; ++i) {
+    for (int i = 0; i < numSchoolYear; ++i) {
         schoolyearButton[i] = new LinkedButton(x, y, "image/Button200x45.png", schoolyearArr[i].period);
         y += 65.0f;
-    }
-    
-    // Create button for semester in school year
-    for (int i = 0; i < 2; i++) {
-        int numSeme = schoolyearArr[i].numSemester;
-        if (numSeme != 0) {
-            schoolyearButton[i]->linkedButton = new LinkedButton * [numSeme];
-            x = 350.0f; y = 190.0f;
-            for (int j = 0; j < numSeme; ++j) {
-                schoolyearButton[i]->linkedButton[j] = new LinkedButton(x, y, "image/Button400x45.png", "Semester " + to_string(j + 1));
-                y += 65.0f;
-            }
-        }
-    }
+        
+        // Semester in school year
+        if (schoolyearArr[i].numSemester != 0) {
+            schoolyearButton[i]->linkedButton = new LinkedButton * [schoolyearArr[i].numSemester];
+            schoolyearButton[i]->linkedButton = new LinkedButton * [schoolyearArr[i].numSemester];
+            float x2 = 350.0f, y2 = 190.0f;
+            for (int j = 0; j < schoolyearArr[i].numSemester; j++) {
+                schoolyearButton[i]->linkedButton[j] = new LinkedButton(x2, y2, "image/Button400x45.png", "Semester " + to_string(j + 1));
+                y2 += 65.0f;
 
-    // Create button for course in semester
-    for (int i = 0; i < 2; i++) {
-        int numSeme = schoolyearArr[i].numSemester;
-        for (int j = 0; j < numSeme; ++j) {
-            if (schoolyearArr[i].listSemester == nullptr) break;
-            int numCourses = schoolyearArr[i].listSemester[j].numCourses;
-            if (numCourse != 0) {
-                schoolyearButton[i]->linkedButton[j]->linkedButton = new LinkedButton * [numCourses];
-                x = 200.0f; y = 190.0f;
-                for (int v = 0; v < numCourses; ++v) {
-                    schoolyearButton[i]->linkedButton[j]->linkedButton[v]
-                        = new LinkedButton(x, y, "image/Button200x45.png",
-                            schoolyearArr[i].listSemester[j].coursesListInSemester[v].ID + " - " +
-                            schoolyearArr[i].listSemester[j].coursesListInSemester[v].className);
-                    y += 65.0f;
+                // Course in semester
+                if (schoolyearArr[i].listSemester[j].numCourses != 0) {
+                    schoolyearButton[i]->linkedButton[j]->linkedButton = new LinkedButton * [schoolyearArr[i].listSemester[j].numCourses];
+                    float x3 = 200.0f, y3 = 190.0f;
+                    for (int k = 0; k < schoolyearArr[i].listSemester[j].numCourses; k++) {
+                        schoolyearButton[i]->linkedButton[j]->linkedButton[k]
+                            = new LinkedButton(x3, y3, "image/Button200x45.png",
+                                schoolyearArr[i].listSemester[j].coursesListInSemester[k].ID);
+                        y3 += 65.0f;
+                    }
                 }
             }
         }
     }
+    
 
     // Create button for all classes have existed
     x = 200.0f; y = 190.0f;
@@ -423,7 +427,7 @@ void loadSchoolyears() {
         if (numStuClass != 0) {
             classesButton[i]->linkedButton = new LinkedButton * [numStuClass];
             for (int j = 0; j < numStuClass; j++) {
-                classesButton[i]->linkedButton[j] = new LinkedButton(x, y, "image/Button200x45.png", to_string(classesArr[i].listStudent[j].studentID));
+                classesButton[i]->linkedButton[j] = new LinkedButton(x, y, "image/Button200x45.png", classesArr[i].listStudent[j].studentID);
                 y += 65.0f;
             }
         }
@@ -434,50 +438,50 @@ void clearInput() {
     inputPassBox.text.setString("");
     inputPassBox.star.setString("");
 }
-void init() {
-    schoolyearArr[0].period = "2021 - 2022";
-    schoolyearArr[0].numSemester = 3;
-    schoolyearArr[0].listSemester = new Semester[3];
-    schoolyearArr[0].listSemester[0].numSemesterInSchoolYear = 1;
-    schoolyearArr[0].listSemester[1].numSemesterInSchoolYear = 2;
-    schoolyearArr[0].listSemester[2].numSemesterInSchoolYear = 3;
-
-    // Course in semester 1 2021 - 2022
-    schoolyearArr[0].listSemester[0].numCourses = 3;
-    schoolyearArr[0].listSemester[0].coursesListInSemester = new Course[3];
-    schoolyearArr[0].listSemester[0].coursesListInSemester[0].ID = "CS162";
-    schoolyearArr[0].listSemester[0].coursesListInSemester[0].className = "23APCS1";
-    schoolyearArr[0].listSemester[0].coursesListInSemester[1].ID = "MTH121";
-    schoolyearArr[0].listSemester[0].coursesListInSemester[1].className = "23APCS2";
-    schoolyearArr[0].listSemester[0].coursesListInSemester[2].ID = "CS162";
-    schoolyearArr[0].listSemester[0].coursesListInSemester[2].className = "23APCS2";
-
-    schoolyearArr[1].period = "2022 - 2023";
-    schoolyearArr[1].numSemester = 2;
-    schoolyearArr[1].listSemester = new Semester[2];
-    schoolyearArr[1].listSemester[0].numSemesterInSchoolYear = 1;
-    schoolyearArr[1].listSemester[1].numSemesterInSchoolYear = 2;
-
-    // Course in semester 2 2022 - 2023
-    schoolyearArr[1].listSemester[1].numCourses = 3;
-    schoolyearArr[1].listSemester[1].coursesListInSemester = new Course[3];
-    schoolyearArr[1].listSemester[1].coursesListInSemester[0].ID = "CS163";
-    schoolyearArr[1].listSemester[1].coursesListInSemester[0].className = "22APCS1";
-    schoolyearArr[1].listSemester[1].coursesListInSemester[1].ID = "MTH221";
-    schoolyearArr[1].listSemester[1].coursesListInSemester[1].className = "22APCS2";
-    schoolyearArr[1].listSemester[1].coursesListInSemester[2].ID = "CS163";
-    schoolyearArr[1].listSemester[1].coursesListInSemester[2].className = "22APCS2";
-
-    // Classes
-    classesArr[0].classID = "23APCS1";
-    classesArr[0].listStudent = stuArr;
-    classesArr[0].numStudent = 5;
-
-    classesArr[1].classID = "23CLC08";
-    classesArr[2].classID = "22CLC01";
-    classesArr[3].classID = "21CTC03";
-    return;
-}
+//void init() {
+//    schoolyearArr[0].period = "2021 - 2022";
+//    schoolyearArr[0].numSemester = 3;
+//    schoolyearArr[0].listSemester = new Semester[3];
+//    schoolyearArr[0].listSemester[0].numSemesterInSchoolYear = 1;
+//    schoolyearArr[0].listSemester[1].numSemesterInSchoolYear = 2;
+//    schoolyearArr[0].listSemester[2].numSemesterInSchoolYear = 3;
+//
+//    // Course in semester 1 2021 - 2022
+//    schoolyearArr[0].listSemester[0].numCourses = 3;
+//    schoolyearArr[0].listSemester[0].coursesListInSemester = new Course[3];
+//    schoolyearArr[0].listSemester[0].coursesListInSemester[0].ID = "CS162";
+//    schoolyearArr[0].listSemester[0].coursesListInSemester[0].className = "23APCS1";
+//    schoolyearArr[0].listSemester[0].coursesListInSemester[1].ID = "MTH121";
+//    schoolyearArr[0].listSemester[0].coursesListInSemester[1].className = "23APCS2";
+//    schoolyearArr[0].listSemester[0].coursesListInSemester[2].ID = "CS162";
+//    schoolyearArr[0].listSemester[0].coursesListInSemester[2].className = "23APCS2";
+//
+//    schoolyearArr[1].period = "2022 - 2023";
+//    schoolyearArr[1].numSemester = 2;
+//    schoolyearArr[1].listSemester = new Semester[2];
+//    schoolyearArr[1].listSemester[0].numSemesterInSchoolYear = 1;
+//    schoolyearArr[1].listSemester[1].numSemesterInSchoolYear = 2;
+//
+//    // Course in semester 2 2022 - 2023
+//    schoolyearArr[1].listSemester[1].numCourses = 3;
+//    schoolyearArr[1].listSemester[1].coursesListInSemester = new Course[3];
+//    schoolyearArr[1].listSemester[1].coursesListInSemester[0].ID = "CS163";
+//    schoolyearArr[1].listSemester[1].coursesListInSemester[0].className = "22APCS1";
+//    schoolyearArr[1].listSemester[1].coursesListInSemester[1].ID = "MTH221";
+//    schoolyearArr[1].listSemester[1].coursesListInSemester[1].className = "22APCS2";
+//    schoolyearArr[1].listSemester[1].coursesListInSemester[2].ID = "CS163";
+//    schoolyearArr[1].listSemester[1].coursesListInSemester[2].className = "22APCS2";
+//
+//    // Classes
+//    classesArr[0].classID = "23APCS1";
+//    classesArr[0].listStudent = stuArr;
+//    classesArr[0].numStudent = numStu;
+//
+//    classesArr[1].classID = "23CLC08";
+//    classesArr[2].classID = "22CLC01";
+//    classesArr[3].classID = "21CTC03";
+//    return;
+//}
 void freeButtons() {
     for (int i = 0; i < numClass; ++i) {
         for (int j = 0; j < classesArr[i].numStudent; j++) 
@@ -510,7 +514,7 @@ void freeButtons() {
     }
     delete[] schoolyearArr;
     delete[] staffArr;
-    delete[] courseArr;
+    //delete[] courseArr;
 
     if (profileText) delete profileText;
 }

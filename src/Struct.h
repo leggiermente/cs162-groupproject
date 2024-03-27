@@ -3,6 +3,13 @@
 #include <string>
 using namespace std;
 
+// Temeporary struct for Score
+struct ScoreStu {
+    string course;
+    float quiz;
+    float mid;
+    float final;
+};
 struct Class;
 struct schoolYear;
 struct Course;
@@ -16,8 +23,8 @@ struct Class {
 };
 struct schoolYear {
     string period = "";
-    int classCount = 0; //count the number of class in a school year.
-    Class* classList;
+    //int classCount = 0; //count the number of class in a school year.
+    //Class* classList;
     int numSemester = 0;
     Semester* listSemester = nullptr;
 };
@@ -26,27 +33,32 @@ struct Course {
     string courseName = "";
     string className = "";
     string teacher = "";
-    int numCredits = 0;
-    int maxStudents = 50;
+    string dayOfWeek = "";
+    string session = "";
+    int numCredits = 0; 
+    int maxStudents = 50; 
+    int currStudents = 43;
     Student* listStudentInCourse = nullptr;
 };
 struct Semester {
     int numSemesterInSchoolYear = 0;
-    int startDate = 0, startMonth = 0, startYear = 0;
-    int endDate = 0, endMonth = 0, endYear = 0;
-    Course* coursesListInSemester = nullptr;
+    string startDate = "";
+    string endDate = "";
     int numCourses = 0;
+    Course* coursesListInSemester = nullptr;
 };
 struct Student {
-    int studentID = 0;
+    string studentID = "";
     int semesterStudied = 0;
     string password = "";
     string firstName = "", lastName = "";
     bool femaleGender = 0;
-    int DD = 0, MM = 0, YY = 0;
-    int socialID = 0;
+    string dob = "";
+    //int DD = 0, MM = 0, YY = 0;
+    string socialID = "";
     double overallGPA = 0; //updating overallGPA in student.csv
-    string classID;
+    ScoreStu* score = nullptr;
     Course* courseOfStudent = nullptr;
 };
+
 #endif // STRUCT_H_INCLUDED

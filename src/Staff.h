@@ -3,9 +3,13 @@
 #define STAFF_H_INCLUDED
 struct Staff;
 struct Staff {
-    int staffID;
-    string password;
-    string firstName, lastName;
+    string staffID = "";
+    string socialID = "";
+    string password = "";
+    string firstName = "";
+    string lastName = "";
+    string dob = "";
+    bool gender = false;
 };
 //schoolYear importSchoolYear();
 //Class readClass(string fileName, string nameClass);
