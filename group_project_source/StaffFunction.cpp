@@ -118,13 +118,8 @@ void addNewSchoolYear(schoolYear schyrs, bool &createClassOption){
     createClassOption=true; //allow staff to create class in the menu.
     system("CLS");
 }
-void addStudentintoClass(schoolYear &schyrs, bool createClassOption){
+void addStudentintoClass(schoolYear &schyrs){
     system("CLS");
-    if (!createClassOption){ //check if already new school year
-        cout << "You must create a new school year to add a new student into class." << endl;
-        Sleep(3000);
-        return;
-    }
     int numEligibleClass=0;
     for (int i=0;i<schyrs.classCount;i++){
         if (schyrs.classList[i].yearStudied==1){
