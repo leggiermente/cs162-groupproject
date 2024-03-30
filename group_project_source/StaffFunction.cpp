@@ -17,19 +17,6 @@ schoolYear importSchoolYear(){
     string str; //string for getting the input file, needs to also implement schoolyear.txt, involving name of the class of the last school year.
     getline(inp,str); // getting the period of the school year
     schyrs.period=str;
-    inp >> schyrs.classCount;
-    getline(inp,str);
-    schyrs.classList=new Class[schyrs.classCount]; //make a dynamic allocated array for class in a school year.
-    for (int i=0;i<schyrs.classCount;i++){
-        getline(inp,str);
-        schyrs.classList[i].classID=str; //getting the class ID.
-    }
-    inp.close();
-    for (int i=0;i<schyrs.classCount;i++){
-        Class curClass=schyrs.classList[i];
-        string directory="../database/class/"+curClass.classID+".txt";
-        schyrs.classList[i]=readClass(directory,curClass.classID); //read class from the database.
-    }
     return schyrs;
 }
 Class readClass(string fileName,string nameClass){
@@ -102,52 +89,23 @@ void updateStudentFromInput(Class &curClass){
         curClass.listStudent[i].socialID=stoi(str);
     }
 }
-void ImportStudentsToCoursesInSemester(Student *students, int numStu, Course thisCourse){ //merge from the work of lehoangan02
+void ImportStudentsToCoursesInSemester(Student **students, int numStu, Course thisCourse){ //merge from the work of lehoangan02
 
 }
-void addNewSchoolYear(schoolYear schyrs, bool &createClassOption){
-    for (int i=0;i<schyrs.classCount;i++){
-        Class curClass=schyrs.classList[i];
-        curClass.yearStudied++; //increase year studied of a class.
-        outputClass("../database/class/"+curClass.classID+".txt",curClass); //Output class to the database.
-    }
+void addNewSchoolYear(schoolYear schyrs){
     system("CLS");
     cout << "Please input the period of the new school year below: " << endl;
     getline(cin,schyrs.period);
     outputSchoolYear(schyrs);
-    createClassOption=true; //allow staff to create class in the menu.
     system("CLS");
 }
-void addStudentintoClass(schoolYear &schyrs){
+void addStudentintoClass(Class &curClass){
     system("CLS");
-    int numEligibleClass=0;
-    for (int i=0;i<schyrs.classCount;i++){
-        if (schyrs.classList[i].yearStudied==1){
-            numEligibleClass++;
-        }
-    }
-    if (numEligibleClass==0){ //check if there are 1-st year classes to add
-        cout << "There are no 1-st year classes to add new student." << endl;
+    if (curClass.yearStudied!=1){ //check if there are 1-st year classes to add
+        cout << "The class is not 1-st year to add new student." << endl;
         Sleep(3000);
         return;
     }
-    cout << "Please choose following list of class below by inputting from keyboard: " << endl;
-    int* lst=new int[numEligibleClass],cnt=0; //lst for ID list of class of 1-st year classes.
-    for (int i=0;i<schyrs.classCount;i++){
-        if (schyrs.classList[i].yearStudied==1){
-            cout << cnt+1 << ": " << schyrs.classList[i].classID << "." << endl;
-            lst[cnt++]=i;
-        }
-    }
-    int id=0; //return the position of the class you want to update
-    do{
-        cin >> id;
-        if (id<=0 || id>numEligibleClass){
-            cout << "Please input again in this line: ";
-        }
-    }
-    while (id<=0 || id>numEligibleClass);
-    id=lst[id-1];
     system("CLS");
     cout << "Please choose an option for updating new student to the class." << endl;
     int options=0; //variable to check for the option
@@ -161,13 +119,12 @@ void addStudentintoClass(schoolYear &schyrs){
     }
     while (options!=1 && options!=2);
     if (options==1){
-        updateStudentFromInput(schyrs.classList[id]); //implement from above function
+        updateStudentFromInput(curClass); //implement from above function
     }
     else{
-        schyrs.classList[id].listStudent=readStudentCSV("../import/student.csv", schyrs.classList[id].numStudent); //work of izahai
+        curClass.listStudent=readStudentCSV("../import/student.csv", curClass.numStudent); //work of izahai
     }
-    outputClass("../database/class/"+schyrs.classList[id].classID+".txt",schyrs.classList[id]);
-    delete []lst;
+    outputClass("../database/class/"+curClass.classID+".txt",curClass);
 }
 void importSemesterandCourse(Semester &sems){ //not done delete pointer yet
     ifstream inp;
@@ -195,8 +152,10 @@ void importSemesterandCourse(Semester &sems){ //not done delete pointer yet
         getline(inp,sems.coursesListInSemester[i].sessionTime);
         inp >> sems.coursesListInSemester[i].numStudents;
         inp.get();
+        int numStu=sems.coursesListInSemester[i].numStudents;
+        sems.coursesListInSemester[i].listStudentInCourse=new Student* [numStu];
         for (int j=0;j<sems.coursesListInSemester[i].numStudents;j++){
-            inp >> sems.coursesListInSemester[i].listStudentInCourse[j].studentID;
+            inp >> sems.coursesListInSemester[i].listStudentInCourse[j]->studentID;
         }
         inp.close();
     }
@@ -280,7 +239,7 @@ void removeCourse(Semester &sems){
         }
         for (int i=0;i<=sems.numCourses;i++){
             for (int j=0;j<sems.coursesListInSemester[i].numStudents;j++){
-                delete sems.coursesListInSemester[i].listStudentInCourse[j].classOfStudent;
+                delete sems.coursesListInSemester[i].listStudentInCourse[j]->scoreOfStudent;
             }
             delete [] sems.coursesListInSemester[i].listStudentInCourse;
         }
@@ -329,10 +288,6 @@ void outputSchoolYear(schoolYear &schyrs){
     string str;
     out.open("../database/schoolyear.txt"); //output the period, number of classes, and list of classes.
     out << schyrs.period << endl;
-    out << schyrs.classCount << endl;
-    for (int i=0;i<schyrs.classCount;i++){
-        out << schyrs.classList[i].classID << endl;
-    }
     out.close();
 }
 void outputCourse(string fileName,Course curCourse){
@@ -349,7 +304,7 @@ void outputCourse(string fileName,Course curCourse){
     out << curCourse.sessionTime << endl;
     out << curCourse.numStudents << endl;
     for (int i=0;i<curCourse.numStudents;i++){
-        out << curCourse.listStudentInCourse[i].studentID << endl;
+        out << curCourse.listStudentInCourse[i]->studentID << endl;
     }
     out.close();
 }

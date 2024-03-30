@@ -6,6 +6,7 @@ struct Class;
 struct schoolYear;
 struct Course;
 struct Semester;
+struct ScoreStu;
 struct Student{
     int studentID=0;
     int semesterStudied=0;
@@ -15,18 +16,18 @@ struct Student{
     int DD=0,MM=0,YY=0;
     int socialID=0;
     double overallGPA=0; //updating overallGPA in student.csv
-    Class* classOfStudent;
+    ScoreStu* scoreOfStudent=nullptr;
 };
 struct Class{
     string classID="";
     int yearStudied=0;
     int numStudent=0; //updating number of Student in a class.
-    Student* listStudent;
+    Student* listStudent=nullptr;
 };
 struct schoolYear{
     string period="";
-    int classCount=0; //count the number of class in a school year.
-    Class* classList;
+    int semCount=0; //count the number of semester in a school year.
+    Semester *sem=nullptr;
 };
 struct Course{
     string ID="";
@@ -38,13 +39,21 @@ struct Course{
     int numCredits=0;
     int maxStudents=50;
     int numStudents=0;
-    Student* listStudentInCourse;
+    Student** listStudentInCourse=nullptr;
 };
 struct Semester{
     int numSemesterInSchoolYear=0;
     int startDate=0,startMonth=0,startYear=0;
     int endDate=0,endMonth=0,endYear=0;
     int numCourses=0; //update numCourses
-    Course *coursesListInSemester;
+    Course *coursesListInSemester=nullptr;
+};
+struct ScoreStu{
+    string courseID="";
+    string semester="";
+    string year="";
+    float quiz=0;
+    float mid=0;
+    float final=0;
 };
 #endif // STRUCT_H_INCLUDED
