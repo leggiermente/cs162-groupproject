@@ -6,35 +6,25 @@ struct Button {
     sf::Texture texture;
     sf::Sprite sprite;
     Button(float x, float y, const std::string& imagePath);
-    bool isClicked(sf::RenderWindow& window, sf::Event event);
-    void draw(sf::RenderWindow& window);
+    virtual bool isClicked(sf::RenderWindow& window, sf::Event event);
+    virtual void draw(sf::RenderWindow& window);
 };
-struct LoginButton {
-	sf::Texture texture;
-	sf::Sprite sprite;
+struct LoginButton : Button {
     LoginButton(float x, float y, const std::string& imagePath);
-	void draw(sf::RenderWindow& window);
     bool isClicked(sf::RenderWindow& window, sf::Event event, sf::Text& username, sf::Text& password, std::string& user, std::string& pass);
 };
-struct UsernameBox {
+struct InputBox : Button {
     sf::Text text;
     sf::Font font;
     bool active = false;
-    sf::Texture texture;
-    sf::Sprite sprite;
-    UsernameBox(float x, float y);
-    void handleEvent(const sf::Event& event, sf::RenderWindow& window);
-    void draw(sf::RenderWindow& window);
+    InputBox(float x, float y, const std::string& imagePath);
+    virtual void isClicked(const sf::Event& event, sf::RenderWindow& window);
+    virtual void draw(sf::RenderWindow& window);
 };
-struct PasswordBox {
-    sf::Text text;
+struct PasswordBox : InputBox {
     sf::Text star;
-    sf::Font font;
-    bool active = false;
-    sf::Texture texture;
-    sf::Sprite sprite;
-    PasswordBox(float x, float y);
-    void handleEvent(const sf::Event& event, sf::RenderWindow& window);
+    PasswordBox(float x, float y, const std::string& imagePath);
+    void isClicked(const sf::Event& event, sf::RenderWindow& window);
     void draw(sf::RenderWindow& window);
 };
 struct CheckStaffButton {
@@ -71,6 +61,12 @@ struct ViewingPage {
     ViewingPage(float x, float y, const std::string& imagePath, std::string sText);
     void draw(sf::RenderWindow& window);
 };
+struct TextBox : Button {
+    sf::Text text;
+    sf::Font font;
+    TextBox(float x, float y, const std::string& imagePath, std::string sText);
+    virtual void draw(sf::RenderWindow& window);
+};
 struct LinkedButton {
     sf::Texture texture;
     LinkedButton** linkedButton = nullptr;
@@ -79,5 +75,15 @@ struct LinkedButton {
     sf::Text text;
     LinkedButton(float x, float y, const std::string& imagePath, std::string sText);
     bool isClicked(sf::RenderWindow& window, sf::Event event);
+    void draw(sf::RenderWindow& window);
+};
+struct InputYear : InputBox {
+    sf::Text tHeadname;
+    InputYear(float x, float y, const std::string& imagePath, std::string sHeadname);
+    void draw(sf::RenderWindow& window);
+};
+struct Line {
+    sf::RectangleShape stick;
+    Line(float x, float y, float width, float height);
     void draw(sf::RenderWindow& window);
 };

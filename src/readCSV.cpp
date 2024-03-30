@@ -110,35 +110,7 @@ Staff* readStaffCSV(string filename, int& numStaff) {
 //    }
 //    return course;
 //}
-Student* readStudentText(string path, int& numStu) {
-    ifstream fin(path + "/ID_Stu.txt");
-    if (!fin.is_open()) std::cout << "Can't load file txt\n";
-    string line;
-    fin >> line;
-    numStu = stoi(line);
-    Student* stuArr = new Student[numStu];
-    for (int i = 0; i < numStu; ++i) {
-        fin >> line;
-        stuArr[i].studentID = line;
-    }
-    fin.close();
-
-    for (int i = 0; i < numStu; ++i) {
-        string filename = path + "/" + stuArr[i].studentID + ".txt";
-        fin.open(filename);
-        if (!fin.is_open()) cout << "Can't load file text\n";
-        getline(fin, line);
-        getline(fin, line); stuArr[i].firstName = line;
-        getline(fin, line); stuArr[i].lastName = line;
-        getline(fin, line); stuArr[i].femaleGender = (line == "0") ? false : true;
-        getline(fin, line); stuArr[i].dob = line;
-        getline(fin, line); stuArr[i].socialID = line;
-        getline(fin, line); stuArr[i].password = line;
-        fin.close();
-    }
-    return stuArr;
-}
-schoolYear* readSchoolYear(string path, int& numSchoolYear) {
+SchoolYear* readSchoolYear(string path, int& numSchoolYear) {
     string line;
 	ifstream file(path + "/schoolyear.txt");
     if (!file) {
@@ -146,7 +118,7 @@ schoolYear* readSchoolYear(string path, int& numSchoolYear) {
         return nullptr;
     }
 	getline(file, line); numSchoolYear = stoi(line);
-    schoolYear* schoolYearArr = new schoolYear[numSchoolYear];
+    SchoolYear* schoolYearArr = new SchoolYear[numSchoolYear];
     for (int i = 0; i < numSchoolYear; i++) {
         std::getline(file, line, ','); schoolYearArr[i].period = line;
         std::getline(file, line); schoolYearArr[i].numSemester = std::stoi(line);
@@ -186,7 +158,7 @@ void readSemesterInSchoolYear(string path, Semester& semester) {
 	}
     return;
 }
-void readCourseInSemester(string path, schoolYear* schoolYearArr, int numSchoolYear) {
+void readCourseInSemester(string path, SchoolYear* schoolYearArr, int numSchoolYear, Class* classArr, int numClass) {
     for (int i = 0; i < numSchoolYear; ++i) {
         for (int j = 0; j < schoolYearArr[i].numSemester; ++j) {
             for (int v = 0; v < schoolYearArr[i].listSemester[j].numCourses; ++v) {
@@ -207,9 +179,23 @@ void readCourseInSemester(string path, schoolYear* schoolYearArr, int numSchoolY
                 getline(file, line); int curStu = stoi(line); 
                 schoolYearArr[i].listSemester[j].coursesListInSemester[v].currStudents = curStu;
                 if (curStu != 0)
-                    schoolYearArr[i].listSemester[j].coursesListInSemester[v].listStudentInCourse = new Student[curStu];
-                for (int k = 0; k < schoolYearArr[i].listSemester[j].coursesListInSemester[v].currStudents; ++k) {
-                    getline(file, line); schoolYearArr[i].listSemester[j].coursesListInSemester[v].listStudentInCourse[k].studentID = line;
+                    schoolYearArr[i].listSemester[j].coursesListInSemester[v].listStudentInCourse = new Student * [curStu];
+                
+                // Read and store address of student in course 
+                for (int k = 0; k < curStu; ++k) {
+                    getline(file, line); // Get student ID
+                    bool foundStu = false; // Check if student is found
+                    
+                    // Brute force search for student && store addresss of student in course
+                    for (int u = 0; u < numClass && !foundStu; u++) {
+                        for (int o = 0; o < classArr[u].numStudent && !foundStu; o++) {
+                            if (classArr[u].listStudent[o].studentID == line) {
+								schoolYearArr[i].listSemester[j].coursesListInSemester[v].listStudentInCourse[k] = &classArr[u].listStudent[o];
+                                foundStu = true;
+							}
+						}   
+                    }
+                    //getline(file, line); schoolYearArr[i].listSemester[j].coursesListInSemester[v].listStudentInCourse[k].studentID = line;
                 }
                 file.close();
             }
@@ -270,23 +256,23 @@ void readStudentTXT(string path, Class& classStu) {
     }
     return;
 }
-void printTest(Class* classArr, int numClass, schoolYear* schoolYearArr, int numSchoolYear) {
+void printTest(Class* classArr, int numClass, SchoolYear* schoolYearArr, int numSchoolYear) {
     for (int i = 0; i < numClass; i++) {
 		cout << classArr[i].classID << endl;
         for (int j = 0; j < classArr[i].numStudent; j++) {
 			cout << classArr[i].listStudent[j].studentID << endl;
-            cout << classArr[i].listStudent[j].firstName << endl;
-            cout << classArr[i].listStudent[j].lastName << endl;
-            cout << classArr[i].listStudent[j].femaleGender << endl;
-            cout << classArr[i].listStudent[j].dob << endl;
-            cout << classArr[i].listStudent[j].socialID << endl;
+            //cout << classArr[i].listStudent[j].firstName << endl;
+            //cout << classArr[i].listStudent[j].lastName << endl;
+            //cout << classArr[i].listStudent[j].femaleGender << endl;
+            //cout << classArr[i].listStudent[j].dob << endl;
+            //cout << classArr[i].listStudent[j].socialID << endl;
             cout << classArr[i].listStudent[j].password << endl;
             cout << endl;
 		}
 	}
     cout << endl;
 
-    for (int i = 0; i < numSchoolYear; ++i) {
+    /*for (int i = 0; i < numSchoolYear; ++i) {
         cout << schoolYearArr[i].period << endl;
         cout << schoolYearArr[i].numSemester << endl;
         for (int j = 0; j < schoolYearArr[i].numSemester; ++j) {
@@ -303,7 +289,7 @@ void printTest(Class* classArr, int numClass, schoolYear* schoolYearArr, int num
 				}
             }
         }
-        cout << endl;
-    }
+        cout << endl;*/
+    //}
     return;
 }

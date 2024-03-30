@@ -29,18 +29,7 @@ void Button::draw(sf::RenderWindow& window) {
 
 //--------------------------------------------------------------
 // Login Button
-LoginButton::LoginButton(float x, float y, const std::string& imagePath)
-{
-	if (!texture.loadFromFile(imagePath))		
-		std::cout << "Can't load image login\n";
-    texture.setSmooth(1);
-    sprite.setTexture(texture);
-	sprite.setPosition(x - sprite.getGlobalBounds().width / 2, y - sprite.getGlobalBounds().height / 2);
-}
-void LoginButton::draw(sf::RenderWindow& window)
-{
-	window.draw(sprite);
-}
+LoginButton::LoginButton(float x, float y, const std::string& imagePath) : Button(x, y, imagePath) {}
 bool LoginButton::isClicked(sf::RenderWindow& window,sf::Event event, sf::Text& username, sf::Text& password, std::string& user, std::string& pass) {		
     if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left) {
         sf::Vector2i mousePos = sf::Mouse::getPosition(window);
@@ -54,12 +43,12 @@ bool LoginButton::isClicked(sf::RenderWindow& window,sf::Event event, sf::Text& 
 }
 
 //--------------------------------------------------------------
-// UsernameBox
-UsernameBox::UsernameBox(float x, float y) {
+// InputBox
+InputBox::InputBox(float x, float y, const std::string& imagePath) : Button(x, y, imagePath) {
     if (!font.loadFromFile("font/Roboto-Regular.ttf")) {
         // handle error
     }
-    if (!texture.loadFromFile("image/TextBox.png")) {
+    if (!texture.loadFromFile(imagePath)) {
         // handle error
     }
     float height = texture.getSize().y;
@@ -72,7 +61,7 @@ UsernameBox::UsernameBox(float x, float y) {
     text.setPosition(sprite.getPosition().x+10, sprite.getPosition().y + height * 0.6f / 3.7f);
     text.setFillColor(sf::Color::Black);
 }
-void UsernameBox::handleEvent(const sf::Event& event, sf::RenderWindow& window) {
+void InputBox::isClicked(const sf::Event& event, sf::RenderWindow& window) {
     if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
         sf::Vector2i mousePos = sf::Mouse::getPosition(window);
         if (sprite.getGlobalBounds().contains(window.mapPixelToCoords(mousePos)))
@@ -97,18 +86,18 @@ void UsernameBox::handleEvent(const sf::Event& event, sf::RenderWindow& window) 
         }
     }
 }
-void UsernameBox::draw(sf::RenderWindow& window) {
+void InputBox::draw(sf::RenderWindow& window) {
     window.draw(sprite);
     window.draw(text);
 }
 
 //--------------------------------------------------------------
 // PasswordBox
-PasswordBox::PasswordBox(float x, float y) {
+PasswordBox::PasswordBox(float x, float y, const std::string& imagePath) : InputBox(x, y, imagePath) {
     if (!font.loadFromFile("font/Roboto-Regular.ttf")) {
         cout << "Can't load font\n";
     }
-    if (!texture.loadFromFile("image/TextBox.png")) {
+    if (!texture.loadFromFile(imagePath)) {
         cout << "Can't load image\n";
     }
     float height = texture.getSize().y;
@@ -121,7 +110,7 @@ PasswordBox::PasswordBox(float x, float y) {
     star.setPosition(sprite.getPosition().x + 10, sprite.getPosition().y + height * 0.6f / 3.7f);
     star.setFillColor(sf::Color::Black);
 }
-void PasswordBox::handleEvent(const sf::Event& event, sf::RenderWindow& window) {
+void PasswordBox::isClicked(const sf::Event& event, sf::RenderWindow& window) {
     if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
         sf::Vector2i mousePos = sf::Mouse::getPosition(window);
         if (sprite.getGlobalBounds().contains(window.mapPixelToCoords(mousePos)))
@@ -215,6 +204,31 @@ ViewingPage::ViewingPage(float x, float y, const std::string& imagePath, std::st
 void ViewingPage::draw(sf::RenderWindow& window) {
     window.draw(sprite);
     window.draw(text);
+}
+
+//--------------------------------------------------------------
+// TextBox
+TextBox::TextBox(float x, float y, const std::string& imagePath, std::string sText) : Button(x,y, imagePath){
+    if (!font.loadFromFile("font/Roboto-Regular.ttf")) {
+		cout << "Can't load font\n";
+	}
+    if (!texture.loadFromFile(imagePath)) {
+		cout << "Can't load image\n";
+	}
+	float height = texture.getSize().y;
+	texture.setSmooth(1);
+	sprite.setTexture(texture);
+	sprite.setPosition(x - sprite.getGlobalBounds().width / 2, y - sprite.getGlobalBounds().height / 2);
+
+	text.setFont(font);
+	text.setCharacterSize(height * 0.5f);
+	text.setPosition(sprite.getPosition().x + 15, sprite.getPosition().y + height * 0.5f * 0.35);
+	text.setFillColor(sf::Color::White);
+	text.setString(sText);
+}
+void TextBox::draw(sf::RenderWindow& window) {
+    window.draw(sprite);
+	window.draw(text);
 }
 
 //--------------------------------------------------------------
@@ -338,6 +352,46 @@ void ProfileText::drawStaff(sf::RenderWindow& window) {
     window.draw(ID);
 }
 
+//--------------------------------------------------------------
+// InputYear
+InputYear::InputYear(float x, float y, const std::string& imagePath, std::string sHeadname) : InputBox(x, y, imagePath) {
+    if (!font.loadFromFile("font/Roboto-Regular.ttf")) {
+        // handle error
+    }
+    if (!texture.loadFromFile(imagePath)) {
+        // handle error
+    }
+    float height = texture.getSize().y;
+    texture.setSmooth(1);
+    sprite.setTexture(texture);
+    sprite.setPosition(x - sprite.getGlobalBounds().width / 2, y - sprite.getGlobalBounds().height / 2);
 
+    text.setFont(font);
+    text.setCharacterSize(height * 0.6f);
+    text.setPosition(sprite.getPosition().x + 10, sprite.getPosition().y + height * 0.6f / 3.7f);
+    text.setFillColor(sf::Color::Black);
+
+    tHeadname.setFont(font);
+    tHeadname.setCharacterSize(20.0f);
+    tHeadname.setPosition(x - sprite.getGlobalBounds().width / 2, y - sprite.getGlobalBounds().height / 2 - 25.0f);
+    tHeadname.setFillColor(sf::Color::Black);
+    tHeadname.setString(sHeadname);
+}
+void InputYear::draw(sf::RenderWindow& window) {
+    window.draw(tHeadname);
+    window.draw(sprite);
+    window.draw(text);
+}
+
+//--------------------------------------------------------------
+// Line
+Line::Line(float x, float y, float width, float height) {
+    stick.setSize(sf::Vector2f(width, height));
+    stick.setFillColor(sf::Color::Black);
+    stick.setPosition(x, y);
+}
+void Line::draw(sf::RenderWindow& window) {
+	window.draw(stick);
+}
 
 

@@ -5,13 +5,15 @@ using namespace std;
 
 // Temeporary struct for Score
 struct ScoreStu {
-    string course;
+    string courseID;
+    string semester;
+    string year;
     float quiz;
     float mid;
     float final;
 };
 struct Class;
-struct schoolYear;
+struct SchoolYear;
 struct Course;
 struct Semester;
 struct Student;
@@ -21,7 +23,7 @@ struct Class {
     int numStudent = 0; //updating number of Student in a class.
     Student* listStudent = nullptr;
 };
-struct schoolYear {
+struct SchoolYear {
     string period = "";
     //int classCount = 0; //count the number of class in a school year.
     //Class* classList;
@@ -38,7 +40,7 @@ struct Course {
     int numCredits = 0; 
     int maxStudents = 50; 
     int currStudents = 43;
-    Student* listStudentInCourse = nullptr;
+    Student** listStudentInCourse = nullptr;
 };
 struct Semester {
     int numSemesterInSchoolYear = 0;
