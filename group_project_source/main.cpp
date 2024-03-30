@@ -9,7 +9,7 @@ bool createClass=false;
 int main()
 {
     s=importSchoolYear();
-    importSemesterandCourse(curSem);
-    removeCourse(curSem);
+    importSemesterandCourse(s,curSem);
+    removeCourse(s,curSem);
     return 0;
 }

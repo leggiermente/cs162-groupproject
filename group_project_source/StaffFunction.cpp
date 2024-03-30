@@ -126,9 +126,9 @@ void addStudentintoClass(Class &curClass){
     }
     outputClass("../database/class/"+curClass.classID+".txt",curClass);
 }
-void importSemesterandCourse(Semester &sems){ //not done delete pointer yet
+void importSemesterandCourse(schoolYear &schyrs,Semester &sems){ //not done delete pointer yet
     ifstream inp;
-    inp.open("../database/semester.txt");
+    inp.open("../database/semester/"+schyrs.period+"-"+to_string(sems.numSemesterInSchoolYear)+".txt");
     inp >> sems.numSemesterInSchoolYear;
     inp >> sems.startDate >> sems.startMonth >> sems.startYear;
     inp >> sems.endDate >> sems.endMonth >> sems.endYear;
@@ -160,7 +160,7 @@ void importSemesterandCourse(Semester &sems){ //not done delete pointer yet
         inp.close();
     }
 }
-void addCourse(Semester &sems){
+void addCourse(schoolYear &schyrs,Semester &sems){
     Course* tmp=sems.coursesListInSemester;
     sems.numCourses++;
     sems.coursesListInSemester=new Course[sems.numCourses]; //update the size of dynamic allocated array to add a new course
@@ -199,10 +199,10 @@ void addCourse(Semester &sems){
     }
     ImportStudentsToCoursesInSemester(sems.coursesListInSemester[curPos].listStudentInCourse,sems.coursesListInSemester[curPos].numStudents,
                                       sems.coursesListInSemester[curPos]); //import student.csv, merge later from the work of lehoangan02
-    outputSemester(sems);
+    outputSemester(schyrs,sems);
     outputCourse("../database/course/"+sems.coursesListInSemester[curPos].ID+".txt",sems.coursesListInSemester[curPos]);
 }
-void removeCourse(Semester &sems){
+void removeCourse(schoolYear &schyrs,Semester &sems){
     if (sems.numCourses==0){
         cout << "You don't have any classes to remove." << endl;
         Sleep(3000);
@@ -246,11 +246,11 @@ void removeCourse(Semester &sems){
         delete []sems.coursesListInSemester;
         sems.coursesListInSemester=tmp;
     }
-    outputSemester(sems);
+    outputSemester(schyrs,sems);
 }
-void outputSemester(Semester sems){
+void outputSemester(schoolYear schyrs, Semester sems){
     ofstream out;
-    out.open("../database/semester.txt");
+    out.open("../database/semester/"+schyrs.period+"-"+to_string(sems.numSemesterInSchoolYear)+".txt");
     out << sems.numSemesterInSchoolYear << endl;
     out << sems.startDate << " " << sems.startMonth << " " << sems.startYear << endl;
     out << sems.endDate << " " << sems.endMonth << " " << sems.endYear << endl;
@@ -286,7 +286,7 @@ void outputClass(string fileName,Class curClass){
 void outputSchoolYear(schoolYear &schyrs){
     ofstream out;
     string str;
-    out.open("../database/schoolyear.txt"); //output the period, number of classes, and list of classes.
+    out.open("../database/schoolyear/"+schyrs.period+".txt"); //output the period, number of classes, and list of classes.
     out << schyrs.period << endl;
     out.close();
 }
