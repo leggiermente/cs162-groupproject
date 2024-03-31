@@ -1,7 +1,7 @@
 #ifndef removeStudent_h
 #define removeStudent_h
 
-#include "Student.h"
+#include "Struct.h"
 #include "Staff.h"
 #include <iostream>
 #include <string>

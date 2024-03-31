@@ -1,6 +1,6 @@
 #ifndef newSemester_h
 #define newSemester_h
-#include "Student.h"
+#include "Struct.h"
 
 void createNewSemesterToFile (string &filename);
 
