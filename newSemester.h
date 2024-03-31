@@ -3,6 +3,6 @@
 #include "Struct.h"
 
 //void createNewSemesterToFile (string &filename);
-
+void createNewSemester(SchoolYear* &schoolYear);
 
 #endif /* newSemester_h */

@@ -2,25 +2,16 @@
 #include <iostream>
 #include <fstream>
 using namespace std;
-void createNewSemesterToFile(string &filename)
+void createNewSemester(SchoolYear* &schoolYear)
 {
-    Semester s;
-    cout <<"Input the numbers of semester in school year: ";
-    cin >> s.numSemesterInSchoolYear;
+    Semester* newListSemes = new Semester[++schoolYear->numSemester];
+    for (int i=0; i < schoolYear->numSemester-1; i++)
+        newListSemes[i] = schoolYear->listSemester[i];
+    cin >> newListSemes[schoolYear->numSemester-1].startDate;
+    cin >> newListSemes[schoolYear->numSemester-1].endDate;
+    cin >> newListSemes[schoolYear->numSemester-1].numCourses;
     
-    cout <<"Input the start date (DD MM YYYY): ";
-    cin >> s.startDate >> s.startMonth >> s.startYear;
-    
-    cout <<"Input the end date (DD MM YYYY): ";
-    cin >> s.endDate >> s.endMonth >> s.endYear;
-    
-    ofstream file(filename, ios::app);
-    if (file.is_open())
-    {
-        file << s.numSemesterInSchoolYear <<",";
-        file << s.startDate <<"/" << s.startMonth <<"/"<< s.startYear <<",";
-        file << s.endDate <<"/" <<s.endMonth <<"/"<< s.endYear <<"\n";
-    }
-    
+    delete [] schoolYear->listSemester;
+    schoolYear->listSemester = newListSemes;
 }
 
