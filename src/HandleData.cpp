@@ -121,7 +121,8 @@ SchoolYear* readSchoolYear(string path, int& numSchoolYear) {
     SchoolYear* schoolYearArr = new SchoolYear[numSchoolYear];
     for (int i = 0; i < numSchoolYear; i++) {
         std::getline(file, line, ','); schoolYearArr[i].period = line;
-        std::getline(file, line); schoolYearArr[i].numSemester = std::stoi(line);
+        cout <<"abc...";
+        std::getline(file, line); schoolYearArr[i].numSemester = stoi(line);
         schoolYearArr[i].listSemester = new Semester[schoolYearArr[i].numSemester];
         for (int j = 0; j < schoolYearArr[i].numSemester; ++j) {
             schoolYearArr[i].listSemester[j].numSemesterInSchoolYear = j + 1;
@@ -302,22 +303,24 @@ void saveSchoolYear(string path, SchoolYear* schoolYearArr, int numSchoolYear)
         return;
     }
     else{
-        file << numSchoolYear;
+        file << numSchoolYear <<"\n";
         for (int i=0; i < numSchoolYear; i++)
         {
             file << schoolYearArr[i].period <<",";
             file << schoolYearArr[i].numSemester <<"\n";
-            file.close();
         }
+        file.close();
     }
     
-    for (int i = 0; i < numSchoolYear; ++i) {
-        for (int j = 0; j < schoolYearArr[i].numSemester; ++j) {
-            string path = "database/semester/" + schoolYearArr[i].period + "_" + to_string(j + 1) + ".txt";
-            replace(path.begin(), path.end(), '-', '_');
-            saveSemesterInSchoolYear(path, schoolYearArr[i].listSemester[j]);
-        }
-    }
+ for (int i = 0; i < numSchoolYear; ++i)
+ {
+     for (int j = 0; j < schoolYearArr[i].numSemester; ++j)
+     {
+         string path = "database/semester/" + schoolYearArr[i].period + "_" + to_string(j + 1) + ".txt";
+         replace(path.begin(), path.end(), '-', '_');
+         saveSemesterInSchoolYear(path, schoolYearArr[i].listSemester[j]);
+     }
+ }
 }
 
 void saveSemesterInSchoolYear(string path, Semester semester)

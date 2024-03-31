@@ -368,6 +368,7 @@ void RunApp()
         }
         window.display();
     }
+    saveSchoolYear("database/schoolyear", schoolyearArr, numSchoolYear);
     // Console check
     std::cout << "Username: " << user.id << std::endl;
     std::cout << "Password: " << user.password << std::endl;
