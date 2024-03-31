@@ -1,4 +1,4 @@
-﻿#include <iostream>
+#include <iostream>
 
 #include "run.h"
 #include "HandleData.h"
