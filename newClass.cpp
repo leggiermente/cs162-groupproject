@@ -1,6 +1,6 @@
 #include "newClass.h"
 
-int countLine (string filename)
+/*int countLine (string filename)
 {
     ifstream file(filename);
     if (file.is_open())
@@ -60,4 +60,6 @@ void createNewClassToFile(string &filename)
     }
     else cout <<"Can not open file: " << filename <<"\n";
     delete newClass;
-}
+} */
+
+void createNewClasss(SchoolYear* 
