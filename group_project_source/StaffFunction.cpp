@@ -32,7 +32,7 @@ Class readClass(string fileName,string nameClass){
     inp.get();
     for (int i=0;i<tmpClass->numStudent;i++){
         getline(inp,str,','); //in each line
-        tmpClass->listStudent[i].studentID=stoi(str); //student id, first name, last name, sexuality, dob, social id
+        tmpClass->listStudent[i].studentID=str; //student id, first name, last name, sexuality, dob, social id
         getline(inp,str,',');
         tmpClass->listStudent[i].firstName=str;
         getline(inp,str,',');
@@ -40,13 +40,13 @@ Class readClass(string fileName,string nameClass){
         getline(inp,str,',');
         tmpClass->listStudent[i].femaleGender=stoi(str);
         getline(inp,str,',');
-        tmpClass->listStudent[i].DD=stoi(str);
+        tmpClass->listStudent[i].DD=str;
         getline(inp,str,',');
-        tmpClass->listStudent[i].MM=stoi(str);
+        tmpClass->listStudent[i].MM=str;
         getline(inp,str,',');
-        tmpClass->listStudent[i].YY=stoi(str);
+        tmpClass->listStudent[i].YY=str;
         getline(inp,str,'\n');
-        tmpClass->listStudent[i].socialID=stoi(str);
+        tmpClass->listStudent[i].socialID=str;
     }
     inp.close();
     return *tmpClass;
@@ -65,7 +65,7 @@ void updateStudentFromInput(Class &curClass){
         system("CLS");
         cout << "Please input student ID of student " << i+1 << ": ";
         getline(cin,str);
-        curClass.listStudent[i].studentID=stoi(str); //student id, first name, last name, sexuality, dob, social id
+        curClass.listStudent[i].studentID=str; //student id, first name, last name, sexuality, dob, social id
         cout << "Please input first name of student " << i+1 << ": ";
         getline(cin,str);
         curClass.listStudent[i].firstName=str;
@@ -77,16 +77,16 @@ void updateStudentFromInput(Class &curClass){
         curClass.listStudent[i].femaleGender=stoi(str);
         cout << "Please input day of birth of student " << i+1 << ": ";
         getline(cin,str);
-        curClass.listStudent[i].DD=stoi(str);
+        curClass.listStudent[i].DD=str;
         cout << "Please input month of birth of student " << i+1 << ": ";
         getline(cin,str);
-        curClass.listStudent[i].MM=stoi(str);
+        curClass.listStudent[i].MM=str;
         cout << "Please input year of birth of student " << i+1 << ": ";
         getline(cin,str);
-        curClass.listStudent[i].YY=stoi(str);
+        curClass.listStudent[i].YY=str;
         cout << "Please input social ID of student " << i+1 << ": ";
         getline(cin,str);
-        curClass.listStudent[i].socialID=stoi(str);
+        curClass.listStudent[i].socialID=str;
     }
 }
 void ImportStudentsToCoursesInSemester(Student **students, int numStu, Course thisCourse){ //merge from the work of lehoangan02
@@ -122,7 +122,10 @@ void addStudentintoClass(Class &curClass){
         updateStudentFromInput(curClass); //implement from above function
     }
     else{
-        curClass.listStudent=readStudentCSV("../import/student.csv", curClass.numStudent); //work of izahai
+        cout << "Please choose the directory for the import file student.csv";
+        string str;
+        getline(cin,str);
+        curClass.listStudent=readStudentCSV(str+"student.csv", curClass.numStudent); //work of izahai
     }
     outputClass("../database/class/"+curClass.classID+".txt",curClass);
 }
@@ -307,6 +310,37 @@ void outputCourse(string fileName,Course curCourse){
         out << curCourse.listStudentInCourse[i]->studentID << endl;
     }
     out.close();
+}
+void outputCourseScoreBoard(schoolYear schyrs, Semester sems, Course curCourse){ //not already tested
+    ifstream inp;
+    inp.precision(2);
+    for (int i=0;i<curCourse.numStudents;i++){ //open student's file
+        Student* curStu=curCourse.listStudentInCourse[i];
+        string ID=curStu->studentID,str="";
+        inp.open("../database/scorestudent/"+ID+".txt");
+        do{
+            string yearCourse="",semCourse="",nameCourse="",str="";
+            double total=0,fin=0,mid=0,other=0;
+            getline(inp,yearCourse,',');
+            getline(inp,semCourse,',');
+            getline(inp,nameCourse,',');
+            getline(inp,str,',');
+            total=stof(str);
+            getline(inp,str,',');
+            fin=stof(str);
+            getline(inp,str,',');
+            mid=stof(str);
+            getline(inp,str,'\n');
+            other=stof(str);
+            if (yearCourse==schyrs.period && stoi(semCourse)==sems.numSemesterInSchoolYear && curCourse.courseName==nameCourse){
+                cout << curStu->studentID << " " << curStu->firstName << " " << curStu->lastName << " "
+                    << total << " " << fin << " " << mid << " " << other << endl;
+                break;
+            }
+        }
+        while (!inp.eof());
+        inp.close();
+    }
 }
 bool checkFormatDayOfTheWeek(string format){ //return true if it's in the right format of day of the week
     for (unsigned int i=0;i<format.size();i++){

@@ -10,6 +10,6 @@ int main()
 {
     s=importSchoolYear();
     importSemesterandCourse(s,curSem);
-    removeCourse(s,curSem);
+
     return 0;
 }

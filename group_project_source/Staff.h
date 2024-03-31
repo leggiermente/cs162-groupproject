@@ -21,6 +21,7 @@ void outputClass(string fileName,Class curClass);
 void outputSemester(schoolYear schyrs, Semester sems);
 void outputSchoolYear(schoolYear &schyrs);
 void outputCourse(string fileName,Course curCourse);
+void outputCourseScoreBoard(schoolYear schyrs, Semester sems, Course curCourse);
 bool checkFormatDayOfTheWeek(string format);
 bool checkFormatSession(string format);
 #endif // STAFF_H_INCLUDED

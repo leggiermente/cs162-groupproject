@@ -8,13 +8,13 @@ struct Course;
 struct Semester;
 struct ScoreStu;
 struct Student{
-    int studentID=0;
+    string studentID="";
     int semesterStudied=0;
     string password="";
     string firstName="",lastName="";
     bool femaleGender=0;
-    int DD=0,MM=0,YY=0;
-    int socialID=0;
+    string DD="",MM="",YY="";
+    string socialID="";
     double overallGPA=0; //updating overallGPA in student.csv
     ScoreStu* scoreOfStudent=nullptr;
 };
