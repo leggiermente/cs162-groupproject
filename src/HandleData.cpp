@@ -121,7 +121,6 @@ SchoolYear* readSchoolYear(string path, int& numSchoolYear) {
     SchoolYear* schoolYearArr = new SchoolYear[numSchoolYear];
     for (int i = 0; i < numSchoolYear; i++) {
         std::getline(file, line, ','); schoolYearArr[i].period = line;
-        cout <<"abc...";
         std::getline(file, line); schoolYearArr[i].numSemester = stoi(line);
         schoolYearArr[i].listSemester = new Semester[schoolYearArr[i].numSemester];
         for (int j = 0; j < schoolYearArr[i].numSemester; ++j) {
