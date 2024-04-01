@@ -22,6 +22,7 @@ struct CurrentUser {
 };
 void loadSchoolyears();
 bool validateUser();
+bool validateSchoolYear(string &txt, SchoolYear* schoolyearArr, int numSchoolYear);
 bool isNumber(const std::string& str);
 void clearInput();
 void RunApp();
