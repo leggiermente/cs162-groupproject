@@ -65,6 +65,7 @@ struct TextBox : Button {
     sf::Text text;
     sf::Font font;
     TextBox(float x, float y, const std::string& imagePath, std::string sText);
+    TextBox(float x, float y, const std::string& imagePath, std::string sText, std::string sColor);
     virtual void draw(sf::RenderWindow& window);
 };
 struct LinkedButton {
@@ -77,13 +78,21 @@ struct LinkedButton {
     bool isClicked(sf::RenderWindow& window, sf::Event event);
     void draw(sf::RenderWindow& window);
 };
-struct InputYear : InputBox {
+struct InputWithHead : InputBox {
     sf::Text tHeadname;
-    InputYear(float x, float y, const std::string& imagePath, std::string sHeadname);
+    InputWithHead(float x, float y, const std::string& imagePath, std::string sHeadname);
     void draw(sf::RenderWindow& window);
 };
 struct Line {
     sf::RectangleShape stick;
     Line(float x, float y, float width, float height);
+    void draw(sf::RenderWindow& window);
+};
+struct TextChangeBox : TextBox {
+    sf::Text textChange;
+    sf::Text tHead;
+    bool active = false;
+    TextChangeBox(float x, float y, const std::string& imagePath, std::string sHead, std::string sText, std::string sTextChange);
+	bool isClicked(sf::RenderWindow& window, sf::Event event);
     void draw(sf::RenderWindow& window);
 };

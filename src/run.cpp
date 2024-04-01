@@ -8,8 +8,6 @@ sf::RenderWindow window(sf::VideoMode(1280, 720), "Course Management", sf::Style
 sf::Event event;
 const float xMid = window.getSize().x / 2.0f;
 const float yMid = window.getSize().y / 2.0f;
-int page = 0;
-int yearPage = 0;
 
 //General UI
 Button background(xMid, yMid, "image/Backgound.png");
@@ -30,16 +28,41 @@ Button classesButtonSelect(xMid, yMid + 20.0f, "image/ClassesButton.png");
 Button schoolyearsSelect(xMid, yMid - 40.0f, "image/SchoolyearsButton.png");
 ViewingPage viewingPage(xMid, yMid, "image/ViewingPage.png", "");
 Button backButton(118.0f, 106.5f, "image/BackButton.png");
-// Button in Schoolyear page
-Button rYearPageButton(502.5f, 625.0f, "image/RightPageButton.png");
-Button lYearPageButton(122.5f, 625.0f, "image/LeftPageButton.png");
-Button addYearButton(1100.0f, 205.0f, "image/AddYear.png");
-InputYear inputYear(825.0f, 205.0f, "image/InputYear.png", "School year:");
-Line yearLine(575.0f, 157.5f, 1.0f, 435.0f);
-TextBox semesterBox(775.0f, 305.0f, "image/ViewSeme.png", "");
+Button rPageButton(502.5f, 625.0f, "image/RightPageButton.png");
+Button lPageButton(122.5f, 625.0f, "image/LeftPageButton.png");
+
+// Button in Schoolyear && semesterpage
+InputWithHead inputYear(837.5f, 205.0f, "image/Input425x45.png", "School year:");
+Line viewLine(575.0f, 157.5f, 1.0f, 435.0f);
+TextBox semesterBox(725.0f, 305.0f, "image/ViewSeme.png", "");
+Button addYearButton(1125.0f, 205.0f, "image/AddButton.png");
+InputWithHead inputStartDateSem(950.0f, 325.0f, "image/InputDataSeme.png", "Start Date:");
+InputWithHead inputEndDateSem(950.0f, 395.0f, "image/InputDataSeme.png", "End Date:");
+Button addSemeButton(1125.0f, 395.0f, "image/AddButton.png");
+
+// Button in class page
+InputWithHead inputClass(837.5f, 205.0f, "image/Input425x45.png", "Class:");
+Button addClassButton(1125.0f, 205.0f, "image/AddButton.png");
+
+// Button in student page
+TextBox numStuBox(750.0f, 340.0f, "image/NumStuBox.png", "Number students: ", "");
+InputWithHead inputStuID(750.0f, 430.0f, "image/Input250x45.png", "Student ID");
+InputWithHead inputSocialID(1025.0f, 430.0f, "image/Input250x45.png", "Social ID");
+InputWithHead inputFirstName(750.0f, 500.0f, "image/Input250x45.png", "First name");
+InputWithHead inputLastName(1025.0f, 500.0f, "image/Input250x45.png", "Last name");
+InputWithHead inputDOB(750.0f, 570.0f, "image/Input250x45.png", "Date of Birth");
+TextChangeBox genderCheckBox(962.5f, 570.0f, "image/Input125x45.png", "Gender", "Male", "Female");
+Button addStuButton(1100.0f, 570.0f, "image/AddButton.png");
 
 //Stu account
 Button profileStu(207.0f, 185.0f, "image/ProfileStu.png");
+
+
+// Page control
+int page = 0,
+    yearPage = 0,
+    classPage = 0,
+    stuPage = 0;
 
 //Size of data from database
 int numStaff = 0,
@@ -137,7 +160,7 @@ void RunApp()
                     clearInput();
                     break;
                 }
-                if (passwordChange.isClicked(window, event));
+                passwordChange.isClicked(window, event);
             }
             // Draw
             menu.draw(window);
@@ -158,16 +181,45 @@ void RunApp()
                     page = 10;
                     break;
                 }
-                for (int i = 0; i < numClass; ++i) 
+                
+                int i = classPage * 14;
+                for (i; i < (classPage + 1) * 14 && i < numClass; ++i)
                     if (classesButton[i]->isClicked(window,event)) {
                         user.indexClass = i;
                         page = 16;
+                        stuPage = 0;
+                        numStuBox.text.setString("Number students: " + to_string(classesArr[i].numStudent));
                         break;
-                    }              
+                    }   
+                
+                inputClass.isClicked(event, window);
+                if (addClassButton.isClicked(window, event)) {
+                    classesArr = loadAddClass();
+					classesArr[numClass - 1].classID = inputClass.text.getString();
+					classesButton = loadAddClassButton();
+					inputClass.text.setString("");
+                }
+                if (rPageButton.isClicked(window, event)) {
+                    // If page is not the last page
+                    if (classPage < numClass / 14) classPage++;
+                }
+                if (lPageButton.isClicked(window, event)) {
+                    // If page is not the first page
+                    if (classPage > 0) classPage--;
+                }
             }
+            
+            // Draw
             viewingPage.draw(window);
             backButton.draw(window);
-            for (int i = 0; i < numClass; ++i) classesButton[i]->draw(window);
+            rPageButton.draw(window);
+            lPageButton.draw(window);
+            viewLine.draw(window);
+            inputClass.draw(window);
+            addClassButton.draw(window);
+            int i = classPage * 14;
+            for (i; i < (classPage + 1) * 14 && i < numClass; ++i)
+                classesButton[i]->draw(window);
             break;
         }
         case 12: // Schoolyears Page
@@ -187,11 +239,11 @@ void RunApp()
                     page = 10;
                     break;
                 }
-                if (rYearPageButton.isClicked(window, event)) {
+                if (rPageButton.isClicked(window, event)) {
                     // If page is not the last page
                     if (yearPage < numSchoolYear / 14) yearPage++;
                 }
-                if (lYearPageButton.isClicked(window, event)) {
+                if (lPageButton.isClicked(window, event)) {
 					// If page is not the first page
                     if (yearPage > 0) yearPage--;
 				}
@@ -211,19 +263,36 @@ void RunApp()
 							break;
 						}
 				}
+                // Check if numseme < 3 to display input seme 
+                if (user.indexSemester != -1 && schoolyearArr[user.indexSchoolyear].numSemester < 3) {
+                    inputStartDateSem.isClicked(event,window);
+                    inputEndDateSem.isClicked(event, window);
+                    // Add seme to year
+                    if (addSemeButton.isClicked(window, event)) {
+                        // Create new list of semester with size + 1
+                        schoolyearArr[user.indexSchoolyear].listSemester = loadAddSemester(schoolyearArr[user.indexSchoolyear].listSemester, schoolyearArr[user.indexSchoolyear].numSemester);
+                        // Add data to new semester
+                        schoolyearArr[user.indexSchoolyear].listSemester[schoolyearArr[user.indexSchoolyear].numSemester - 1].startDate = inputEndDateSem.text.getString();
+                        schoolyearArr[user.indexSchoolyear].listSemester[schoolyearArr[user.indexSchoolyear].numSemester - 1].endDate = inputEndDateSem.text.getString();
+						// Create new button for semester
+                        schoolyearButton[user.indexSchoolyear]->linkedButton = loadAddSemeButton(schoolyearArr[user.indexSchoolyear].listSemester, schoolyearButton[user.indexSchoolyear]->linkedButton, schoolyearArr[user.indexSchoolyear].numSemester);
+						inputStartDateSem.text.setString("");
+						inputEndDateSem.text.setString("");
+                    }
+                }
             }
 
             //Draw
             viewingPage.draw(window);
             backButton.draw(window);
-            rYearPageButton.draw(window);
-            lYearPageButton.draw(window);
+            rPageButton.draw(window);
+            lPageButton.draw(window);
             int i = yearPage * 14;
             for (i ; i < (yearPage + 1) * 14 && i < numSchoolYear; ++i)
                 schoolyearButton[i]->draw(window);
             inputYear.draw(window);
             addYearButton.draw(window);
-            yearLine.draw(window);
+            viewLine.draw(window);
             if (user.indexSchoolyear != -1) {
                 semesterBox.text.setString(schoolyearArr[user.indexSchoolyear].period);
                 semesterBox.draw(window);
@@ -231,6 +300,11 @@ void RunApp()
                 for (int i = 0; i < size; ++i)
                     schoolyearButton[user.indexSchoolyear]->linkedButton[i]->draw(window);
             }
+            if (user.indexSemester != -1 && schoolyearArr[user.indexSchoolyear].numSemester < 3) {
+				inputStartDateSem.draw(window);
+				inputEndDateSem.draw(window);
+				addSemeButton.draw(window);
+			}
             break;
         }
         case 13: // Course Page
@@ -272,29 +346,81 @@ void RunApp()
             profileText->drawStaff(window);
             break;
         }
-        case 16: // See list stu in class
+        case 16: // Student in class page
         {
             viewingPage.text.setString("Viewing students in class " + classesArr[user.indexClass].classID);
             int size = classesArr[user.indexClass].numStudent;
             while (window.pollEvent(event)) {
                 if (event.type == sf::Event::Closed) window.close();
-                if (backButton.isClicked(window,event)) {
+                if (backButton.isClicked(window, event)) {
                     page = 11;
                     break;
                 }
-                for (int i = 0; i < size; ++i) {
-                    if (classesButton[user.indexClass]->linkedButton[i]->isClicked(window,event)) {
+                int i = stuPage * 14;
+                for (i; i < (stuPage + 1) * 14 && i < size; ++i) {
+                    if (classesButton[user.indexClass]->linkedButton[i]->isClicked(window, event)) {
                         user.indexStudentInClass = i;
                         page = 17;
                         break;
                     }
                 }
-                
+                if (rPageButton.isClicked(window, event)) {
+                    // If page is not the last page
+                    if (stuPage < classesArr[user.indexClass].numStudent / 14) stuPage++;
+                }
+                if (lPageButton.isClicked(window, event)) {
+                    // If page is not the first page
+                    if (stuPage > 0) stuPage--;
+                }
+
+                // Add student control
+                inputStuID.isClicked(event, window);
+                inputSocialID.isClicked(event, window);
+                inputFirstName.isClicked(event, window);
+                inputLastName.isClicked(event, window);
+                inputDOB.isClicked(event, window);
+                genderCheckBox.isClicked(window, event);
+                if (addStuButton.isClicked(window, event)) {
+                    // Load data into variable
+                    classesArr[user.indexClass].listStudent = loadAddStudent();
+                    int z = classesArr[user.indexClass].numStudent;
+                    classesArr[user.indexClass].listStudent[z - 1].studentID = inputStuID.text.getString();
+                    classesArr[user.indexClass].listStudent[z - 1].socialID = inputSocialID.text.getString();
+                    classesArr[user.indexClass].listStudent[z - 1].firstName = inputFirstName.text.getString();
+                    classesArr[user.indexClass].listStudent[z - 1].lastName = inputLastName.text.getString();
+                    classesArr[user.indexClass].listStudent[z - 1].dob = inputDOB.text.getString();
+                    classesArr[user.indexClass].listStudent[z - 1].femaleGender = genderCheckBox.active;
+
+                    // Load data for UI
+                    classesButton[user.indexClass]->linkedButton = loadAddStuButton();
+                    // Clear input
+                    inputStuID.text.setString("");
+                    inputSocialID.text.setString("");
+                    inputFirstName.text.setString("");
+                    inputLastName.text.setString("");
+                    inputDOB.text.setString("");
+                    genderCheckBox.active = false;  
+                    numStuBox.text.setString("Number students: " + to_string(classesArr[user.indexClass].numStudent));
+                }
             }
             //Draw
             viewingPage.draw(window);
             backButton.draw(window);
-            for (int i = 0; i < size; ++i) 
+            rPageButton.draw(window);
+            lPageButton.draw(window);
+            viewLine.draw(window);
+            numStuBox.draw(window);
+            
+            inputStuID.draw(window);
+            inputSocialID.draw(window);
+            inputFirstName.draw(window);
+            inputLastName.draw(window);
+            inputDOB.draw(window);
+            genderCheckBox.draw(window);
+            addStuButton.draw(window);
+            
+            int i = stuPage * 14;
+            for (i; i < (stuPage + 1) * 14 && i < size; ++i)
                 classesButton[user.indexClass]->linkedButton[i]->draw(window);
             break;
         }
@@ -335,7 +461,7 @@ void RunApp()
                     page = 31;
                     break;
                 }
-                if (passwordChange.isClicked(window, event));
+                passwordChange.isClicked(window, event);
             }
             // Draw
             menu.draw(window);
@@ -420,9 +546,9 @@ void loadSchoolyears() {
         if (schoolyearArr[i].numSemester != 0) {
             schoolyearButton[i]->linkedButton = new LinkedButton * [schoolyearArr[i].numSemester];
             schoolyearButton[i]->linkedButton = new LinkedButton * [schoolyearArr[i].numSemester];
-            float x2 = 875.0f, y2 = 370.0f;
+            float x2 = 725.0f, y2 = 370.0f;
             for (int j = 0; j < schoolyearArr[i].numSemester; j++) {
-                schoolyearButton[i]->linkedButton[j] = new LinkedButton(x2, y2, "image/Button400x45.png", "Semester " + to_string(j + 1));
+                schoolyearButton[i]->linkedButton[j] = new LinkedButton(x2, y2, "image/Button200x45.png", "Semester " + to_string(j + 1));
                 y2 += 65.0f;
 
                 // Create course buttons in semester
@@ -440,21 +566,36 @@ void loadSchoolyears() {
         }
     }
     
-
     // Create button for all classes have existed
-    x = 200.0f; y = 190.0f;
-    for (int i = 0; i < numClass; i++) {
+    x = 200.0f; y = 180.0f;
+    for (int i = 0; i < numClass; ++i) {
+        if (i % 14 == 0 && i != 0) { // Return origin when need new page
+            x = 200.0f;
+            y = 180.0f;
+        }
+        else if (i % 7 == 0 && i != 0) { // x,y coordinate of button for each page
+            x += 225.0f;
+            y = 180.0f;
+        }
         classesButton[i] = new LinkedButton(x, y, "image/Button200x45.png", classesArr[i].classID);
         y += 65.0f;
-    }
+	}
 
     // Create button for all students of all classes
     for (int i = 0; i < numClass; i++) {
-        x = 200.0f; y = 190.0f;
+        x = 200.0f; y = 180.0f;
         int numStuClass = classesArr[i].numStudent;
         if (numStuClass != 0) {
             classesButton[i]->linkedButton = new LinkedButton * [numStuClass];
             for (int j = 0; j < numStuClass; j++) {
+                if (j % 14 == 0 && j != 0) { // Return origin when need new page
+                    x = 200.0f;
+                    y = 180.0f;
+                }
+                else if (j % 7 == 0 && j != 0) { // x,y coordinate of button for each page
+                    x += 225.0f;
+                    y = 180.0f;
+                }
                 classesButton[i]->linkedButton[j] = new LinkedButton(x, y, "image/Button200x45.png", classesArr[i].listStudent[j].studentID);
                 y += 65.0f;
             }
@@ -533,4 +674,87 @@ LinkedButton** loadAddYearButton(SchoolYear* schoolYearArr, LinkedButton** old, 
     // Delete old year ptr buttons
     delete[] old;
     return schoolyearButton;
+}
+Semester* loadAddSemester(Semester* old, int& numSemester) {
+	numSemester++;
+	Semester* semesterArr = new Semester[numSemester];
+	for (int i = 0; i < numSemester - 1; i++) {
+		semesterArr[i] = old[i];
+	}
+    semesterArr[numSemester - 1].numSemesterInSchoolYear = numSemester;
+	delete[] old; // Delete old array years
+	return semesterArr;
+}
+LinkedButton** loadAddSemeButton(Semester* semeArr, LinkedButton** old, int& numSeme) {
+    LinkedButton** semeArrButton = new LinkedButton * [numSeme];
+    
+    // Calculate position of seme
+    float x2 = 725.0f;
+    float y2 = 370.0f;
+    float x = x2;
+    float y = y2 + (numSeme - 1) * 65.0f;
+
+    // Copy the pointers of UI array
+    for (int i = 0; i < numSeme - 1; ++i)
+        semeArrButton[i] = old[i];
+    semeArrButton[numSeme - 1] = new LinkedButton(x, y, "image/Button200x45.png", "Semester " + to_string(semeArr[numSeme - 1].numSemesterInSchoolYear));
+
+    // Delete old year ptr buttons
+    delete[] old;
+    return semeArrButton;
+}
+Class* loadAddClass() {
+	numClass++;
+	Class* newClassArr = new Class[numClass];
+    for (int i = 0; i < numClass - 1; i++) {
+        newClassArr[i] = classesArr[i];
+	}
+	delete[] classesArr; // Delete old array class
+	return newClassArr;
+}   
+LinkedButton** loadAddClassButton() {
+    LinkedButton** newClassButton = new LinkedButton * [numClass];
+    // Calculate the column and page that the button is on
+    int column = (numClass - 1) / 7;
+    int page = column / 2;
+    // Calculate the row that the button is on within its column
+    int row = (numClass - 1) % 7;
+    // Calculate the x and y position of the button
+    float x = 200.0f + 225.0f * (column % 2);
+    float y = 180.0f + 65.0f * row;
+
+    for (int i = 0; i < numClass - 1; ++i) {
+        newClassButton[i] = classesButton[i];
+    }
+    newClassButton[numClass - 1] = new LinkedButton(x, y, "image/Button200x45.png", classesArr[numClass - 1].classID);
+    delete[] classesButton;
+	return newClassButton;
+}
+Student* loadAddStudent() {
+	int n = classesArr[user.indexClass].numStudent++;
+    Student* newStudentArr = new Student[classesArr[user.indexClass].numStudent];
+    for (int i = 0; i < n - 1; ++i) {
+        newStudentArr[i] = classesArr[user.indexClass].listStudent[i];
+    }
+    delete[] classesArr[user.indexClass].listStudent;
+    return newStudentArr;   
+}
+LinkedButton** loadAddStuButton() {
+    LinkedButton** newClassButton = new LinkedButton * [classesArr[user.indexClass].numStudent];
+	
+    // Calculate the column and page that the button is on
+	int column = (classesArr[user.indexClass].numStudent - 1) / 7;
+	int page = column / 2;
+	// Calculate the row that the button is on within its column
+	int row = (classesArr[user.indexClass].numStudent - 1) % 7;
+	// Calculate the x and y position of the button
+	float x = 200.0f + 225.0f * (column % 2);
+	float y = 180.0f + 65.0f * row;
+
+    for (int i = 0; i < classesArr[user.indexClass].numStudent - 1; ++i) {
+		newClassButton[i] = classesButton[user.indexClass]->linkedButton[i];
+	}
+	newClassButton[classesArr[user.indexClass].numStudent - 1] = new LinkedButton(x, y, "image/Button200x45.png", classesArr[user.indexClass].listStudent[classesArr[user.indexClass].numStudent - 1].studentID);
+    delete[] classesButton[user.indexClass]->linkedButton;
+	return newClassButton;
 }

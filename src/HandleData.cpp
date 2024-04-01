@@ -79,37 +79,6 @@ Staff* readStaffCSV(string filename, int& numStaff) {
     file.close();
     return newStaff;
 }
-//Course* readDirectory(string path, int& numCourse) {
-//    string line;
-//    ifstream file(path + "/course.txt");
-//    if (!file) cout << "Can't open file\n";
-//
-//    getline(file, line);
-//    numCourse = stoi(line);
-//
-//    Course* course = new Course[numCourse];
-//    for (int i = 0; i < numCourse; i++) {
-//        getline(file, line);
-//        course[i].ID = line;
-//    }
-//    file.close();
-//
-//    for (int i = 0; i < numCourse; ++i) {
-//        ifstream file(path + "/" + course[i].ID + ".csv");
-//        if (!file) cout << "Can't open file\n";
-//        
-//        file.seekg(0, ios::beg);
-//        getline(file, line);
-//        stringstream s(line);
-//        getline(s, line, ',');
-//        getline(s, line, ','); course[i].courseName = line;
-//        getline(s, line, ','); course[i].className = line;
-//        getline(s, line, ','); course[i].teacher = line;
-//        getline(s, line, ','); course[i].numCredits = stoi(line);
-//        getline(s, line, ','); course[i].maxStudents = stoi(line);
-//    }
-//    return course;
-//}
 SchoolYear* readSchoolYear(string path, int& numSchoolYear) {
     string line;
 	ifstream file(path + "/schoolyear.txt");
@@ -121,7 +90,7 @@ SchoolYear* readSchoolYear(string path, int& numSchoolYear) {
     SchoolYear* schoolYearArr = new SchoolYear[numSchoolYear];
     for (int i = 0; i < numSchoolYear; i++) {
         std::getline(file, line, ','); schoolYearArr[i].period = line;
-        std::getline(file, line); schoolYearArr[i].numSemester = std::stoi(line);
+        std::getline(file, line); schoolYearArr[i].numSemester = stoi(line);
         schoolYearArr[i].listSemester = new Semester[schoolYearArr[i].numSemester];
         for (int j = 0; j < schoolYearArr[i].numSemester; ++j) {
             schoolYearArr[i].listSemester[j].numSemesterInSchoolYear = j + 1;
@@ -222,17 +191,19 @@ Class* readClass(string path, int& numClass) {
         file.open(path + "/" + classArr[i].classID + ".txt");
         if (!file) {
 			cout << "Can't open class id file\n";
-			return nullptr;
+			//return nullptr;
 		}
-        getline(file, line);
-		classArr[i].numStudent = stoi(line);
-		classArr[i].listStudent = new Student[classArr[i].numStudent];
-        for (int j = 0; j < classArr[i].numStudent; j++) {
-			getline(file, line);
-			classArr[i].listStudent[j].studentID = line;
-		}
-        readStudentTXT("database/student", classArr[i]);
-		file.close();
+        else {
+            getline(file, line);
+            classArr[i].numStudent = stoi(line);
+            classArr[i].listStudent = new Student[classArr[i].numStudent];
+            for (int j = 0; j < classArr[i].numStudent; j++) {
+                getline(file, line);
+                classArr[i].listStudent[j].studentID = line;
+            }
+            readStudentTXT("database/student", classArr[i]);
+            file.close();
+        }
 	}
     return classArr;
 }
@@ -241,18 +212,19 @@ void readStudentTXT(string path, Class& classStu) {
         ifstream file(path + "/" + classStu.listStudent[i].studentID + ".txt");
         if (!file) {
             cout << "Can't open student id file\n";
-            cout << classStu.listStudent[i].studentID << endl;
-            return;
+            //cout << classStu.listStudent[i].studentID << endl;
         }
-        string line;
-        getline(file, line);
-        getline(file, line); classStu.listStudent[i].firstName = line;
-        getline(file, line); classStu.listStudent[i].lastName = line;
-        getline(file, line); classStu.listStudent[i].femaleGender = (line == "0") ? false : true;
-        getline(file, line); classStu.listStudent[i].dob = line;
-        getline(file, line); classStu.listStudent[i].socialID = line;
-        getline(file, line); classStu.listStudent[i].password = line;
-        file.close();
+        else {
+            string line;
+            getline(file, line);
+            getline(file, line); classStu.listStudent[i].firstName = line;
+            getline(file, line); classStu.listStudent[i].lastName = line;
+            getline(file, line); classStu.listStudent[i].femaleGender = (line == "0") ? false : true;
+            getline(file, line); classStu.listStudent[i].dob = line;
+            getline(file, line); classStu.listStudent[i].socialID = line;
+            getline(file, line); classStu.listStudent[i].password = line;
+            file.close();
+        }
     }
     return;
 }

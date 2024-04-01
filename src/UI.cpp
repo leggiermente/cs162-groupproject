@@ -226,6 +226,24 @@ TextBox::TextBox(float x, float y, const std::string& imagePath, std::string sTe
 	text.setFillColor(sf::Color::White);
 	text.setString(sText);
 }
+TextBox::TextBox(float x, float y, const std::string& imagePath, std::string sText, std::string sColor) : Button(x, y, imagePath) {
+    if (!font.loadFromFile("font/Roboto-Regular.ttf")) {
+        cout << "Can't load font\n";
+    }
+    if (!texture.loadFromFile(imagePath)) {
+        cout << "Can't load image\n";
+    }
+    float height = texture.getSize().y;
+    texture.setSmooth(1);
+    sprite.setTexture(texture);
+    sprite.setPosition(x - sprite.getGlobalBounds().width / 2, y - sprite.getGlobalBounds().height / 2);
+
+    text.setFont(font);
+    text.setCharacterSize(height * 0.5f);
+    text.setPosition(sprite.getPosition().x + 15, sprite.getPosition().y + height * 0.5f * 0.35);
+    text.setFillColor(sf::Color::Black);
+    text.setString(sText);
+}
 void TextBox::draw(sf::RenderWindow& window) {
     window.draw(sprite);
 	window.draw(text);
@@ -353,8 +371,8 @@ void ProfileText::drawStaff(sf::RenderWindow& window) {
 }
 
 //--------------------------------------------------------------
-// InputYear
-InputYear::InputYear(float x, float y, const std::string& imagePath, std::string sHeadname) : InputBox(x, y, imagePath) {
+// InputWithHead
+InputWithHead::InputWithHead(float x, float y, const std::string& imagePath, std::string sHeadname) : InputBox(x, y, imagePath) {
     if (!font.loadFromFile("font/Roboto-Regular.ttf")) {
         // handle error
     }
@@ -377,7 +395,7 @@ InputYear::InputYear(float x, float y, const std::string& imagePath, std::string
     tHeadname.setFillColor(sf::Color::Black);
     tHeadname.setString(sHeadname);
 }
-void InputYear::draw(sf::RenderWindow& window) {
+void InputWithHead::draw(sf::RenderWindow& window) {
     window.draw(tHeadname);
     window.draw(sprite);
     window.draw(text);
@@ -394,4 +412,55 @@ void Line::draw(sf::RenderWindow& window) {
 	window.draw(stick);
 }
 
+//--------------------------------------------------------------
+// TextChangeBox
+TextChangeBox::TextChangeBox(float x, float y, const std::string& imagePath, std::string sHead,std::string sText, std::string sTextChange) : TextBox(x,y,imagePath,sText) {
+    if (!font.loadFromFile("font/Roboto-Regular.ttf")) {
+		cout << "Can't load font\n";
+	}
+    if (!texture.loadFromFile(imagePath)) {
+		cout << "Can't load image\n";
+	}
+	float height = texture.getSize().y;
+	texture.setSmooth(1);
+	sprite.setTexture(texture);
+	sprite.setPosition(x - sprite.getGlobalBounds().width / 2, y - sprite.getGlobalBounds().height / 2);
 
+	textChange.setFont(font);
+	textChange.setCharacterSize(height * 0.5f);
+	textChange.setPosition(x - sprite.getGlobalBounds().width / 2 + 10.0f, y - height * 0.5f * 0.65);
+	textChange.setFillColor(sf::Color::Black);
+	textChange.setString(sTextChange);
+
+    text.setFont(font);
+    text.setCharacterSize(height * 0.5f);
+    text.setPosition(x - sprite.getGlobalBounds().width / 2 + 10.0f, y - height * 0.5f * 0.65);
+    text.setFillColor(sf::Color::Black);
+    text.setString(sText);
+
+    tHead.setFont(font);
+    tHead.setCharacterSize(20.0f);
+    tHead.setPosition(x - sprite.getGlobalBounds().width / 2, y - sprite.getGlobalBounds().height / 2 - 25.0f);
+    tHead.setFillColor(sf::Color::Black);
+    tHead.setString(sHead);
+    
+}
+bool TextChangeBox::isClicked(sf::RenderWindow& window, sf::Event event) {
+    if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left) {
+        sf::Vector2i mousePos = sf::Mouse::getPosition(window);
+        if (sprite.getGlobalBounds().contains(window.mapPixelToCoords(mousePos))) {
+            if (active) active = false;
+            else active = true;
+            return true;
+        }
+    }
+    return false;
+}
+void TextChangeBox::draw(sf::RenderWindow& window) {
+    window.draw(sprite);
+    window.draw(tHead);
+    if (active) 
+		window.draw(text);
+    else 
+        window.draw(textChange);	
+}
