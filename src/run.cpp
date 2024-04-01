@@ -1,4 +1,4 @@
-﻿#include <iostream>
+#include <iostream>
 
 #include "run.h"
 #include "HandleData.h"
@@ -230,9 +230,12 @@ void RunApp()
                 inputYear.isClicked(event, window); // Input school year
                 // Add school year
                 if (addYearButton.isClicked(window, event)) {
-                    schoolyearArr = loadAddSchoolyear(schoolyearArr, numSchoolYear);
-                    schoolyearArr[numSchoolYear - 1].period = inputYear.text.getString();
-                    schoolyearButton = loadAddYearButton(schoolyearArr, schoolyearButton, numSchoolYear);
+                    string txt = inputYear.text.getString(); //checking input
+                    if (validateSchoolYear(txt, schoolyearArr, numSchoolYear)) {
+                        schoolyearArr = loadAddSchoolyear(schoolyearArr, numSchoolYear);
+                        schoolyearArr[numSchoolYear - 1].period = txt;
+                        schoolyearButton = loadAddYearButton(schoolyearArr, schoolyearButton, numSchoolYear);
+                    }
                     inputYear.text.setString("");
                 }
                 if (backButton.isClicked(window,event)) {
@@ -494,6 +497,7 @@ void RunApp()
         }
         window.display();
     }
+    saveSchoolYear("database/schoolyear", schoolyearArr, numSchoolYear);
     // Console check
     std::cout << "Username: " << user.id << std::endl;
     std::cout << "Password: " << user.password << std::endl;
@@ -520,6 +524,33 @@ bool validateUser() {
         }
     }
     return 0;
+}
+bool validateSchoolYear(string& txt, SchoolYear* schoolyearArr, int numSchoolYear) {
+    string tmp = "";
+    for (int i = 0;i < txt.size();i++) {
+        if (txt[i] != ' ') {
+            tmp += txt[i];
+        }
+    } //removes space in string
+    swap(txt, tmp);
+    if (txt.size() != 9) return false; //check the format of the input must be "xxxx-xxxx"
+    for (int i = 0;i < txt.size();i++) {
+        if (i != 4) {
+            if (txt[i] < '0' || txt[i]>'9') return false;
+        }
+        else if (txt[i] != '-') return false;
+    }
+    for (int i = 0;i < numSchoolYear;i++) {
+        if (txt == schoolyearArr[i].period) {
+            return false;
+        }
+    }
+    int s1 = 0, s2 = 0; //check two years of the period
+    for (int i = 0;i < 4;i++) {
+        s1 = s1 * 10 + txt[i] - '0';
+        s2 = s2 * 10 + txt[5 + i] - '0';
+    }
+    return (s1==s2-1); //return if the period is exactly 1 year.
 }
 bool isNumber(const std::string& str) {
     for (char const& c : str) {
@@ -675,6 +706,7 @@ LinkedButton** loadAddYearButton(SchoolYear* schoolYearArr, LinkedButton** old, 
     delete[] old;
     return schoolyearButton;
 }
+<<<<<<< HEAD
 Semester* loadAddSemester(Semester* old, int& numSemester) {
 	numSemester++;
 	Semester* semesterArr = new Semester[numSemester];
@@ -758,3 +790,5 @@ LinkedButton** loadAddStuButton() {
     delete[] classesButton[user.indexClass]->linkedButton;
 	return newClassButton;
 }
+=======
+>>>>>>> 4146f804bbdcf84f2c0f67341fc2882af481310a

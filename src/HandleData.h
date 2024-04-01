@@ -13,3 +13,9 @@ void readCourseInSemester(string path, SchoolYear* schoolYearArr, int numSchoolY
 void readStudentTXT(string path,Class& classStu);
 Class* readClass(string path, int& numClass);
 void printTest(Class* classArr, int numClass, SchoolYear* schoolYearArr, int numSchoolYear);
+
+void saveSchoolYear(string path, SchoolYear* schoolYearArr, int numSchoolYear);
+void saveSemesterInSchoolYear(string path, Semester semester);
+void saveCourseInSemester(string path, SchoolYear* schoolYearArr, int numSchoolYear, int numCourse);
+void saveClass(string path, Class* classesArr, int numClass);
+void saveStudentTXT(string path,Class classStu);

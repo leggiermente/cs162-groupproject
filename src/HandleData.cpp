@@ -265,3 +265,166 @@ void printTest(Class* classArr, int numClass, SchoolYear* schoolYearArr, int num
     //}
     return;
 }
+
+void saveSchoolYear(string path, SchoolYear* schoolYearArr, int numSchoolYear)
+{
+    ofstream file(path +"/schoolyear.txt");
+    if (!file){
+        cout << "Can't open school year file\n";
+        return;
+    }
+    else{
+        file << numSchoolYear <<"\n";
+        for (int i=0; i < numSchoolYear; i++)
+        {
+            file << schoolYearArr[i].period <<",";
+            file << schoolYearArr[i].numSemester <<"\n";
+        }
+        file.close();
+    }
+    
+ for (int i = 0; i < numSchoolYear; ++i)
+ {
+     for (int j = 0; j < schoolYearArr[i].numSemester; ++j)
+     {
+         string path = "database/semester/" + schoolYearArr[i].period + "_" + to_string(j + 1) + ".txt";
+         replace(path.begin(), path.end(), '-', '_');
+         saveSemesterInSchoolYear(path, schoolYearArr[i].listSemester[j]);
+     }
+ }
+}
+
+void saveSemesterInSchoolYear(string path, Semester semester)
+{
+    ofstream file(path);
+    if (!file)
+    {
+        cout <<"Can not open semester file\n";
+        return;
+    }
+    file << semester.startDate << "," << semester.endDate <<"\n";
+    file << semester.numCourses << "\n";
+    for (int i=0; i < semester.numCourses; i++)
+        file << semester.coursesListInSemester[i].ID <<"\n";
+    file.close();
+    
+}
+
+
+void saveCourseInSemester(string path, SchoolYear* schoolYearArr, int numSchoolYear, int numCourse)
+{
+    // save data on each file: CS162_23APCS1, MTH252_22CLC02,...
+    for (int i=0; i < numSchoolYear; i++)
+    {
+        for (int j=0; j < schoolYearArr[i].numSemester; j++)
+        {
+            for (int k=0; k < schoolYearArr[i].listSemester[j].numCourses; k++)
+            {
+                ofstream file(path + "/" + schoolYearArr[i].listSemester[j].coursesListInSemester[k].ID+".txt");
+                if (!file)
+                {
+                    cout <<"Can not open course file\n";
+                    
+                }
+                else
+                {
+                    file << schoolYearArr[i].listSemester[j].coursesListInSemester[k].ID <<"\n";
+                    file << schoolYearArr[i].listSemester[j].coursesListInSemester[k].courseName <<"\n";
+                    file << schoolYearArr[i].listSemester[j].coursesListInSemester[k].teacher <<"\n";
+                    file << schoolYearArr[i].listSemester[j].coursesListInSemester[k].numCredits <<"\n";
+                    file << schoolYearArr[i].listSemester[j].coursesListInSemester[k].session <<"\n";
+                    file << schoolYearArr[i].listSemester[j].coursesListInSemester[k].dayOfWeek <<"\n";
+                    file << schoolYearArr[i].listSemester[j].coursesListInSemester[k].maxStudents <<"\n";
+                    file << schoolYearArr[i].listSemester[j].coursesListInSemester[k].currStudents <<"\n";
+                    // save student ID in course
+                    for (int v=0; v<schoolYearArr[i].listSemester[j].coursesListInSemester[k].currStudents; v++)
+                    {
+                        file << schoolYearArr[i].listSemester[j].coursesListInSemester[k].listStudentInCourse[v]->studentID <<"\n";
+                    }
+                    file.close();
+                }
+            }
+        }
+    }
+    // save numCourse and Courses ID in course.txt
+    ofstream file(path + "/course.txt");
+    if (!file)
+    {
+        cout <<" Can not open course.txt\n";
+    }
+    else
+    {
+        file << numCourse <<"\n";
+        for (int i=0; i < numSchoolYear; i++)
+        {
+            for (int j=0; j<schoolYearArr[i].numSemester; j++)
+            {
+                for(int k=0; k<schoolYearArr[i].listSemester[j].numCourses; k++)
+                {
+                    file << schoolYearArr[i].listSemester[j].coursesListInSemester[k].ID <<"\n";
+                }
+            }
+        }
+        file.close();
+    }
+}
+void saveClass(string path, Class* classesArr, int numClass)
+{
+    ofstream file(path +"/class.txt");
+    if (!file)
+    {
+        cout <<"Can't open class file\n";
+    }
+    else{
+        file << numClass <<"\n";
+        for (int i=0; i<numClass; i++)
+            file << classesArr[i].classID <<"\n";
+        file.close();
+    }
+    
+    for (int i=0; i< numClass; i++)
+    {
+        file.open(path + "/" + classesArr[i].classID +".txt");
+        if (!file)
+        {
+            cout <<"Can not open file: " << classesArr[i].classID <<".txt\n";
+        }
+        else
+        {
+            file << classesArr[i].numStudent <<"\n";
+            for (int j=0; j<classesArr[i].numStudent; j++)
+            {
+                file << classesArr[i].listStudent[j].studentID <<"\n";
+            }
+            file.close();
+            saveStudentTXT("database/student", classesArr[i]);
+        }
+    }
+}
+
+void saveStudentTXT(string path,Class classStu)
+{
+    for(int i=0; i< classStu.numStudent; i++)
+    {
+        ofstream file(path + "/" + classStu.listStudent[i].studentID);
+        if (!file)
+        {
+            cout <<" Can not open file: " << classStu.listStudent[i].studentID <<".txt\n";
+        }
+        else
+        {
+            file << classStu.listStudent[i].studentID <<"\n";
+            file << classStu.listStudent[i].firstName <<"\n";
+            file << classStu.listStudent[i].lastName <<"\n";
+            if (classStu.listStudent[i].femaleGender)
+                file << "1\n";
+            else file <<"0\n";
+            
+            file << classStu.listStudent[i].dob <<"\n";
+            file << classStu.listStudent[i].socialID <<"\n";
+            file << classStu.listStudent[i].password <<"\n";
+        }
+    }
+}
+
+
