@@ -272,14 +272,18 @@ void RunApp()
                     inputEndDateSem.isClicked(event, window);
                     // Add seme to year
                     if (addSemeButton.isClicked(window, event)) {
-                        // Create new list of semester with size + 1
-                        schoolyearArr[user.indexSchoolyear].listSemester = loadAddSemester(schoolyearArr[user.indexSchoolyear].listSemester, schoolyearArr[user.indexSchoolyear].numSemester);
-                        // Add data to new semester
-                        schoolyearArr[user.indexSchoolyear].listSemester[schoolyearArr[user.indexSchoolyear].numSemester - 1].startDate = inputEndDateSem.text.getString();
-                        schoolyearArr[user.indexSchoolyear].listSemester[schoolyearArr[user.indexSchoolyear].numSemester - 1].endDate = inputEndDateSem.text.getString();
-						// Create new button for semester
-                        schoolyearButton[user.indexSchoolyear]->linkedButton = loadAddSemeButton(schoolyearArr[user.indexSchoolyear].listSemester, schoolyearButton[user.indexSchoolyear]->linkedButton, schoolyearArr[user.indexSchoolyear].numSemester);
-						inputStartDateSem.text.setString("");
+                        string startDate = inputStartDateSem.text.getString();
+                        string endDate = inputEndDateSem.text.getString();
+                        if (validateSemester(startDate, endDate, schoolyearArr[user.indexSchoolyear].period)) {
+                            // Create new list of semester with size + 1
+                            schoolyearArr[user.indexSchoolyear].listSemester = loadAddSemester(schoolyearArr[user.indexSchoolyear].listSemester, schoolyearArr[user.indexSchoolyear].numSemester);
+                            // Add data to new semester
+                            schoolyearArr[user.indexSchoolyear].listSemester[schoolyearArr[user.indexSchoolyear].numSemester - 1].startDate = startDate;
+                            schoolyearArr[user.indexSchoolyear].listSemester[schoolyearArr[user.indexSchoolyear].numSemester - 1].endDate = endDate;
+                            // Create new button for semester
+                            schoolyearButton[user.indexSchoolyear]->linkedButton = loadAddSemeButton(schoolyearArr[user.indexSchoolyear].listSemester, schoolyearButton[user.indexSchoolyear]->linkedButton, schoolyearArr[user.indexSchoolyear].numSemester);
+                        }
+                        inputStartDateSem.text.setString("");
 						inputEndDateSem.text.setString("");
                     }
                 }
@@ -552,6 +556,61 @@ bool validateSchoolYear(string& txt, SchoolYear* schoolyearArr, int numSchoolYea
     }
     return (s1==s2-1); //return if the period is exactly 1 year.
 }
+bool validateSemester(string &startDate, string &endDate, string period) {
+    string tmp = "";
+    for (int i = 0;i < startDate.size();i++) {
+        if (startDate[i] != ' ') {
+            tmp += startDate[i];
+        }
+    }
+    startDate = tmp;
+    tmp = "";
+    for (int i = 0;i < endDate.size();i++) {
+        if (endDate[i] != ' ') {
+            tmp += endDate[i];
+        }
+    }
+    endDate = tmp;
+    //removes space in string
+    if (startDate.size() != 10 || endDate.size() != 10) return false; 
+    for (int i = 0;i < 10;i++) {
+        if (i == 2 || i == 5) {
+            if (startDate[i] != '-' || endDate[i] != '-') return false;
+        }
+        else {
+            if (startDate[i] < '0' || startDate[i]>'9' || endDate[i] < '0' || endDate[i]>'9') return false;
+        }
+    }   //check if start date and end date format to be dd-mm-yyyy, validate length
+    if (!validateTimeFormat(startDate,endDate,period)) return false; //validate format of time, the end date must be latter than the start date
+    return true;
+}
+bool validateTimeFormat(string startDate, string endDate, string period) {
+    int startDay = 0, startMonth = 0, startYear = 0;
+    int endDay = 0, endMonth = 0, endYear = 0;
+    int startSchoolYear = 0, endSchoolYear = 0;
+    for (int i = 0;i < 2;i++) {
+        startDay = startDay * 10 + (startDate[i] - '0');
+        endDay = endDay * 10 + (endDate[i] - '0');
+        startMonth = startMonth * 10 + (startDate[i + 3] - '0');
+        endMonth = endMonth * 10 + (endDate[i + 3] - '0');
+    }
+    for (int i = 6;i < 10;i++) {
+        startYear = startYear * 10 + (startDate[i] - '0');
+        endYear = endYear * 10 + (endDate[i] - '0');
+        startSchoolYear = startSchoolYear * 10 + (period[i - 6] - '0');
+        endSchoolYear = endSchoolYear * 10 + (period[i - 1] - '0');
+    }
+    if (startYear > endYear || (startYear != startSchoolYear && startYear != endSchoolYear) || (endYear != startSchoolYear && endYear != endSchoolYear))
+        return false; //check valid format of year
+    if ((startMonth > endMonth && startYear == endYear) || startMonth > 12 || startMonth <= 0 || endMonth > 12 || endMonth <= 0)
+        return false;
+    int maxDayOfTheMonth[12] = {31,28,31,30,31,30,31,31,30,31,30,31 };
+    if ((startDay>maxDayOfTheMonth[startMonth-1]+((startMonth==2 && (startYear%400==0 || (startYear%4==0 && startYear%100!=0)))? 1: 0)) || 
+        (endDay > maxDayOfTheMonth[endMonth - 1] + ((endMonth == 2 && (endYear % 400 == 0 || (endYear % 4 == 0 && endYear % 100 != 0))) ? 1 : 0))
+            || (startDay>endDay && startMonth==endMonth && startYear==endYear))
+            return false;
+    return true;
+}
 bool isNumber(const std::string& str) {
     for (char const& c : str) {
         if (std::isdigit(c) == 0) return false;
@@ -706,7 +765,6 @@ LinkedButton** loadAddYearButton(SchoolYear* schoolYearArr, LinkedButton** old, 
     delete[] old;
     return schoolyearButton;
 }
-<<<<<<< HEAD
 Semester* loadAddSemester(Semester* old, int& numSemester) {
 	numSemester++;
 	Semester* semesterArr = new Semester[numSemester];
@@ -790,5 +848,3 @@ LinkedButton** loadAddStuButton() {
     delete[] classesButton[user.indexClass]->linkedButton;
 	return newClassButton;
 }
-=======
->>>>>>> 4146f804bbdcf84f2c0f67341fc2882af481310a

@@ -23,6 +23,8 @@ struct CurrentUser {
 void loadSchoolyears();
 bool validateUser();
 bool validateSchoolYear(string &txt, SchoolYear* schoolyearArr, int numSchoolYear);
+bool validateSemester(string &startDate, string &endDate, string period);
+bool validateTimeFormat(string startDate, string endDate, string period);
 bool isNumber(const std::string& str);
 void clearInput();
 void RunApp();
