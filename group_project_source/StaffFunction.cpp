@@ -129,10 +129,17 @@ void addStudentintoClass(Class &curClass){
     }
     outputClass("../database/class/"+curClass.classID+".txt",curClass);
 }
-void importSemesterandCourse(schoolYear &schyrs,Semester &sems){ //not done delete pointer yet
+void importSemesterandCourse(schoolYear &schyrs,Semester &sems){
     ifstream inp;
     inp.open("../database/semester/"+schyrs.period+"-"+to_string(sems.numSemesterInSchoolYear)+".txt");
-    inp >> sems.numSemesterInSchoolYear;
+    for (int i=0;i<sems.numCourses;i++){ //delete pointer section
+        for (int j=0;j<sems.coursesListInSemester[i].numStudents;j++){
+            delete []sems.coursesListInSemester[i].listStudentInCourse[j]->scoreOfStudent;
+            delete []sems.coursesListInSemester[i].listStudentInCourse;
+        }
+    }
+    delete []sems.coursesListInSemester;
+    inp >> sems.numSemesterInSchoolYear; //import semester data
     inp >> sems.startDate >> sems.startMonth >> sems.startYear;
     inp >> sems.endDate >> sems.endMonth >> sems.endYear;
     inp >> sems.numCourses;
