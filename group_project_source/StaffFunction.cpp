@@ -324,7 +324,7 @@ void outputCourseScoreBoard(schoolYear schyrs, Semester sems, Course curCourse){
     for (int i=0;i<curCourse.numStudents;i++){ //open student's file
         Student* curStu=curCourse.listStudentInCourse[i];
         string ID=curStu->studentID,str="";
-        inp.open("../database/scorestudent/"+ID+".txt");
+        inp.open("../database/scoreboard/"+ID+".txt");
         do{
             string yearCourse="",semCourse="",nameCourse="",str="";
             double total=0,fin=0,mid=0,other=0;
