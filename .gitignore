@@ -97,3 +97,16 @@ main.dSYM/Contents/Info.plist
 .vscode/.easycpp
 Makefile
 CS162 Group Project 1.code-workspace
+src/bin/main.dSYM/Contents/Info.plist
+src/bin/main.dSYM/Contents/Resources/Relocations/aarch64/main.yml
+src/lib/cmake/SFML/SFMLConfigVersion.cmake
+src/lib/cmake/SFML/SFMLSharedTargets-release.cmake
+src/lib/cmake/SFML/SFMLConfigDependencies.cmake
+src/lib/cmake/SFML/SFMLConfig.cmake
+src/lib/cmake/SFML/SFMLSharedTargets.cmake
+src/lib/pkgconfig/sfml-window.pc
+src/lib/pkgconfig/sfml-system.pc
+src/lib/pkgconfig/sfml-network.pc
+src/lib/pkgconfig/sfml-graphics.pc
+src/lib/pkgconfig/sfml-audio.pc
+src/lib/pkgconfig/sfml-all.pc

@@ -464,3 +464,12 @@ void TextChangeBox::draw(sf::RenderWindow& window) {
     else 
         window.draw(textChange);	
 }
+void BareboneText::draw(sf::RenderWindow& window) {
+    sf::Text myText;
+    myText.setFont(scoreboardFont); // Use the member variable font
+    myText.setPosition(xCordinate, yCordinate);
+    myText.setString(textContent);
+    myText.setFillColor(sf::Color::Black);
+    myText.setCharacterSize(20);
+    window.draw(myText); // Draw the text to the window
+}

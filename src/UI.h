@@ -96,3 +96,21 @@ struct TextChangeBox : TextBox {
 	bool isClicked(sf::RenderWindow& window, sf::Event event);
     void draw(sf::RenderWindow& window);
 };
+class BareboneText
+{
+public:
+    int xCordinate, yCordinate;
+    std::string textContent;
+    sf::Font scoreboardFont;
+    BareboneText(int x, int y, std::string text): xCordinate(x), yCordinate(y), textContent(text)
+    {
+        if (!scoreboardFont.loadFromFile("font/Roboto_Mono/RobotoMono-VariableFont_wght.ttf")) {
+            std::cout << "Cannot load font!" << std::endl;
+        }
+        sf::Text myText;
+        myText.setFont(scoreboardFont);
+        myText.setPosition(xCordinate, yCordinate);
+        myText.setString(textContent);
+    }
+    void draw(sf::RenderWindow& window);
+};

@@ -1,5 +1,7 @@
 #include <iostream>
 
+#include <SFML/Graphics.hpp>
+
 #include "run.h"
 #include "HandleData.h"
 #include "UI.h"
@@ -20,6 +22,8 @@ Button menu(xMid, yMid, "image/MenuBackground.png");
 Button seeProfile(xMid - 190.0f, yMid, "image/SeeProfile.png");
 Button passwordChange(xMid, yMid + 80.0f, "image/Password.png");
 Button logOutButton(xMid, yMid + 140.0f, "image/LogOut.png");
+
+
 
 
 //Staff UI
@@ -54,6 +58,20 @@ InputWithHead inputDOB(750.0f, 570.0f, "image/Input250x45.png", "Date of Birth")
 TextChangeBox genderCheckBox(962.5f, 570.0f, "image/Input125x45.png", "Gender", "Male", "Female");
 Button addStuButton(1100.0f, 570.0f, "image/AddButton.png");
 
+// lehoangan02 scoreboard button
+Button scoreboardButton(xMid, yMid + 20.0f, "image/Scoreboard.png");
+// lehoangan02 inside view Scoreboard
+InputWithHead inputYearforScoreboard(225.0f, 180.0f, "image/Input250x45.png", "Input Year");
+InputWithHead inputSemesterforScoreboard(225.0f, 180 + 90, "image/Input250x45.png", "Input Semester");
+InputWithHead inputCourseforScoreboard(225.0f, 180 + 180, "image/Input250x45.png", "Input Course");
+Button viewScoreboard(145.0f, 360 + 90, "image/View.png");
+//Text to view scoreboard
+BareboneText CourseText(600, 155, "Course");
+BareboneText TotalMarkText(700, 155, "Total");
+BareboneText FinalMarkText(800, 155, "Final");
+BareboneText MidtermMarkText(900, 155, "Midterm");
+BareboneText OtherMarkText(1025, 155, "Other");
+//Midterm Mark, and Other Mark
 //Stu account
 Button profileStu(207.0f, 185.0f, "image/ProfileStu.png");
 
@@ -183,7 +201,7 @@ void RunApp()
                 }
                 
                 int i = classPage * 14;
-                for (i; i < (classPage + 1) * 14 && i < numClass; ++i)
+                for (; i < (classPage + 1) * 14 && i < numClass; ++i)
                     if (classesButton[i]->isClicked(window,event)) {
                         user.indexClass = i;
                         page = 16;
@@ -218,7 +236,7 @@ void RunApp()
             inputClass.draw(window);
             addClassButton.draw(window);
             int i = classPage * 14;
-            for (i; i < (classPage + 1) * 14 && i < numClass; ++i)
+            for (; i < (classPage + 1) * 14 && i < numClass; ++i)
                 classesButton[i]->draw(window);
             break;
         }
@@ -364,7 +382,7 @@ void RunApp()
                     break;
                 }
                 int i = stuPage * 14;
-                for (i; i < (stuPage + 1) * 14 && i < size; ++i) {
+                for (; i < (stuPage + 1) * 14 && i < size; ++i) {
                     if (classesButton[user.indexClass]->linkedButton[i]->isClicked(window, event)) {
                         user.indexStudentInClass = i;
                         page = 17;
@@ -427,7 +445,7 @@ void RunApp()
             addStuButton.draw(window);
             
             int i = stuPage * 14;
-            for (i; i < (stuPage + 1) * 14 && i < size; ++i)
+            for (; i < (stuPage + 1) * 14 && i < size; ++i)
                 classesButton[user.indexClass]->linkedButton[i]->draw(window);
             break;
         }
@@ -468,6 +486,12 @@ void RunApp()
                     page = 31;
                     break;
                 }
+                if (scoreboardButton.isClicked(window, event))
+                {
+                    page = 32;
+                    cout << "viewing courses" << endl; // note for terminal lehoangan02
+                    break;
+                }
                 passwordChange.isClicked(window, event);
             }
             // Draw
@@ -475,6 +499,7 @@ void RunApp()
             profileStu.draw(window);
             passwordChange.draw(window);
             logOutButton.draw(window);
+            scoreboardButton.draw(window);
             break;
         }
         case 31: // Stu profile
@@ -494,7 +519,40 @@ void RunApp()
             profileText->drawStu(window);
             break;
         }
-        default: 
+        case 32: // Courses Page
+            {
+                //cout << "viewing page 32" << endl; lehoangan02 testing output
+                viewingPage.text.setString("Scoreboard");
+                while (window.pollEvent(event)) {
+                    if (event.type == sf::Event::Closed)
+                        window.close();
+                    if (backButton.isClicked(window,event)) {
+                        page = 30; // comback to StuMenuPage
+                        break;
+                    }
+                    inputYearforScoreboard.isClicked(event, window);
+                    inputSemesterforScoreboard.isClicked(event, window);
+                    inputCourseforScoreboard.isClicked(event, window);
+                    cout << user.id << endl;
+                }
+                
+                // Draw
+                viewingPage.draw(window);
+                backButton.draw(window);
+                viewLine.draw(window);
+                inputYearforScoreboard.draw(window);
+                inputSemesterforScoreboard.draw(window);
+                inputCourseforScoreboard.draw(window);
+                viewScoreboard.draw(window);
+                CourseText.draw(window);
+                TotalMarkText.draw(window);
+                FinalMarkText.draw(window);
+                MidtermMarkText.draw(window);
+                OtherMarkText.draw(window);
+                int i = classPage * 14;
+                break;
+            }
+        default:
         {
             break;
         }
