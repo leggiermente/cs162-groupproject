@@ -8,9 +8,10 @@ struct ScoreStu {
     string courseID;
     string semester;
     string year;
-    float quiz;
-    float mid;
-    float final;
+    float otherMark;
+    float midMark;
+    float finalMark;
+    float totalMark;
 };
 struct Class;
 struct SchoolYear;
@@ -51,14 +52,17 @@ struct Semester {
 };
 struct Student {
     string studentID = "";
-    string firstName = "", lastName = "";
-    bool femaleGender = false;
-    string dob = "";
-    string socialID = "";
-    string password = "";
-    double overallGPA = 0;
     int semesterStudied = 0;
+    string password = "";
+    string firstName = "", lastName = "";
+    bool femaleGender = 0;
+    string dob = "";
+    //int DD = 0, MM = 0, YY = 0;
+    string socialID = "";
+    double overallGPA = 0; //updating overallGPA in student.csv
+    int numCourse = 0;
     ScoreStu* score = nullptr;
     //Course* courseOfStudent = nullptr;
 };
+
 #endif // STRUCT_H_INCLUDED

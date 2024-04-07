@@ -71,7 +71,7 @@ BareboneText TotalMarkText(700, 155, "Total");
 BareboneText FinalMarkText(800, 155, "Final");
 BareboneText MidtermMarkText(900, 155, "Midterm");
 BareboneText OtherMarkText(1025, 155, "Other");
-//Midterm Mark, and Other Mark
+//TotalMark, FinalMark, Midterm Mark, and Other Mark
 //Stu account
 Button profileStu(207.0f, 185.0f, "image/ProfileStu.png");
 
@@ -534,7 +534,24 @@ void RunApp()
                     inputSemesterforScoreboard.isClicked(event, window);
                     inputCourseforScoreboard.isClicked(event, window);
                     cout << user.id << endl;
+                    /*if (viewScoreboard.isClicked(window, event))
+                    {
+                        cout << "trying to view scoreboard" << endl;
+                        BareboneText row1[5] = {
+                            BareboneText (600, 155 * 2, "Course"),
+                            BareboneText (700, 155 * 2, "Total"),
+                            BareboneText (800, 155 * 2, "Final"),
+                            BareboneText (900, 155 * 2, "Midterm"),
+                            BareboneText (1025, 155 * 2, "Other"),
+                        };
+                        for (int i = 0; i < 5; ++i)
+                        {
+                            row1[i].draw(window);
+                        }
+                        
+                    }*/
                 }
+                
                 
                 // Draw
                 viewingPage.draw(window);
