@@ -5,23 +5,35 @@
 #include <string>
 using namespace std;
 
-#include "readCSV.h"
+#include "HandleData.h"
 #include "run.h"
+#include "UI.h"
 struct CurrentUser {
-    bool isStaff;
-    Staff staff;
-    Student student;
+    bool isStaff = false;
+    Staff* staff = nullptr;
+    Student* student = nullptr;
     std::string id = "";
     std::string password = "";
-    int indexSchoolyear,
+    int indexSchoolyear = -1,
         indexSemester,
         indexClass,
         indexCourse,
         indexStudentInClass;
 };
-void init();
 void loadSchoolyears();
 bool validateUser();
+bool validateSchoolYear(string &txt, SchoolYear* schoolyearArr, int numSchoolYear);
+bool validateSemester(string &startDate, string &endDate, string period);
+bool validateTimeFormat(string startDate, string endDate, string period);
 bool isNumber(const std::string& str);
 void clearInput();
 void RunApp();
+void freeButtons();
+LinkedButton** loadAddYearButton(SchoolYear* schoolYearArr, LinkedButton** old, int& numSchoolYear);
+LinkedButton** loadAddSemeButton(Semester* semeArr, LinkedButton** old, int& numSeme);
+SchoolYear* loadAddSchoolyear(SchoolYear* schoolYearArr, int& numSchoolYear);
+Semester* loadAddSemester(Semester* old, int& numSemester);
+Class* loadAddClass();
+LinkedButton** loadAddClassButton();
+Student* loadAddStudent();
+LinkedButton** loadAddStuButton();

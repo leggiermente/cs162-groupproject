@@ -4,7 +4,7 @@
 
 #include "UI.h"
 #include "run.h"
-#include "readCSV.h"
+#include "HandleData.h"
 
 //--------------------------------------------------------------
 // Button
@@ -15,8 +15,8 @@ Button::Button(float x, float y, const std::string& imagePath) {
     sprite.setTexture(texture);
     sprite.setPosition(x - sprite.getGlobalBounds().width / 2, y - sprite.getGlobalBounds().height / 2);
 }
-bool Button::isClicked(sf::RenderWindow& window) {
-    if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+bool Button::isClicked(sf::RenderWindow& window, sf::Event event) {
+    if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left) {
         sf::Vector2i mousePos = sf::Mouse::getPosition(window);
         if (sprite.getGlobalBounds().contains(window.mapPixelToCoords(mousePos)))
             return true;
@@ -29,22 +29,11 @@ void Button::draw(sf::RenderWindow& window) {
 
 //--------------------------------------------------------------
 // Login Button
-LoginButton::LoginButton(float x, float y, const std::string& imagePath)
-{
-	if (!texture.loadFromFile(imagePath))		
-		std::cout << "Can't load image login\n";
-    texture.setSmooth(1);
-    sprite.setTexture(texture);
-	sprite.setPosition(x - sprite.getGlobalBounds().width / 2, y - sprite.getGlobalBounds().height / 2);
-}
-void LoginButton::draw(sf::RenderWindow& window)
-{
-	window.draw(sprite);
-}
-bool LoginButton::isClicked(sf::RenderWindow& window, sf::Text& username, sf::Text& password, std::string& user, std::string& pass) {		
-	if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {		
-		sf::Vector2i mousePos = sf::Mouse::getPosition(window);
-		if (sprite.getGlobalBounds().contains(window.mapPixelToCoords(mousePos))) {
+LoginButton::LoginButton(float x, float y, const std::string& imagePath) : Button(x, y, imagePath) {}
+bool LoginButton::isClicked(sf::RenderWindow& window,sf::Event event, sf::Text& username, sf::Text& password, std::string& user, std::string& pass) {		
+    if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left) {
+        sf::Vector2i mousePos = sf::Mouse::getPosition(window);
+        if (sprite.getGlobalBounds().contains(window.mapPixelToCoords(mousePos))) {
             user = username.getString().toAnsiString();
             pass = password.getString().toAnsiString();
             return true;
@@ -54,12 +43,12 @@ bool LoginButton::isClicked(sf::RenderWindow& window, sf::Text& username, sf::Te
 }
 
 //--------------------------------------------------------------
-// UsernameBox
-UsernameBox::UsernameBox(float x, float y) {
+// InputBox
+InputBox::InputBox(float x, float y, const std::string& imagePath) : Button(x, y, imagePath) {
     if (!font.loadFromFile("font/Roboto-Regular.ttf")) {
         // handle error
     }
-    if (!texture.loadFromFile("image/TextBox.png")) {
+    if (!texture.loadFromFile(imagePath)) {
         // handle error
     }
     float height = texture.getSize().y;
@@ -72,7 +61,7 @@ UsernameBox::UsernameBox(float x, float y) {
     text.setPosition(sprite.getPosition().x+10, sprite.getPosition().y + height * 0.6f / 3.7f);
     text.setFillColor(sf::Color::Black);
 }
-void UsernameBox::handleEvent(const sf::Event& event, sf::RenderWindow& window) {
+void InputBox::isClicked(const sf::Event& event, sf::RenderWindow& window) {
     if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
         sf::Vector2i mousePos = sf::Mouse::getPosition(window);
         if (sprite.getGlobalBounds().contains(window.mapPixelToCoords(mousePos)))
@@ -97,18 +86,18 @@ void UsernameBox::handleEvent(const sf::Event& event, sf::RenderWindow& window) 
         }
     }
 }
-void UsernameBox::draw(sf::RenderWindow& window) {
+void InputBox::draw(sf::RenderWindow& window) {
     window.draw(sprite);
     window.draw(text);
 }
 
 //--------------------------------------------------------------
 // PasswordBox
-PasswordBox::PasswordBox(float x, float y) {
+PasswordBox::PasswordBox(float x, float y, const std::string& imagePath) : InputBox(x, y, imagePath) {
     if (!font.loadFromFile("font/Roboto-Regular.ttf")) {
         cout << "Can't load font\n";
     }
-    if (!texture.loadFromFile("image/TextBox.png")) {
+    if (!texture.loadFromFile(imagePath)) {
         cout << "Can't load image\n";
     }
     float height = texture.getSize().y;
@@ -121,7 +110,7 @@ PasswordBox::PasswordBox(float x, float y) {
     star.setPosition(sprite.getPosition().x + 10, sprite.getPosition().y + height * 0.6f / 3.7f);
     star.setFillColor(sf::Color::Black);
 }
-void PasswordBox::handleEvent(const sf::Event& event, sf::RenderWindow& window) {
+void PasswordBox::isClicked(const sf::Event& event, sf::RenderWindow& window) {
     if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
         sf::Vector2i mousePos = sf::Mouse::getPosition(window);
         if (sprite.getGlobalBounds().contains(window.mapPixelToCoords(mousePos)))
@@ -179,12 +168,13 @@ void CheckStaffButton::draw(sf::RenderWindow& window, bool& checked) {
     else
         window.draw(sprite1);
 }
-bool CheckStaffButton::isClick(sf::RenderWindow& window, bool& checked) {
-    if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+bool CheckStaffButton::isClick(sf::RenderWindow& window,sf::Event event, bool& checked) {
+    if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left) {
         sf::Vector2i mousePos = sf::Mouse::getPosition(window);
         if (sprite1.getGlobalBounds().contains(window.mapPixelToCoords(mousePos))) {
             if (checked) checked = false;
             else checked = true;
+
             return true;
         }
     }
@@ -217,6 +207,49 @@ void ViewingPage::draw(sf::RenderWindow& window) {
 }
 
 //--------------------------------------------------------------
+// TextBox
+TextBox::TextBox(float x, float y, const std::string& imagePath, std::string sText) : Button(x,y, imagePath){
+    if (!font.loadFromFile("font/Roboto-Regular.ttf")) {
+		cout << "Can't load font\n";
+	}
+    if (!texture.loadFromFile(imagePath)) {
+		cout << "Can't load image\n";
+	}
+	float height = texture.getSize().y;
+	texture.setSmooth(1);
+	sprite.setTexture(texture);
+	sprite.setPosition(x - sprite.getGlobalBounds().width / 2, y - sprite.getGlobalBounds().height / 2);
+
+	text.setFont(font);
+	text.setCharacterSize(height * 0.5f);
+	text.setPosition(sprite.getPosition().x + 15, sprite.getPosition().y + height * 0.5f * 0.35);
+	text.setFillColor(sf::Color::White);
+	text.setString(sText);
+}
+TextBox::TextBox(float x, float y, const std::string& imagePath, std::string sText, std::string sColor) : Button(x, y, imagePath) {
+    if (!font.loadFromFile("font/Roboto-Regular.ttf")) {
+        cout << "Can't load font\n";
+    }
+    if (!texture.loadFromFile(imagePath)) {
+        cout << "Can't load image\n";
+    }
+    float height = texture.getSize().y;
+    texture.setSmooth(1);
+    sprite.setTexture(texture);
+    sprite.setPosition(x - sprite.getGlobalBounds().width / 2, y - sprite.getGlobalBounds().height / 2);
+
+    text.setFont(font);
+    text.setCharacterSize(height * 0.5f);
+    text.setPosition(sprite.getPosition().x + 15, sprite.getPosition().y + height * 0.5f * 0.35);
+    text.setFillColor(sf::Color::Black);
+    text.setString(sText);
+}
+void TextBox::draw(sf::RenderWindow& window) {
+    window.draw(sprite);
+	window.draw(text);
+}
+
+//--------------------------------------------------------------
 // LinkedButton
 LinkedButton::LinkedButton(float x, float y, const std::string& imagePath, std::string sText) {
     if (!texture.loadFromFile(imagePath))
@@ -240,8 +273,8 @@ LinkedButton::LinkedButton(float x, float y, const std::string& imagePath, std::
     text.setPosition(spriteRect.left + spriteRect.width / 2.0f, spriteRect.top + spriteRect.height / 2.0f);
     
 }
-bool LinkedButton::isClicked(sf::RenderWindow& window) {
-    if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+bool LinkedButton::isClicked(sf::RenderWindow& window,sf::Event event) {
+    if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left) {
         sf::Vector2i mousePos = sf::Mouse::getPosition(window);
         if (sprite.getGlobalBounds().contains(window.mapPixelToCoords(mousePos)))
             return true;
@@ -337,6 +370,97 @@ void ProfileText::drawStaff(sf::RenderWindow& window) {
     window.draw(ID);
 }
 
+//--------------------------------------------------------------
+// InputWithHead
+InputWithHead::InputWithHead(float x, float y, const std::string& imagePath, std::string sHeadname) : InputBox(x, y, imagePath) {
+    if (!font.loadFromFile("font/Roboto-Regular.ttf")) {
+        // handle error
+    }
+    if (!texture.loadFromFile(imagePath)) {
+        // handle error
+    }
+    float height = texture.getSize().y;
+    texture.setSmooth(1);
+    sprite.setTexture(texture);
+    sprite.setPosition(x - sprite.getGlobalBounds().width / 2, y - sprite.getGlobalBounds().height / 2);
 
+    text.setFont(font);
+    text.setCharacterSize(height * 0.6f);
+    text.setPosition(sprite.getPosition().x + 10, sprite.getPosition().y + height * 0.6f / 3.7f);
+    text.setFillColor(sf::Color::Black);
 
+    tHeadname.setFont(font);
+    tHeadname.setCharacterSize(20.0f);
+    tHeadname.setPosition(x - sprite.getGlobalBounds().width / 2, y - sprite.getGlobalBounds().height / 2 - 25.0f);
+    tHeadname.setFillColor(sf::Color::Black);
+    tHeadname.setString(sHeadname);
+}
+void InputWithHead::draw(sf::RenderWindow& window) {
+    window.draw(tHeadname);
+    window.draw(sprite);
+    window.draw(text);
+}
 
+//--------------------------------------------------------------
+// Line
+Line::Line(float x, float y, float width, float height) {
+    stick.setSize(sf::Vector2f(width, height));
+    stick.setFillColor(sf::Color::Black);
+    stick.setPosition(x, y);
+}
+void Line::draw(sf::RenderWindow& window) {
+	window.draw(stick);
+}
+
+//--------------------------------------------------------------
+// TextChangeBox
+TextChangeBox::TextChangeBox(float x, float y, const std::string& imagePath, std::string sHead,std::string sText, std::string sTextChange) : TextBox(x,y,imagePath,sText) {
+    if (!font.loadFromFile("font/Roboto-Regular.ttf")) {
+		cout << "Can't load font\n";
+	}
+    if (!texture.loadFromFile(imagePath)) {
+		cout << "Can't load image\n";
+	}
+	float height = texture.getSize().y;
+	texture.setSmooth(1);
+	sprite.setTexture(texture);
+	sprite.setPosition(x - sprite.getGlobalBounds().width / 2, y - sprite.getGlobalBounds().height / 2);
+
+	textChange.setFont(font);
+	textChange.setCharacterSize(height * 0.5f);
+	textChange.setPosition(x - sprite.getGlobalBounds().width / 2 + 10.0f, y - height * 0.5f * 0.65);
+	textChange.setFillColor(sf::Color::Black);
+	textChange.setString(sTextChange);
+
+    text.setFont(font);
+    text.setCharacterSize(height * 0.5f);
+    text.setPosition(x - sprite.getGlobalBounds().width / 2 + 10.0f, y - height * 0.5f * 0.65);
+    text.setFillColor(sf::Color::Black);
+    text.setString(sText);
+
+    tHead.setFont(font);
+    tHead.setCharacterSize(20.0f);
+    tHead.setPosition(x - sprite.getGlobalBounds().width / 2, y - sprite.getGlobalBounds().height / 2 - 25.0f);
+    tHead.setFillColor(sf::Color::Black);
+    tHead.setString(sHead);
+    
+}
+bool TextChangeBox::isClicked(sf::RenderWindow& window, sf::Event event) {
+    if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left) {
+        sf::Vector2i mousePos = sf::Mouse::getPosition(window);
+        if (sprite.getGlobalBounds().contains(window.mapPixelToCoords(mousePos))) {
+            if (active) active = false;
+            else active = true;
+            return true;
+        }
+    }
+    return false;
+}
+void TextChangeBox::draw(sf::RenderWindow& window) {
+    window.draw(sprite);
+    window.draw(tHead);
+    if (active) 
+		window.draw(text);
+    else 
+        window.draw(textChange);	
+}
