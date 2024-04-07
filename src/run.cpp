@@ -1,7 +1,5 @@
 #include <iostream>
 
-#include <SFML/Graphics.hpp>
-
 #include "run.h"
 #include "HandleData.h"
 #include "UI.h"
@@ -22,8 +20,6 @@ Button menu(xMid, yMid, "image/MenuBackground.png");
 Button seeProfile(xMid - 190.0f, yMid, "image/SeeProfile.png");
 Button passwordChange(xMid, yMid + 80.0f, "image/Password.png");
 Button logOutButton(xMid, yMid + 140.0f, "image/LogOut.png");
-
-
 
 
 //Staff UI
@@ -72,6 +68,8 @@ BareboneText FinalMarkText(800, 155, "Final");
 BareboneText MidtermMarkText(900, 155, "Midterm");
 BareboneText OtherMarkText(1025, 155, "Other");
 //TotalMark, FinalMark, Midterm Mark, and Other Mark
+
+
 //Stu account
 Button profileStu(207.0f, 185.0f, "image/ProfileStu.png");
 
@@ -201,7 +199,7 @@ void RunApp()
                 }
                 
                 int i = classPage * 14;
-                for (; i < (classPage + 1) * 14 && i < numClass; ++i)
+                for (i; i < (classPage + 1) * 14 && i < numClass; ++i)
                     if (classesButton[i]->isClicked(window,event)) {
                         user.indexClass = i;
                         page = 16;
@@ -236,7 +234,7 @@ void RunApp()
             inputClass.draw(window);
             addClassButton.draw(window);
             int i = classPage * 14;
-            for (; i < (classPage + 1) * 14 && i < numClass; ++i)
+            for (i; i < (classPage + 1) * 14 && i < numClass; ++i)
                 classesButton[i]->draw(window);
             break;
         }
@@ -382,7 +380,7 @@ void RunApp()
                     break;
                 }
                 int i = stuPage * 14;
-                for (; i < (stuPage + 1) * 14 && i < size; ++i) {
+                for (i; i < (stuPage + 1) * 14 && i < size; ++i) {
                     if (classesButton[user.indexClass]->linkedButton[i]->isClicked(window, event)) {
                         user.indexStudentInClass = i;
                         page = 17;
@@ -445,7 +443,7 @@ void RunApp()
             addStuButton.draw(window);
             
             int i = stuPage * 14;
-            for (; i < (stuPage + 1) * 14 && i < size; ++i)
+            for (i; i < (stuPage + 1) * 14 && i < size; ++i)
                 classesButton[user.indexClass]->linkedButton[i]->draw(window);
             break;
         }
