@@ -6,10 +6,10 @@ using namespace std;
 #include "Staff.h"
 #include "Struct.h"
 #include "Student.h"
-schoolYear importSchoolYear(){
+schoolYear importSchoolYear(string name){
     schoolYear schyrs;
     ifstream inp;
-    inp.open("../database/schoolyear.txt"); //open the data of the class in the school year.
+    inp.open("../database/schoolyear/"+name+".txt"); //open the data of the class in the school year.
     if (!inp.is_open()){
         inp.close();
         return {}; //there's no data of the current school year that needs to make new school year.
@@ -17,6 +17,7 @@ schoolYear importSchoolYear(){
     string str; //string for getting the input file, needs to also implement schoolyear.txt, involving name of the class of the last school year.
     getline(inp,str); // getting the period of the school year
     schyrs.period=str;
+    inp >> schyrs.semCount;
     return schyrs;
 }
 Class readClass(string fileName,string nameClass){
@@ -129,9 +130,9 @@ void addStudentintoClass(Class &curClass){
     }
     outputClass("../database/class/"+curClass.classID+".txt",curClass);
 }
-void importSemesterandCourse(schoolYear &schyrs,Semester &sems){
+void importSemesterandCourse(schoolYear &schyrs,Semester &sems,int target){
     ifstream inp;
-    inp.open("../database/semester/"+schyrs.period+"-"+to_string(sems.numSemesterInSchoolYear)+".txt");
+    inp.open("../database/semester/"+schyrs.period+"_"+to_string(target)+".txt");
     for (int i=0;i<sems.numCourses;i++){ //delete pointer section
         for (int j=0;j<sems.coursesListInSemester[i].numStudents;j++){
             delete []sems.coursesListInSemester[i].listStudentInCourse[j]->scoreOfStudent;
@@ -348,6 +349,43 @@ void outputCourseScoreBoard(schoolYear schyrs, Semester sems, Course curCourse){
         while (!inp.eof());
         inp.close();
     }
+}
+void outputClassResult(Class curClass, Semester sems, schoolYear schyrs){ //not tested yet
+    int numStudent=curClass.numStudent;
+    system("CLS");
+    cout << "Number of students in the class: " << numStudent << endl;
+    for (int i=0;i<curClass.numStudent;i++){
+        Student curStu=curClass.listStudent[i];
+        int numCoursesSemester=0,numCoursesTotal=0,s,quiz,mid,fin,total; float sumGPASem=0,sumGPATotal=0;
+        string dir="../database/student/"+curStu.studentID+".txt";
+        ifstream inp(dir);
+        string tmp,period,curCourse;
+        cout << "Student ID: " << curStu.studentID << endl;
+        for (int j=0;j<7;j++) getline(inp,tmp);
+        inp >> numCoursesTotal;
+        for (int j=0;j<numCoursesTotal;j++){
+            getline(inp,period,' ');
+            inp >> s;
+            getline(inp,curCourse,' ');
+            inp >> total >> fin >> mid >> quiz;
+            sumGPATotal+=total;
+            if (period==schyrs.period && s==sems.numSemesterInSchoolYear){
+                numCoursesSemester++;
+                sumGPASem+=total;
+                cout << "Name courses: " << curCourse << endl;
+                cout << "Final exam marks: " << fin << endl;
+                cout << endl;
+            }
+        }
+        cout << "Semester GPA: ";
+        if (numCoursesSemester>0) cout << sumGPASem/numCoursesSemester << endl;
+        else cout << 0 << endl;
+        cout << "Total GPA: ";
+        if (numCoursesTotal>0) cout << sumGPATotal/numCoursesTotal << endl;
+        else cout << 0 << endl;
+        inp.close();
+    }
+    Sleep(5000);
 }
 bool checkFormatDayOfTheWeek(string format){ //return true if it's in the right format of day of the week
     for (unsigned int i=0;i<format.size();i++){

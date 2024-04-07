@@ -8,8 +8,7 @@ schoolYear s;
 bool createClass=false;
 int main()
 {
-    s=importSchoolYear();
-    importSemesterandCourse(s,curSem);
-
+    s=importSchoolYear("2023-2024");
+    importSemesterandCourse(s,curSem,1);
     return 0;
 }

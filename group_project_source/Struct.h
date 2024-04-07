@@ -16,6 +16,7 @@ struct Student{
     string DD="",MM="",YY="";
     string socialID="";
     double overallGPA=0; //updating overallGPA in student.csv
+    int numCourses=0;
     ScoreStu* scoreOfStudent=nullptr;
 };
 struct Class{
@@ -54,6 +55,7 @@ struct ScoreStu{
     string year="";
     float quiz=0;
     float mid=0;
-    float final=0;
+    float fin=0;
+    float total=0;
 };
 #endif // STRUCT_H_INCLUDED
