@@ -54,21 +54,27 @@ InputWithHead inputDOB(750.0f, 570.0f, "image/Input250x45.png", "Date of Birth")
 TextChangeBox genderCheckBox(962.5f, 570.0f, "image/Input125x45.png", "Gender", "Male", "Female");
 Button addStuButton(1100.0f, 570.0f, "image/AddButton.png");
 
+//page 32
 // lehoangan02 scoreboard button
 Button scoreboardButton(xMid, yMid + 20.0f, "image/Scoreboard.png");
 // lehoangan02 inside view Scoreboard
-InputWithHead inputYearforScoreboard(225.0f, 180.0f, "image/Input250x45.png", "Input Year");
-InputWithHead inputSemesterforScoreboard(225.0f, 180 + 90, "image/Input250x45.png", "Input Semester");
-InputWithHead inputCourseforScoreboard(225.0f, 180 + 180, "image/Input250x45.png", "Input Course");
-Button viewScoreboard(145.0f, 360 + 90, "image/View.png");
+InputWithHead inputYearforScoreboard(225.0f, 200.0f, "image/Input250x45.png", "Input Year");
+InputWithHead inputSemesterforScoreboard(225.0f, 200 + 90, "image/Input250x45.png", "Input Semester");
+Button viewScoreboard(145.0f, 360, "image/View.png");
 //Text to view scoreboard
-BareboneText CourseText(600, 155, "Course");
-BareboneText TotalMarkText(700, 155, "Total");
-BareboneText FinalMarkText(800, 155, "Final");
-BareboneText MidtermMarkText(900, 155, "Midterm");
-BareboneText OtherMarkText(1025, 155, "Other");
+BareboneText CourseText(450, 155, "Course");
+BareboneText TotalMarkText(550, 155, "Total");
+BareboneText FinalMarkText(650, 155, "Final");
+BareboneText MidtermMarkText(750, 155, "Midterm");
+BareboneText OtherMarkText(875, 155, "Other");
 //TotalMark, FinalMark, Midterm Mark, and Other Mark
-
+//2nd viewLine
+Line viewLine2(400.0f, 157.5f, 1.0f, 435.0f);
+bool displayNumbers = false;
+//scoreboardPage
+Button rPageButtonScoreboard(1000.0f, 625.0f, "image/RightPageButton.png");
+Button lPageButtonScoreboard(450.0f, 625.0f, "image/LeftPageButton.png");
+int scoreboardPageNumber = 0;
 
 //Stu account
 Button profileStu(207.0f, 185.0f, "image/ProfileStu.png");
@@ -100,7 +106,7 @@ ProfileText* profileText = nullptr;
 CurrentUser user;
 
 
-void RunApp() 
+void RunApp()
 {
     classesArr = readClass("database/class", numClass);
     staffArr = readStaffCSV("staff.csv", numStaff);
@@ -526,45 +532,123 @@ void RunApp()
                         window.close();
                     if (backButton.isClicked(window,event)) {
                         page = 30; // comback to StuMenuPage
+                        displayNumbers = false;
                         break;
                     }
                     inputYearforScoreboard.isClicked(event, window);
+                    string Year = inputYearforScoreboard.text.getString();
+                    cout << Year << endl;
                     inputSemesterforScoreboard.isClicked(event, window);
-                    inputCourseforScoreboard.isClicked(event, window);
-                    cout << user.id << endl;
-                    /*if (viewScoreboard.isClicked(window, event))
-                    {
-                        cout << "trying to view scoreboard" << endl;
-                        BareboneText row1[5] = {
-                            BareboneText (600, 155 * 2, "Course"),
-                            BareboneText (700, 155 * 2, "Total"),
-                            BareboneText (800, 155 * 2, "Final"),
-                            BareboneText (900, 155 * 2, "Midterm"),
-                            BareboneText (1025, 155 * 2, "Other"),
-                        };
-                        for (int i = 0; i < 5; ++i)
-                        {
-                            row1[i].draw(window);
-                        }
-                        
-                    }*/
                 }
-                
-                
+                if (viewScoreboard.isClicked(window, event))
+                    displayNumbers = true;
                 // Draw
                 viewingPage.draw(window);
                 backButton.draw(window);
-                viewLine.draw(window);
+                viewLine2.draw(window);
                 inputYearforScoreboard.draw(window);
                 inputSemesterforScoreboard.draw(window);
-                inputCourseforScoreboard.draw(window);
                 viewScoreboard.draw(window);
                 CourseText.draw(window);
                 TotalMarkText.draw(window);
                 FinalMarkText.draw(window);
                 MidtermMarkText.draw(window);
                 OtherMarkText.draw(window);
+                rPageButtonScoreboard.draw(window);
+                lPageButtonScoreboard.draw(window);
+                
+                // dividing scoreboard into pages (each page containing 6 rows)
+                int numberOfScoreboardPage;
+                if (user.student -> numCourse %6 == 0)
+                    numberOfScoreboardPage = user.student -> numCourse / 6;
+                else
+                {
+                    numberOfScoreboardPage = user.student -> numCourse / 6 + 1;
+                }
+                ScoreStu **scoreboardPage = new ScoreStu*[numberOfScoreboardPage];
+                // assigning the score of courses of 6 to each pages
+                int q = 0;
+                for (int j = 0; j < numberOfScoreboardPage; ++j)
+                {
+                    scoreboardPage[j] = new ScoreStu[6];
+                    for (int k = 0; k < 6; ++k)
+                    {
+                        scoreboardPage[j][k] = user.student -> score[q];
+                        ++q;
+                        if (q == user.student -> numCourse - 1) break;
+                    }
+                }
+                
+                if (rPageButtonScoreboard.isClicked(window, event))
+                    if (scoreboardPageNumber < numberOfScoreboardPage - 1)
+                        ++scoreboardPageNumber;
+                if (lPageButtonScoreboard.isClicked(window, event))
+                    if (scoreboardPageNumber > 0)
+                        --scoreboardPageNumber;
+                if (displayNumbers)
+                    {
+                        //cout << "trying to display scoreboard" << endl;
+                        if (scoreboardPageNumber < numberOfScoreboardPage - 1) // normal 6 row page
+                        {
+                            BareboneText **scoreboardRowArray = new BareboneText*[6];
+                            for (int j = 0; j < 6; ++j)
+                            {
+                                scoreboardRowArray[j] = new BareboneText[5];
+                                scoreboardRowArray[j][0] = BareboneText (450, 215 + 60 * j, scoreboardPage[scoreboardPageNumber][j].courseID);
+                                scoreboardRowArray[j][1] = BareboneText (550, 215 + 60 * j, std::to_string(scoreboardPage[scoreboardPageNumber][j].totalMark));
+                                scoreboardRowArray[j][2] = BareboneText (650, 215 + 60 * j, std::to_string(scoreboardPage[scoreboardPageNumber][j].finalMark));
+                                scoreboardRowArray[j][3] = BareboneText (750, 215 + 60 * j, std::to_string(scoreboardPage[scoreboardPageNumber][j].midMark));
+                                scoreboardRowArray[j][4] = BareboneText (875, 215 + 60 * j, std::to_string(scoreboardPage[scoreboardPageNumber][j].otherMark));
+                            }
+                            for (int j = 0; j < 6; ++j)
+                            {
+                                for (int k = 0; k < 5; ++k)
+                                {
+                                    scoreboardRowArray[j][k].draw(window);
+                                }
+                                delete [] scoreboardRowArray[j];
+                            }
+                            delete [] scoreboardRowArray;
+                        }
+                        if (scoreboardPageNumber == numberOfScoreboardPage - 1) // lastpage
+                        {
+                            cout << "lastpage" << endl;
+                            int numberOfRows = user.student -> numCourse - (numberOfScoreboardPage - 1) * 6;
+                            BareboneText **scoreboardRowArray = new BareboneText*[numberOfRows];
+                            for (int j = 0; j < numberOfRows; ++j)
+                            {
+                                scoreboardRowArray[j] = new BareboneText[5];
+                                scoreboardRowArray[j][0] = BareboneText (450, 215 + 60 * j, scoreboardPage[scoreboardPageNumber][j].courseID);
+                                scoreboardRowArray[j][1] = BareboneText (550, 215 + 60 * j, std::to_string(scoreboardPage[scoreboardPageNumber][j].totalMark));
+                                scoreboardRowArray[j][2] = BareboneText (650, 215 + 60 * j, std::to_string(scoreboardPage[scoreboardPageNumber][j].finalMark));
+                                scoreboardRowArray[j][3] = BareboneText (750, 215 + 60 * j, std::to_string(scoreboardPage[scoreboardPageNumber][j].midMark));
+                                scoreboardRowArray[j][4] = BareboneText (875, 215 + 60 * j, std::to_string(scoreboardPage[scoreboardPageNumber][j].otherMark));
+                            }
+                            for (int j = 0; j < numberOfRows; ++j)
+                            {
+                                for (int k = 0; k < 5; ++k)
+                                {
+                                    scoreboardRowArray[j][k].draw(window);
+                                }
+                                delete [] scoreboardRowArray[j];
+                            }
+                            delete [] scoreboardRowArray;
+                        }
+                        /*BareboneText row1[5] = {
+                            BareboneText (450, 155 + 60, "1"),
+                            BareboneText (550, 215 + 60 * 5, "2"),
+                            BareboneText (650, 155 + 60, "3"),
+                            BareboneText (750, 155 + 60, "4"),
+                            BareboneText (875, 155 + 60, "5"),
+                        };
+                        for (int i = 0; i < 5; ++i)
+                        {
+                            row1[i].draw(window);
+                        }*/
+                    }
                 int i = classPage * 14;
+                
+                delete [] scoreboardPage;
                 break;
             }
         default:

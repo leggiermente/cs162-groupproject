@@ -8,9 +8,10 @@ struct ScoreStu {
     string courseID;
     string semester;
     string year;
-    float quiz;
-    float mid;
-    float final;
+    float otherMark = 0;
+    float midMark = 0;
+    float finalMark = 0;
+    float totalMark = 0;
 };
 struct Class;
 struct SchoolYear;

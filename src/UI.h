@@ -102,6 +102,10 @@ public:
     int xCordinate, yCordinate;
     std::string textContent;
     sf::Font scoreboardFont;
+    BareboneText() : xCordinate(0), yCordinate(0), textContent("") {
+            // You may choose to load a default font here or leave it empty
+            // and load the font later when needed
+        }
     BareboneText(int x, int y, std::string text): xCordinate(x), yCordinate(y), textContent(text)
     {
         if (!scoreboardFont.loadFromFile("font/Roboto_Mono/RobotoMono-VariableFont_wght.ttf")) {
