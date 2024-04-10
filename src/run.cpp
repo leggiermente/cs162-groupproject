@@ -536,8 +536,6 @@ void RunApp()
                         break;
                     }
                     inputYearforScoreboard.isClicked(event, window);
-                    string Year = inputYearforScoreboard.text.getString();
-                    cout << Year << endl;
                     inputSemesterforScoreboard.isClicked(event, window);
                 }
                 if (viewScoreboard.isClicked(window, event))
@@ -557,13 +555,37 @@ void RunApp()
                 rPageButtonScoreboard.draw(window);
                 lPageButtonScoreboard.draw(window);
                 
+                // geting the courses in the year and semester inputted
+                string yearScoreboard = inputYearforScoreboard.text.getString();
+                string semesterScoreboard = inputSemesterforScoreboard.text.getString();
+                int numMatchedCourse = 0;
+                for (int j = 0; j < user.student -> numCourse; ++j)
+                {
+                    if (user.student -> score[j].year == yearScoreboard && user.student -> score
+                        [j].semester == semesterScoreboard)
+                    {
+                        ++numMatchedCourse;
+                    }
+                }
+                ScoreStu *matchedCourseScore = new ScoreStu[numMatchedCourse];
+                int k = 0;
+                for (int j = 0; j < numMatchedCourse; ++j)
+                {
+                    if (user.student -> score[j].year == yearScoreboard && user.student -> score
+                        [j].semester == semesterScoreboard)
+                    {
+                        matchedCourseScore[k] = user.student -> score[j];
+                        ++k;
+                    }
+                }
+                
                 // dividing scoreboard into pages (each page containing 6 rows)
                 int numberOfScoreboardPage;
-                if (user.student -> numCourse %6 == 0)
-                    numberOfScoreboardPage = user.student -> numCourse / 6;
+                if (numMatchedCourse %6 == 0)
+                    numberOfScoreboardPage = numMatchedCourse / 6;
                 else
                 {
-                    numberOfScoreboardPage = user.student -> numCourse / 6 + 1;
+                    numberOfScoreboardPage = numMatchedCourse / 6 + 1;
                 }
                 ScoreStu **scoreboardPage = new ScoreStu*[numberOfScoreboardPage];
                 // assigning the score of courses of 6 to each pages
@@ -573,12 +595,13 @@ void RunApp()
                     scoreboardPage[j] = new ScoreStu[6];
                     for (int k = 0; k < 6; ++k)
                     {
-                        scoreboardPage[j][k] = user.student -> score[q];
+                        scoreboardPage[j][k] = matchedCourseScore[q];
                         ++q;
-                        if (q == user.student -> numCourse - 1) break;
+                        if (q == numMatchedCourse - 1) break;
                     }
                 }
                 
+                // displaying the scoreboard
                 if (rPageButtonScoreboard.isClicked(window, event))
                     if (scoreboardPageNumber < numberOfScoreboardPage - 1)
                         ++scoreboardPageNumber;
@@ -587,6 +610,11 @@ void RunApp()
                         --scoreboardPageNumber;
                 if (displayNumbers)
                     {
+                        if (numMatchedCourse == 0)
+                        {
+                            BareboneText noData(450.0f, 215.0f, "NO DATA!");
+                            noData.draw(window);
+                        }
                         //cout << "trying to display scoreboard" << endl;
                         if (scoreboardPageNumber < numberOfScoreboardPage - 1) // normal 6 row page
                         {
@@ -610,10 +638,12 @@ void RunApp()
                             }
                             delete [] scoreboardRowArray;
                         }
-                        if (scoreboardPageNumber == numberOfScoreboardPage - 1) // lastpage
+                        if (scoreboardPageNumber == numberOfScoreboardPage - 1 || (scoreboardPageNumber == 0 && numberOfScoreboardPage == 0)) // lastpage
                         {
-                            cout << "lastpage" << endl;
-                            int numberOfRows = user.student -> numCourse - (numberOfScoreboardPage - 1) * 6;
+                            //cout << "lastpage" << endl;
+                            int numberOfRows = numMatchedCourse - (numberOfScoreboardPage - 1) * 6;
+                            if (scoreboardPageNumber == 0 && numberOfScoreboardPage == 0)
+                                numberOfRows = 0;
                             BareboneText **scoreboardRowArray = new BareboneText*[numberOfRows];
                             for (int j = 0; j < numberOfRows; ++j)
                             {
