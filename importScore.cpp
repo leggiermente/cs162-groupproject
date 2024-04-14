@@ -1,6 +1,6 @@
 #include "importScore.h"
 
-void readScoreBoardCSV(string filename, Course& course)
+void importScoreBoardCSV(string filename, Course& course)
 {
     ifstream file(filename);
     string line;
@@ -26,4 +26,21 @@ void readScoreBoardCSV(string filename, Course& course)
     }
     
     file.close();
+}
+
+//update scoreboard
+
+void updateStudentResult(Student* scoreboard,int numStu ,float otherMark, float midMark, float finalMark, float totalMark, string studentID)
+{
+    for (int i=0; i<numStu; i++)
+    {
+        if (scoreboard[i].studentID == studentID)
+        {
+            scoreboard[i].score->otherMark = otherMark;
+            scoreboard[i].score->midMark = midMark;
+            scoreboard[i].score->finalMark = finalMark;
+            scoreboard[i].score->totalMark = totalMark;
+            return;
+        }
+    }
 }

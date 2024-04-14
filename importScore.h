@@ -8,6 +8,6 @@
 #include <cstring>
 using namespace std;
 
-
+void readScoreBoardCSV(string filename, Course &course);
 
 #endif
