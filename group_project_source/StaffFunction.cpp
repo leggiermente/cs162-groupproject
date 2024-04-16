@@ -18,6 +18,7 @@ schoolYear importSchoolYear(string name){
     getline(inp,str); // getting the period of the school year
     schyrs.period=str;
     inp >> schyrs.semCount;
+    inp.close();
     return schyrs;
 }
 Class readClass(string fileName,string nameClass){
@@ -166,7 +167,8 @@ void importSemesterandCourse(schoolYear &schyrs,Semester &sems,int target){
         int numStu=sems.coursesListInSemester[i].numStudents;
         sems.coursesListInSemester[i].listStudentInCourse=new Student* [numStu];
         for (int j=0;j<sems.coursesListInSemester[i].numStudents;j++){
-            inp >> sems.coursesListInSemester[i].listStudentInCourse[j]->studentID;
+            sems.coursesListInSemester[i].listStudentInCourse[j]=new Student;
+            getline(inp,sems.coursesListInSemester[i].listStudentInCourse[j]->studentID);
         }
         inp.close();
     }
@@ -319,7 +321,7 @@ void outputCourse(string fileName,Course curCourse){
     }
     out.close();
 }
-void outputCourseScoreBoard(schoolYear schyrs, Semester sems, Course curCourse){ //not already tested
+void outputCourseScoreBoard(schoolYear schyrs, Semester sems, Course curCourse){
     ifstream inp;
     inp.precision(2);
     for (int i=0;i<curCourse.numStudents;i++){ //open student's file
@@ -340,7 +342,7 @@ void outputCourseScoreBoard(schoolYear schyrs, Semester sems, Course curCourse){
             mid=stof(str);
             getline(inp,str,'\n');
             other=stof(str);
-            if (yearCourse==schyrs.period && stoi(semCourse)==sems.numSemesterInSchoolYear && curCourse.courseName==nameCourse){
+            if (yearCourse==schyrs.period && stoi(semCourse)==sems.numSemesterInSchoolYear && curCourse.ID==nameCourse){
                 cout << curStu->studentID << " " << curStu->firstName << " " << curStu->lastName << " "
                     << total << " " << fin << " " << mid << " " << other << endl;
                 break;

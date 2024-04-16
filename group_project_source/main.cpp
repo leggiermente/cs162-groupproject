@@ -10,5 +10,6 @@ int main()
 {
     s=importSchoolYear("2023-2024");
     importSemesterandCourse(s,curSem,1);
+    outputCourseScoreBoard(s,curSem,curSem.coursesListInSemester[0]);
     return 0;
 }
