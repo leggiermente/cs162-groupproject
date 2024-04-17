@@ -20,15 +20,32 @@ struct CurrentUser {
         indexCourse,
         indexStudentInClass;
 };
-void loadSchoolyears();
+
+// Load UI
+void loadUI();
+void loadUIfromDatabase();
+void connectPointerofSessionandDow();
+
+// Support function
 bool validateUser();
-bool validateSchoolYear(string &txt, SchoolYear* schoolyearArr, int numSchoolYear);
-bool validateSemester(string &startDate, string &endDate, string period);
-bool validateTimeFormat(string startDate, string endDate, string period);
 bool isNumber(const std::string& str);
+void assignCourseForModify();
 void clearInput();
+
+// Handle event && Draw UI
+void handleStaffSchoolYearPage();
+void drawStaffSchoolYearPage();
+void handleEventCoursePage();
+void drawCoursePage();
+void handleEventDetailCoursePage();
+void drawDetailCoursePage();
+void handleStaffClassPage();
+void drawStaffClassPage();
+
+// Main function
 void RunApp();
-void freeButtons();
+
+// Update data and UI dynamically
 LinkedButton** loadAddYearButton(SchoolYear* schoolYearArr, LinkedButton** old, int& numSchoolYear);
 LinkedButton** loadAddSemeButton(Semester* semeArr, LinkedButton** old, int& numSeme);
 SchoolYear* loadAddSchoolyear(SchoolYear* schoolYearArr, int& numSchoolYear);
@@ -37,3 +54,8 @@ Class* loadAddClass();
 LinkedButton** loadAddClassButton();
 Student* loadAddStudent();
 LinkedButton** loadAddStuButton();
+Course* loadAddCourse();
+LinkedButton** loadAddCourseButton();
+
+// Free memory
+void freeButtons();

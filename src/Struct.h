@@ -39,7 +39,7 @@ struct Course {
     string session = "";
     int numCredits = 0; 
     int maxStudents = 50; 
-    int currStudents = 43;
+    int currStudents = 0;
     Student** listStudentInCourse = nullptr;
 };
 struct Semester {

@@ -5,9 +5,12 @@
 struct Button {
     sf::Texture texture;
     sf::Sprite sprite;
+    sf::RectangleShape outline;
+    bool isHover = false;
     Button(float x, float y, const std::string& imagePath);
     virtual bool isClicked(sf::RenderWindow& window, sf::Event event);
     virtual void draw(sf::RenderWindow& window);
+    virtual void isHovering(sf::RenderWindow& window);
 };
 struct LoginButton : Button {
     LoginButton(float x, float y, const std::string& imagePath);
@@ -16,6 +19,8 @@ struct LoginButton : Button {
 struct InputBox : Button {
     sf::Text text;
     sf::Font font;
+    sf::Text textDisplay;
+    sf::RectangleShape outline;
     bool active = false;
     InputBox(float x, float y, const std::string& imagePath);
     virtual void isClicked(const sf::Event& event, sf::RenderWindow& window);
@@ -23,9 +28,12 @@ struct InputBox : Button {
 };
 struct PasswordBox : InputBox {
     sf::Text star;
-    PasswordBox(float x, float y, const std::string& imagePath);
+    sf::Text tHeadname;
+    PasswordBox(float x, float y, const std::string& imagePath, const std::string& sHeadname);
     void isClicked(const sf::Event& event, sf::RenderWindow& window);
-    void draw(sf::RenderWindow& window);
+    void isHovering(sf::RenderWindow& window);
+    void drawStar(sf::RenderWindow& window);
+    void drawText(sf::RenderWindow& window);
 };
 struct CheckStaffButton {
     sf::Texture texture1;
@@ -53,14 +61,6 @@ struct ProfileText {
 };
 
 // Staff Menu
-struct ViewingPage {
-    sf::Texture texture;
-    sf::Sprite sprite;
-    sf::Font font;
-    sf::Text text;
-    ViewingPage(float x, float y, const std::string& imagePath, std::string sText);
-    void draw(sf::RenderWindow& window);
-};
 struct TextBox : Button {
     sf::Text text;
     sf::Font font;
@@ -68,20 +68,18 @@ struct TextBox : Button {
     TextBox(float x, float y, const std::string& imagePath, std::string sText, std::string sColor);
     virtual void draw(sf::RenderWindow& window);
 };
-struct LinkedButton {
-    sf::Texture texture;
+struct LinkedButton : Button{
     LinkedButton** linkedButton = nullptr;
-    sf::Sprite sprite;
     sf::Font font;
     sf::Text text;
     LinkedButton(float x, float y, const std::string& imagePath, std::string sText);
-    bool isClicked(sf::RenderWindow& window, sf::Event event);
     void draw(sf::RenderWindow& window);
 };
 struct InputWithHead : InputBox {
     sf::Text tHeadname;
     InputWithHead(float x, float y, const std::string& imagePath, std::string sHeadname);
     void draw(sf::RenderWindow& window);
+    
 };
 struct Line {
     sf::RectangleShape stick;
@@ -94,5 +92,40 @@ struct TextChangeBox : TextBox {
     bool active = false;
     TextChangeBox(float x, float y, const std::string& imagePath, std::string sHead, std::string sText, std::string sTextChange);
 	bool isClicked(sf::RenderWindow& window, sf::Event event);
+    void draw(sf::RenderWindow& window);
+};
+struct ChooseBoxWithHead : TextBox {
+	sf::Text tHead;
+	bool isSelect = false;
+    ChooseBoxWithHead(float x, float y, const std::string& imagePath, std::string sHead, std::string sText);
+	bool isClicked(sf::RenderWindow& window, sf::Event event);
+	void draw(sf::RenderWindow& window);
+};
+struct CourseButton : Button {
+	sf::Text text;
+	sf::Font font;
+	CourseButton(float x, float y, const std::string& imagePath, std::string sText);
+	void draw(sf::RenderWindow& window);
+};
+struct ShowPasswordButton {
+    sf::CircleShape BigCircle;
+    sf::CircleShape SmallCircle;
+    bool active = false;
+    ShowPasswordButton(float x, float y);
+    bool isClicked(sf::RenderWindow& window, sf::Event event);
+    void draw(sf::RenderWindow& window);
+};
+struct HrztBar{
+    sf::RectangleShape bar;
+	HrztBar(float x, float y, float width, float height);
+	void draw(sf::RenderWindow& window);
+};
+struct Buttonv2 : Button {
+    bool isSelect = false;
+	Buttonv2(float x, float y, const std::string& imagePath);
+	bool isClicked(sf::RenderWindow& window, sf::Event event);
+};
+struct NavigateButton : Button {
+    NavigateButton(float x, float y, const std::string& imagePath);
     void draw(sf::RenderWindow& window);
 };
