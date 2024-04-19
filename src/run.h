@@ -39,6 +39,8 @@ void handleEventCoursePage();
 void drawCoursePage();
 void handleEventDetailCoursePage();
 void drawDetailCoursePage();
+void handleEventDetailStudentPage();
+void drawDetailStudentPage();
 void handleStaffClassPage();
 void drawStaffClassPage();
 

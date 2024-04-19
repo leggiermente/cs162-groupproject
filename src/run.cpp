@@ -1,4 +1,4 @@
-﻿#include <iostream>
+#include <iostream>
 
 #include "run.h"
 #include "HandleData.h"
@@ -116,6 +116,29 @@ ChooseBoxWithHead modifySessionMid1(215, 520, "image/InputSessionMid.png", "", "
 ChooseBoxWithHead modifySessionMid2(315, 520, "image/InputSessionMid.png", "", "S3 (13:30)");
 ChooseBoxWithHead modifySessionRight(415, 520, "image/InputSessionRight.png", "", "S4 (15:30)");
 Button saveModifyCourseButton(540, 520, "image/SaveButton.png");
+
+// Button in student detail page
+Button numStuButton(140,45, "image/DetailStu_NumStu.png");
+
+//Students detail
+TextBox numStudentDetail(115, 218, "image/NumStudentDetail.png", "50 students");
+InputWithHead addStudentDetail(280, 218, "image/Input200x45.png", "Add student (ID)");
+InputWithHead searchStudentDetail(705, 218, "image/Input200x45.png", "Search student (ID)");
+Button addStudentDetailButton(505, 218, "image/AddButton.png");
+Button searchStudentDetailButton(930, 218, "image/EnterButton.png");
+TextBox InforStudentDetailBar(115, 288, "image/InforBar.png", "");
+Line ScoreBoardLine1(165, 288, 1, 300);
+Line ScoreBoardLine2(315, 288, 1, 300);
+Line ScoreBoardLine3(465, 288, 1, 300);
+Line ScoreBoardLine4(590, 288, 1, 300);
+Line ScoreBoardLine5(715, 288, 1, 300);
+Line ScoreBoardLine6(840, 288, 1, 300);
+Line ScoreBoardLine7(965, 288, 1, 300);
+Line ScoreBoardLine8(1090, 288, 1, 300);
+
+
+
+
 //Stu account
 Button profileStu(207.0f, 185.0f, "image/ProfileStu.png");
 
@@ -166,7 +189,7 @@ void RunApp()
     //printTest(classesArr, numClass, schoolyearArr, numSchoolYear);
 
     window.setFramerateLimit(60);
-    while (window.isOpen()) 
+    while (window.isOpen())
     {
         window.clear();
         background.draw(window);
@@ -465,6 +488,12 @@ void RunApp()
         {
             handleEventDetailCoursePage();
             drawDetailCoursePage();
+            break;
+        }
+        case 19: // Detail Student
+        {
+            handleEventDetailStudentPage();
+            drawDetailStudentPage();
             break;
         }
         case 30: // Student menu page (Page 30 -> Student)
@@ -1040,9 +1069,12 @@ void handleEventDetailCoursePage() {
 			page = 18;
 			break;
 		}
-
+        
         studentDetailSelect.isHovering(window);
-        if (studentDetailSelect.isClicked(window, event)) { }
+        if (studentDetailSelect.isClicked(window, event)) {
+            page = 19;
+            break;
+        }
 
         // Hovering control
         modifyCourseID.isHovering(window);
@@ -1118,6 +1150,8 @@ void handleEventDetailCoursePage() {
 
 	}
 }
+
+
 void drawDetailCoursePage() {
     viewingPage.draw(window);
     schoolyearsSelect.draw(window);
@@ -1157,9 +1191,96 @@ void drawDetailCoursePage() {
         modifyDoWCourseButtonArr[i]->draw(window);
     for (int i = 0; i < 4; ++i)
         modifySessionCourseButtonArr[i]->draw(window);
-
     return;
 }
+
+void handleEventDetailStudentPage()
+{
+    while (window.pollEvent(event))
+    {
+        if (event.type == sf::Event::Closed) window.close();
+        
+        schoolyearsSelect.isHovering(window);
+        if (schoolyearsSelect.isClicked(window, event)) {
+            page = 10;
+            break;
+        }
+        
+        classesButtonSelect.isHovering(window);
+        if (classesButtonSelect.isClicked(window, event)) {
+            page = 11;
+            break;
+        }
+        
+        userIcon.isClicked(window, event);
+        if (userIcon.isSelect) {
+            profileStaff.isHovering(window);
+            logOutButton.isHovering(window);
+            passwordChange.isHovering(window);
+            if (profileStaff.isClicked(window, event)) {
+                if (profileText != nullptr) delete profileText;
+                profileText = new ProfileText(user.staff->firstName, user.staff->lastName, user.staff->staffID);
+                page = 15;
+                break;
+            }
+            if (logOutButton.isClicked(window, event)) {
+                user.isStaff = false;
+                page = 0;
+                user.staff = nullptr;
+                clearInput();
+                break;
+            }
+            if (passwordChange.isClicked(window, event)) {}
+        }
+        
+        courseDetailSelect.isHovering(window);
+        if (courseDetailSelect.isClicked(window, event)) {
+            page = 18;
+            break;
+        }
+
+    }
+}
+
+void drawDetailStudentPage()
+{
+    viewingPage.draw(window);
+    schoolyearsSelect.draw(window);
+    classesButtonSelect.draw(window);
+    userIcon.draw(window);
+    if (userIcon.isSelect) {
+        burgerMenu.draw(window);
+        profileStaff.draw(window);
+        logOutButton.draw(window);
+        passwordChange.draw(window);
+    }
+    if (classesButtonSelect.isHover) hrztBarClass.draw(window);
+    else if (schoolyearsSelect.isHover) hrztBarYear.draw(window);
+    else if (studentDetailSelect.isHover) hrztBarStudentDetails.draw(window);
+    else hrztBarCourseDetails.draw(window);
+    backButton.draw(window);
+    
+    courseDetailSelect.draw(window);
+    studentDetailSelect.draw(window);
+
+    numStudentDetail.draw(window);
+    searchStudentDetail.draw(window);
+    addStudentDetail.draw(window);
+    searchStudentDetailButton.draw(window);
+    addStudentDetailButton.draw(window);
+
+    ScoreBoardLine1.draw(window);
+    ScoreBoardLine2.draw(window);
+    ScoreBoardLine3.draw(window);
+    ScoreBoardLine4.draw(window);
+    ScoreBoardLine5.draw(window);
+    ScoreBoardLine6.draw(window);
+    ScoreBoardLine7.draw(window);
+    ScoreBoardLine8.draw(window);
+    InforStudentDetailBar.draw(window);
+
+}
+
 void handleStaffClassPage() {
     while (window.pollEvent(event)) {
 		if (event.type == sf::Event::Closed) window.close();
