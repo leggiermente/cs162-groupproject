@@ -3,20 +3,14 @@
 #include <string>
 using namespace std;
 
-// Temeporary struct for Score
-struct ScoreStu {
-    string courseID;
-    string semester;
-    string year;
-    float quiz;
-    float mid;
-    float final;
-};
+
 struct Class;
 struct SchoolYear;
 struct Course;
 struct Semester;
 struct Student;
+struct ScoreStu;
+struct rowStuUI;
 struct Class {
     string classID = "";
     int yearStudied = 0;
@@ -40,8 +34,9 @@ struct Course {
     int numCredits = 0; 
     int maxStudents = 50; 
     int currStudents = 0;
-    Student** listStudentInCourse = nullptr;
+    ScoreStu* listStudent = nullptr;
 };
+
 struct Semester {
     int numSemesterInSchoolYear = 0;
     string startDate = "";
@@ -61,4 +56,18 @@ struct Student {
     ScoreStu* score = nullptr;
     //Course* courseOfStudent = nullptr;
 };
+
+// Temeporary struct for Score
+struct ScoreStu {
+    int No;
+    string ID;
+    string firstName;
+    string lastName;
+    float quiz;
+    float mid;
+    float final;
+    float other;
+    bool isInClass = 0;
+};
+
 #endif // STRUCT_H_INCLUDED

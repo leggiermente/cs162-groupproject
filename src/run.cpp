@@ -137,8 +137,6 @@ Line ScoreBoardLine7(965, 288, 1, 300);
 Line ScoreBoardLine8(1090, 288, 1, 300);
 
 
-
-
 //Stu account
 Button profileStu(207.0f, 185.0f, "image/ProfileStu.png");
 
@@ -181,8 +179,30 @@ void RunApp()
     classesArr = readClass("database/class", numClass);
     staffArr = readStaffCSV("staff.csv", numStaff);
     schoolyearArr = readSchoolYear("database/schoolyear", numSchoolYear);
-    readCourseInSemester("database/course", schoolyearArr, numSchoolYear, classesArr, numClass);
+    readCourseInSemester("database", schoolyearArr, numSchoolYear);
     
+    for(int i = 0; i <numSchoolYear; i++){
+        std::cout<<schoolyearArr[i].period <<"\n";
+        for(int j = 0; j < schoolyearArr[i].numSemester; j++){
+            std::cout << "      semester "<< j << ":\n";
+            for(int k = 0; k < schoolyearArr[i].listSemester[j].numCourses; k++){
+                std::cout<<"            " << schoolyearArr[i].listSemester[j].coursesListInSemester[k].ID<< "\n";
+                    for(int h = 0; h < schoolyearArr[i].listSemester[j].coursesListInSemester[k].currStudents; h++){
+                        std::cout<<"----------"<<schoolyearArr[i].listSemester[j].coursesListInSemester[k].listStudent[h].ID << "," <<
+                        schoolyearArr[i].listSemester[j].coursesListInSemester[k].listStudent[h].firstName <<  "," <<
+                        schoolyearArr[i].listSemester[j].coursesListInSemester[k].listStudent[h].lastName << "," <<
+                        schoolyearArr[i].listSemester[j].coursesListInSemester[k].listStudent[h].quiz << "," <<
+                        schoolyearArr[i].listSemester[j].coursesListInSemester[k].listStudent[h].mid<< "," <<
+                        schoolyearArr[i].listSemester[j].coursesListInSemester[k].listStudent[h].final<< "," <<
+                        schoolyearArr[i].listSemester[j].coursesListInSemester[k].listStudent[h].other << "\n";
+
+                    }
+            }
+        }
+    }
+
+
+
     schoolyearButton = new LinkedButton * [numSchoolYear];
     classesButton = new LinkedButton * [numClass];
     loadUI();
