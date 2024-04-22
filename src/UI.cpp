@@ -15,7 +15,7 @@ Button::Button(float x, float y, const std::string& imagePath) {
     sprite.setTexture(texture);
     sprite.setPosition(x,y);
 
-    outline.setSize(sprite.getGlobalBounds().getSize());
+    outline.setSize(sf::Vector2f(sprite.getGlobalBounds().width, sprite.getGlobalBounds().height));
     outline.setPosition(sprite.getPosition());
     outline.setFillColor(sf::Color::Transparent);
     outline.setOutlineThickness(2.0f);
@@ -130,7 +130,7 @@ PasswordBox::PasswordBox(float x, float y, const std::string& imagePath, const s
     if (!texture.loadFromFile(imagePath)) {
         cout << "Can't load image\n";
     }
-    outline.setSize(sprite.getGlobalBounds().getSize());
+outline.setSize(sf::Vector2f(sprite.getGlobalBounds().width, sprite.getGlobalBounds().height));
     outline.setPosition(sprite.getPosition());
     outline.setFillColor(sf::Color::Transparent);
     outline.setOutlineThickness(2.0f);
@@ -450,7 +450,7 @@ InputWithHead::InputWithHead(float x, float y, const std::string& imagePath, std
     tHeadname.setFillColor(sf::Color::Black);
     tHeadname.setString(sHeadname);
 
-    outline.setSize(sprite.getGlobalBounds().getSize());
+outline.setSize(sf::Vector2f(sprite.getGlobalBounds().width, sprite.getGlobalBounds().height));
     outline.setPosition(sprite.getPosition());
     outline.setFillColor(sf::Color::Transparent);
     outline.setOutlineThickness(2.0f);
@@ -690,4 +690,168 @@ void NavigateButton::draw(sf::RenderWindow& window) {
     if (isHover) sprite.setColor(sf::Color(240, 240, 240));
 	else sprite.setColor(sf::Color::White);
     window.draw(sprite);
+}
+
+//------------------------------------------------------------
+    // Function for converting Float to String
+std::string floatToString(float num) {
+    std::string strNum = std::to_string(num);
+    size_t decimalPos = strNum.find('.');
+    if (decimalPos != std::string::npos && decimalPos + 3 < strNum.size()) {
+        return strNum.substr(0, decimalPos + 3);
+    } else {
+        return strNum;
+    }
+}
+    // Row Score Board
+void RowInfor::LoadInfor(int _no, ScoreStu student){
+    no = _no;
+    ID = student.ID;
+    lastName = student.lastName;
+    firstName = student.firstName;
+    quiz = student.quiz;
+    mid = student.mid;
+    final = student.final;
+    other = student.other;
+    quizStr = floatToString(quiz);
+    midStr = floatToString(mid);
+    finalStr = floatToString(final);
+    otherStr = floatToString(other);
+}
+
+void RowInfor::draw(sf::RenderWindow& window){
+    if(no == 0) return;
+    sf::Text noText, lastNameText, firstNameText, IDText, quizText, midText, finalText, otherText;
+    sf::Font font;
+    if(!font.loadFromFile("font/Roboto-Regular.ttf")){
+        std::cerr << "Cannot open font!";
+    }
+    
+    noText.setFont(font);
+    noText.setCharacterSize(20);
+    noText.setFillColor(sf::Color::Black);
+    noText.setString(std::to_string(no));
+    noText.setPosition(130, 350 + ((no - 1)%5)*50);
+
+    lastNameText.setFont(font);
+    lastNameText.setCharacterSize(20);
+    lastNameText.setFillColor(sf::Color::Black);
+    lastNameText.setString(lastName);
+    lastNameText.setPosition(190, 350 + ((no - 1)%5)*50);
+
+    firstNameText.setFont(font);
+    firstNameText.setCharacterSize(20);
+    firstNameText.setFillColor(sf::Color::Black);
+    firstNameText.setString(firstName);
+    firstNameText.setPosition(339, 350 + ((no - 1)%5)*50);
+
+    IDText.setFont(font);
+    IDText.setCharacterSize(20);
+    IDText.setFillColor(sf::Color::Black);
+    IDText.setString(ID);
+    IDText.setPosition(477, 350 + ((no - 1)%5)*50);
+
+    quizText.setFont(font);
+    quizText.setCharacterSize(20);
+    quizText.setFillColor(quizSelected ? sf::Color(78, 78, 78) : sf::Color::Black);
+    quizText.setString(quizStr);
+    quizText.setPosition(602, 350 + ((no - 1)%5)*50);
+
+    midText.setFont(font);
+    midText.setCharacterSize(20);
+    midText.setFillColor(midSelected ? sf::Color(78, 78, 78) : sf::Color::Black);
+    midText.setString(midStr);
+    midText.setPosition(732, 350 + ((no - 1)%5)*50);
+    
+    finalText.setFont(font);
+    finalText.setCharacterSize(20);
+    finalText.setFillColor(finalSelected ? sf::Color(78, 78, 78) : sf::Color::Black);
+    finalText.setString(finalStr);
+    finalText.setPosition(852, 350 + ((no - 1)%5)*50);
+
+    otherText.setFont(font);
+    otherText.setCharacterSize(20);
+    otherText.setFillColor(otherSelected ? sf::Color(78, 78, 78) : sf::Color::Black);
+    otherText.setString(otherStr);
+    otherText.setPosition(975, 350 + ((no - 1)%5)*50);
+
+    window.draw(noText);
+    window.draw(lastNameText);
+    window.draw(firstNameText);
+    window.draw(IDText);
+    window.draw(quizText);
+    window.draw(midText);
+    window.draw(finalText);
+    window.draw(otherText);
+}
+    // QUIZ
+bool RowInfor::isQuizScoreClicked(float mouseX, float mouseY) {
+    return mouseX >= 590 && mouseX <= 715 && mouseY >= 338 + ((no - 1)%5)*50 && mouseY <= 388 + ((no - 1)%5)*50;
+}
+
+void RowInfor::handleQuiz(sf::Uint32 unicode) {
+    if (unicode == 8 && !quizStr.empty()) {
+        quizStr.pop_back(); 
+    } else if ((unicode >= 48 && unicode <= 57) || unicode == 46) {
+        if (unicode == 46 && quizStr.find('.') != std::string::npos) return;
+        quizStr += static_cast<char>(unicode);
+    }
+}
+
+void RowInfor::updateQuiz() {
+    quiz = stof(quizStr);
+}
+
+    // MID
+bool RowInfor::isMidScoreClicked(float mouseX, float mouseY) {
+    return mouseX >= 716 && mouseX <= 840 && mouseY >= 338 + ((no - 1)%5)*50 && mouseY <= 388 + ((no - 1)%5)*50;
+}
+
+void RowInfor::handleMid(sf::Uint32 unicode) {
+    if (unicode == 8 && !midStr.empty()) {
+        midStr.pop_back(); 
+    } else if ((unicode >= 48 && unicode <= 57) || unicode == 46) {
+        if (unicode == 46 && midStr.find('.') != std::string::npos) return;
+        midStr += static_cast<char>(unicode);
+    }
+}
+
+void RowInfor::updateMid() {
+    mid = stof(midStr);
+}
+
+    // FINAL
+bool RowInfor::isFinalScoreClicked(float mouseX, float mouseY) {
+    return mouseX >= 841 && mouseX <= 965 && mouseY >= 338 + ((no - 1)%5)*50 && mouseY <= 388 + ((no - 1)%5)*50;
+}
+
+void RowInfor::handleFinal(sf::Uint32 unicode) {
+    if (unicode == 8 && !finalStr.empty()) {
+        finalStr.pop_back(); 
+    } else if ((unicode >= 48 && unicode <= 57) || unicode == 46) {
+        if (unicode == 46 && finalStr.find('.') != std::string::npos) return;
+        finalStr += static_cast<char>(unicode);
+    }
+}
+
+void RowInfor::updateFinal() {
+    final = stof(finalStr);
+}
+
+    // OTHER
+bool RowInfor::isOtherScoreClicked(float mouseX, float mouseY) {
+    return mouseX >= 966 && mouseX <= 1090 && mouseY >= 338 + ((no - 1)%5)*50 && mouseY <= 388 + ((no - 1)%5)*50;
+}
+
+void RowInfor::handleOther(sf::Uint32 unicode) {
+    if (unicode == 8 && !otherStr.empty()) {
+        otherStr.pop_back(); 
+    } else if ((unicode >= 48 && unicode <= 57) || unicode == 46) {
+        if (unicode == 46 && otherStr.find('.') != std::string::npos) return;
+            otherStr += static_cast<char>(unicode);
+    }
+}
+
+void RowInfor::updateOther() {
+    other = stof(otherStr);
 }
