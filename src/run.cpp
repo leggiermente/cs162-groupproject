@@ -127,6 +127,10 @@ InputWithHead searchStudentDetail(705, 218, "image/Input200x45.png", "Search stu
 Button addStudentDetailButton(505, 218, "image/AddButton.png");
 Button searchStudentDetailButton(930, 218, "image/EnterButton.png");
 TextBox InforStudentDetailBar(115, 288, "image/InforBar.png", "");
+Button saveScoreBoard(1065, 595, "image/SaveButton.png");
+NavigateButton rScoreBoardPage(725, 595, "image/RightPageButton.png");
+NavigateButton lScoreBoardPage(511, 595, "image/LeftPageButton.png");
+TextBox numScoreBoardPage(585, 597, "image/TextBox85x24.png",  "0/0 Pages");
 Line ScoreBoardLine1(165, 288, 1, 300);
 Line ScoreBoardLine2(315, 288, 1, 300);
 Line ScoreBoardLine3(465, 288, 1, 300);
@@ -135,6 +139,12 @@ Line ScoreBoardLine5(715, 288, 1, 300);
 Line ScoreBoardLine6(840, 288, 1, 300);
 Line ScoreBoardLine7(965, 288, 1, 300);
 Line ScoreBoardLine8(1090, 288, 1, 300);
+
+//Score Board Data
+Course tmp;
+RowInfor* row = NULL;
+
+
 
 
 //Stu account
@@ -195,12 +205,10 @@ void RunApp()
                         schoolyearArr[i].listSemester[j].coursesListInSemester[k].listStudent[h].mid<< "," <<
                         schoolyearArr[i].listSemester[j].coursesListInSemester[k].listStudent[h].final<< "," <<
                         schoolyearArr[i].listSemester[j].coursesListInSemester[k].listStudent[h].other << "\n";
-
                     }
             }
         }
     }
-
 
 
     schoolyearButton = new LinkedButton * [numSchoolYear];
@@ -511,6 +519,16 @@ void RunApp()
             break;
         }
         case 19: // Detail Student
+        {   
+            int numStu = schoolyearArr[user.indexSchoolyear].listSemester[user.indexSemester].coursesListInSemester[user.indexCourse].currStudents;
+            row = new RowInfor [numStu];
+            for(int i = 0; i < numStu; i++){
+                row[i].LoadInfor(i + 1, schoolyearArr[user.indexSchoolyear].listSemester[user.indexSemester].coursesListInSemester[user.indexCourse].listStudent[i]);
+            }
+            page = 20;
+            break;
+        }
+        case 20:
         {
             handleEventDetailStudentPage();
             drawDetailStudentPage();
@@ -1258,7 +1276,38 @@ void handleEventDetailStudentPage()
             page = 18;
             break;
         }
-
+        int numStudent = schoolyearArr[user.indexSchoolyear].listSemester[user.indexSemester].coursesListInSemester[user.indexCourse].currStudents;
+        
+        if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
+            for(int i = 0; i < numStudent; i++){
+                row[i].quizSelected = row[i].isQuizScoreClicked(event.mouseButton.x, event.mouseButton.y)?true:false;
+                row[i].midSelected = row[i].isMidScoreClicked(event.mouseButton.x, event.mouseButton.y)?true:false;
+                row[i].finalSelected = row[i].isFinalScoreClicked(event.mouseButton.x, event.mouseButton.y)?true:false;
+                row[i].otherSelected = row[i].isOtherScoreClicked(event.mouseButton.x, event.mouseButton.y)?true:false;
+            }
+        } else if (event.type == sf::Event::TextEntered) {
+            for(int i = 0; i < numStudent; i++){
+                if(row[i].quizSelected)
+                    row[i].handleQuiz(event.text.unicode);
+                if(row[i].midSelected)
+                    row[i].handleMid(event.text.unicode);
+                if(row[i].finalSelected)
+                    row[i].handleFinal(event.text.unicode);
+                if(row[i].otherSelected)
+                    row[i].handleOther(event.text.unicode);
+            }
+        } else if(event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Enter){
+            for(int i = 0; i < numStudent; i++){
+                if(row[i].quizSelected)
+                    row[i].updateQuiz();
+                if(row[i].midSelected)
+                    row[i].updateMid();
+                if(row[i].finalSelected)
+                    row[i].updateFinal();
+                if(row[i].otherSelected)
+                    row[i].updateOther();
+            }
+        }
     }
 }
 
@@ -1299,6 +1348,14 @@ void drawDetailStudentPage()
     ScoreBoardLine8.draw(window);
     InforStudentDetailBar.draw(window);
 
+    lScoreBoardPage.draw(window);
+    rScoreBoardPage.draw(window);
+    numScoreBoardPage.text.setFillColor(sf::Color::Black); numScoreBoardPage.draw(window);
+    saveScoreBoard.draw(window);
+
+    for(int i = 0; i < 3; i++){
+        row[i].draw(window);
+    }
 }
 
 void handleStaffClassPage() {
@@ -1627,4 +1684,6 @@ void freeButtons() {
     //delete[] courseArr;
 
     if (profileText) delete profileText;
+    delete[] tmp.listStudent;
+    delete[] row;
 }
