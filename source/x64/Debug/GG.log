@@ -1,0 +1,4 @@
+﻿  run.cpp
+D:\GG\GG\run.cpp(1925,47): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\GG\GG\run.cpp(1925,44): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+  GG.vcxproj -> D:\GG\x64\Debug\GG.exe

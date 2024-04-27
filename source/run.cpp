@@ -1,4 +1,4 @@
-#include <iostream>
+﻿#include <iostream>
 
 #include "run.h"
 #include "HandleData.h"
@@ -6,6 +6,7 @@
 
 sf::RenderWindow window(sf::VideoMode(1280, 720), "Course Management", sf::Style::Close);
 sf::Event event;
+sf::Clock myClock;
 const float xMid = window.getSize().x / 2.0f;
 const float yMid = window.getSize().y / 2.0f;
 
@@ -18,7 +19,6 @@ LoginButton loginButton(339, 538, "image/LoginButton.png");
 Button loginBox(308, 56, "image/LoginBox.png");
 CheckStaffButton checkStaffButton(xMid - 285.0f, yMid + 110.0f, "image/CheckStaffButton.png", "image/CheckedStaffButton.png");
 Button menu(xMid, yMid, "image/MenuBackground.png");
-Button seeProfile(85, 180, "image/SeeProfile.png");
 Button passwordChange(1128, 170, "image/Password.png");
 Button logOutButton(1128, 204, "image/LogOut.png");
 HrztBar hrztBarYear(415, 150, 117, 5);
@@ -27,6 +27,21 @@ HrztBar hrztBarCourseDetails(686, 150, 146, 5);
 HrztBar hrztBarStudentDetails(882, 150, 156, 5);
 Buttonv2 userIcon(1115,85,"image/Profile.png");
 Button burgerMenu(1115, 111, "image/BurgerExpand.png");
+PasswordBox currentPassword(115,235,"image/Input425x45.png", "Current Password");
+PasswordBox newPassword(115, 305, "image/Input425x45.png", "New Password");
+PasswordBox confirmPassword(115, 375, "image/Input425x45.png", "Confirm Password");
+Button savePasswordButton(440, 490, "image/SaveButton.png");
+Button cancelPasswordButton(115, 490, "image/CancelButton.png");
+ShowPasswordButton showNewPassButton(115, 430, "Show new password");
+
+// Profile
+AvatarProfile avatarProfile(115, 215, "image/Profile.png", "Profile");
+InputWithHead seeProfileID(115, 305, "image/Input250x45.png", "ID");
+InputWithHead seeProfileSocialID(390, 305, "image/Input250x45.png", "Social ID");
+InputWithHead seeProfileFirstName(115, 375, "image/Input250x45.png", "First Name");
+InputWithHead seeProfileLastName(390, 375, "image/Input250x45.png", "Last Name");
+InputWithHead seeProfileDOB(115, 445, "image/Input250x45.png", "Date of Birth");
+GenderSelect seeProfileGender(390, 425, "image/female.png", "image/male.png", "Gender");
 
 // Staff UI
 Button profileStaff(1128, 135, "image/ProfileDetail.png");
@@ -50,24 +65,36 @@ Button addSemeButton(1091, 469, "image/AddButton.png");
 
 // Button in class page
 InputWithHead inputSearchClass(640, 235, "image/Input425x45.png", "Search Class");
-InputWithHead inputClass(640, 315, "image/Input425x45.png", "Class");
-Button addClassButton(1090, 315, "image/AddButton.png");
+InputWithHead inputClass(640, 305, "image/Input425x45.png", "Class");
 Button searchClassButton(1090, 235, "image/EnterButton.png");
+Button addClassButton(1090, 305, "image/AddButton.png");
 
-// Button in student page
-TextBox numStuBox(750.0f, 340.0f, "image/NumStuBox.png", "Number students: ", "");
-InputWithHead inputStuID(750.0f, 430.0f, "image/Input250x45.png", "Student ID");
-InputWithHead inputSocialID(1025.0f, 430.0f, "image/Input250x45.png", "Social ID");
-InputWithHead inputFirstName(750.0f, 500.0f, "image/Input250x45.png", "First name");
-InputWithHead inputLastName(1025.0f, 500.0f, "image/Input250x45.png", "Last name");
-InputWithHead inputDOB(750.0f, 570.0f, "image/Input250x45.png", "Date of Birth");
-TextChangeBox genderCheckBox(962.5f, 570.0f, "image/Input125x45.png", "Gender", "Male", "Female");
-Button addStuButton(1100.0f, 570.0f, "image/AddButton.png");
+// Button in student of class page
+InputWithHead inputSearchStu(640, 235, "image/Input425x45.png", "Search ID");
+Button searchStuButton(1090, 235, "image/EnterButton.png");
+InputWithHead inputClassFile(640, 305, "image/Input425x45.png", "CSV file path");
+Button importClassButton(1090, 305, "image/ImportButton.png");
+TextBox numStuBox(640, 360, "image/NumStuBox.png", "Number students: ");
+InputWithHead inputStuID(640, 430, "image/Input250x45.png", "Student ID");
+InputWithHead inputSocialID(915, 430, "image/Input250x45.png", "Social ID");
+InputWithHead inputFirstName(640, 500, "image/Input250x45.png", "First name");
+InputWithHead inputLastName(915, 500, "image/Input250x45.png", "Last name");
+InputWithHead inputDOB(640, 570, "image/Input250x45.png", "Date of Birth");
+GenderSelect genderCheckBox(915, 550, "image/female.png", "image/male.png", "Gender");
+Button addStuButton(1065, 570, "image/AddButton.png");
 
+// Profile in student page of class
+AvatarProfile avatarStu(115, 215, "image/Profile.png", "Profile of Student");
+InputWithHead seeStuID(115, 305, "image/Input250x45.png", "ID");
+InputWithHead seeStuSocialID(390, 305, "image/Input250x45.png", "Social ID");
+InputWithHead seeStuFirstName(115, 375, "image/Input250x45.png", "First Name");
+InputWithHead seeStuLastName(390, 375, "image/Input250x45.png", "Last Name");
+InputWithHead seeStuDOB(115, 445, "image/Input250x45.png", "Date of Birth");
+GenderSelect seeStuGender(390, 425, "image/female.png", "image/male.png", "Gender");
 
 // Button in course page
 //Input
-InputWithHead inputSearchCourse(640,200,"image/Input300x45.png", "Search Course");
+InputWithHead inputSearchCourse(640,230,"image/Input300x45.png", "Search Course");
 InputWithHead inputCourseID(640, 300, "image/Input250x45.png", "Course ID");
 InputWithHead inputClassIDforCourse(915, 300, "image/Input250x45.png", "Class ID");
 InputWithHead inputTeacherName(640, 370, "image/Input525x45.png", "Teacher Name");
@@ -84,21 +111,19 @@ ChooseBoxWithHead inputSessionLeft(640, 580, "image/InputSessionLeft.png", "Sess
 ChooseBoxWithHead inputSessionMid1(740, 580, "image/InputSessionMid.png", "", "S2 (09:30)");
 ChooseBoxWithHead inputSessionMid2(840, 580, "image/InputSessionMid.png", "", "S3 (13:30)");
 ChooseBoxWithHead inputSessionRight(940, 580, "image/InputSessionRight.png", "", "S4 (15:30)");
-Button searchCourseButton(965, 200, "image/EnterButton.png");
+Button searchCourseButton(965, 230, "image/EnterButton.png");
 Button addCourseButton(1065, 580, "image/AddButton.png");
 // Course features
 Button courseDetailSelect(686,103,"image/CourseDetails.png");
 Button studentDetailSelect(882,103,"image/StudentDetails.png");
-Button addStuToCourseButton(1090, 240, "image/AddButton.png");
-Button importStuButton(1090, 310, "image/ImportButton.png");
-Button importScoreButton(1090, 380, "image/ImportButton.png");
-Button exportStuButton(665,450,"image/ExportStuButton.png");
+Button importStuButton(1090, 240, "image/ImportButton.png");
+Button importScoreButton(1090, 310, "image/ImportButton.png");
+Button exportStuButton(665,380,"image/ExportStuButton.png");
 Button deleteCourseButton(115, 595, "image/DeleteCourseButton.png");
 
 // Modify Detail course
-InputWithHead inputStuToCourse(665, 240, "image/Input400x45.png", "Student ID");
-InputWithHead inputImportStuToCourse(665, 310, "image/Input400x45.png", "Import Student (File path)");
-InputWithHead inputImportScore(665, 380, "image/Input400x45.png", "Import Score (File path)");
+InputWithHead inputImportStuToCourse(665, 240, "image/Input400x45.png", "Import Student (File path)");
+InputWithHead inputImportScore(665, 310, "image/Input400x45.png", "Import Score (File path)");
 InputWithHead modifyCourseID(115, 240, "image/Input250x45.png", "Course ID");
 InputWithHead modifyClassIDforCourse(390, 240, "image/Input250x45.png", "Class ID");
 InputWithHead modifyTeacherName(115, 310, "image/Input525x45.png", "Teacher Name");
@@ -116,50 +141,24 @@ ChooseBoxWithHead modifySessionMid1(215, 520, "image/InputSessionMid.png", "", "
 ChooseBoxWithHead modifySessionMid2(315, 520, "image/InputSessionMid.png", "", "S3 (13:30)");
 ChooseBoxWithHead modifySessionRight(415, 520, "image/InputSessionRight.png", "", "S4 (15:30)");
 Button saveModifyCourseButton(540, 520, "image/SaveButton.png");
-
-// Button in student detail page
-Button numStuButton(140,45, "image/DetailStu_NumStu.png");
-
-//Students detail
-TextBox numStudentInClassText(115, 218, "image/NumStudentDetail.png", "50 students");
-InputWithHead addStudentDetail(280, 218, "image/Input200x45.png", "Add student (ID)");
-InputWithHead searchStudentDetail(705, 218, "image/Input200x45.png", "Search student (ID)");
-Button addStudentDetailButton(505, 218, "image/AddButton.png");
-Button searchStudentDetailButton(930, 218, "image/EnterButton.png");
-TextBox InforStudentDetailBar(115, 288, "image/InforBar.png", "");
-Button saveScoreBoard(1065, 595, "image/SaveButton.png");
-NavigateButton rScoreBoardPage(725, 595, "image/RightPageButton.png");
-NavigateButton lScoreBoardPage(511, 595, "image/LeftPageButton.png");
-TextBox numScoreBoardPageText(585, 597, "image/TextBox85x24.png",  "0/0 Pages");
-Line ScoreBoardLine1(165, 288, 1, 300);
-Line ScoreBoardLine2(315, 288, 1, 300);
-Line ScoreBoardLine3(465, 288, 1, 300);
-Line ScoreBoardLine4(590, 288, 1, 300);
-Line ScoreBoardLine5(715, 288, 1, 300);
-Line ScoreBoardLine6(840, 288, 1, 300);
-Line ScoreBoardLine7(965, 288, 1, 300);
-Line ScoreBoardLine8(1090, 288, 1, 300);
-
-//Score Board Data
-Course tmp;
-RowInfor* row = NULL;
-int curScoreBoardPage = 1;
-int numScoreBoardPage = 0;
-int studentStart = 1;
-int studentEnd = 1;
-int numStudentInClass = 0;
-int numStudentTMP = 0;
-
-
-
-
-
 //Stu account
 Button profileStu(207.0f, 185.0f, "image/ProfileStu.png");
 
+// Color Text alert
+ColorText passScAlert(115, 545, 20, "Password changed!");
+ColorText passFlAlert(115, 545, 20, "Password change failed!");
+ColorText notFoundClassAlert(740, 215, 15, "Oops! Class not found");
+ColorText foundClassAlert(740, 215, 15, "Class found");
+ColorText notFoundCourseAlert(750, 210, 15, "Oops! Course not found");
+ColorText foundCourseAlert(750, 210, 15, "Course found");
+ColorText notFoundStuAlert(750, 210, 15, "Oops! Student not found");
+ColorText foundStuAlert(750, 210, 15, "Student found");
+ColorText notFoundYearAlert(750, 210, 15, "Oops! Year not found");
+ColorText foundYearAlert(750, 210, 15, "Year found");
 
 // Page control
-int page = 0,
+int prevPage = 0,
+    page = 0,
     yearPage = 0,
     classPage = 0,
     stuPage = 0,
@@ -179,7 +178,6 @@ Staff* staffArr = nullptr;
 // UI arrays
 LinkedButton** schoolyearButton = nullptr;
 LinkedButton** classesButton = nullptr;
-ProfileText* profileText = nullptr;
 
 ChooseBoxWithHead** sessionCourseButtonArr = new ChooseBoxWithHead * [4];
 ChooseBoxWithHead** doWCourseButtonArr = new ChooseBoxWithHead * [6];
@@ -189,6 +187,8 @@ ChooseBoxWithHead** modifyDoWCourseButtonArr = new ChooseBoxWithHead * [6];
 //Currect user
 CurrentUser user;
 
+// Finding variable
+SearchArrPointerUI* searchArrUI = nullptr;
 
 // Main function
 void RunApp() 
@@ -196,34 +196,15 @@ void RunApp()
     classesArr = readClass("database/class", numClass);
     staffArr = readStaffCSV("staff.csv", numStaff);
     schoolyearArr = readSchoolYear("database/schoolyear", numSchoolYear);
-    readCourseInSemester("database", schoolyearArr, numSchoolYear);
+    readCourseInSemester("database/course", schoolyearArr, numSchoolYear, classesArr, numClass);
     
-    for(int i = 0; i <numSchoolYear; i++){
-        std::cout<<schoolyearArr[i].period <<"\n";
-        for(int j = 0; j < schoolyearArr[i].numSemester; j++){
-            std::cout << "      semester "<< j << ":\n";
-            for(int k = 0; k < schoolyearArr[i].listSemester[j].numCourses; k++){
-                std::cout<<"            " << schoolyearArr[i].listSemester[j].coursesListInSemester[k].ID<< "\n";
-                    for(int h = 0; h < schoolyearArr[i].listSemester[j].coursesListInSemester[k].currStudents; h++){
-                        std::cout<<"----------"<<schoolyearArr[i].listSemester[j].coursesListInSemester[k].listStudent[h].ID << "," <<
-                        schoolyearArr[i].listSemester[j].coursesListInSemester[k].listStudent[h].firstName <<  "," <<
-                        schoolyearArr[i].listSemester[j].coursesListInSemester[k].listStudent[h].lastName << "," <<
-                        schoolyearArr[i].listSemester[j].coursesListInSemester[k].listStudent[h].quiz << "," <<
-                        schoolyearArr[i].listSemester[j].coursesListInSemester[k].listStudent[h].mid<< "," <<
-                        schoolyearArr[i].listSemester[j].coursesListInSemester[k].listStudent[h].final<< "," <<
-                        schoolyearArr[i].listSemester[j].coursesListInSemester[k].listStudent[h].other << "\n";
-                    }
-            }
-        }
-    }
-
     schoolyearButton = new LinkedButton * [numSchoolYear];
     classesButton = new LinkedButton * [numClass];
     loadUI();
     //printTest(classesArr, numClass, schoolyearArr, numSchoolYear);
 
     window.setFramerateLimit(60);
-    while (window.isOpen())
+    while (window.isOpen()) 
     {
         window.clear();
         background.draw(window);
@@ -270,285 +251,49 @@ void RunApp()
         case 10: // Staff school year (Page 10 - 29 / Staff)
         {
             handleStaffSchoolYearPage();
-            if (page == 10) drawStaffSchoolYearPage();
+            drawStaffSchoolYearPage();
             break;
         }
         case 11: // Classes Page
         {
             handleStaffClassPage();
-            if (page == 11) drawStaffClassPage();
-            break;
-        }
-        case 12: // Schoolyears Page
-        {
-            //viewingPage.text.setString("Viewing school years");
-            while (window.pollEvent(event)) {
-                if (event.type == sf::Event::Closed) window.close();
-                inputYear.isClicked(event, window); // Input school year
-                // Add school year
-                backButton.isHovering(window);
-                if (addYearButton.isClicked(window, event)) {
-                    schoolyearArr = loadAddSchoolyear(schoolyearArr, numSchoolYear);
-                    schoolyearArr[numSchoolYear - 1].period = inputYear.text.getString();
-                    schoolyearButton = loadAddYearButton(schoolyearArr, schoolyearButton, numSchoolYear);
-                    inputYear.text.setString("");
-                }
-                if (backButton.isClicked(window,event)) {
-                    page = 10;
-                    break;
-                }
-                if (rPageButton.isClicked(window, event)) {
-                    // If page is not the last page
-                    if (yearPage < numSchoolYear / 14) yearPage++;
-                }
-                if (lPageButton.isClicked(window, event)) {
-					// If page is not the first page
-                    if (yearPage > 0) yearPage--;
-				}
-                // Check if user click on a schoolyear button
-                int i = yearPage * 14;
-                for (i ; i < (yearPage + 1) * 14 && i < numSchoolYear; ++i)
-                    if (schoolyearButton[i]->isClicked(window,event)) {
-                        user.indexSchoolyear = i;
-                        break;
-                    } 
-                if (user.indexSchoolyear != -1) {
-                    int size = schoolyearArr[user.indexSchoolyear].numSemester;
-					for (int i = 0; i < size; ++i) 
-                        if (schoolyearButton[user.indexSchoolyear]->linkedButton[i]->isClicked(window, event)) {
-							user.indexSemester = i;
-							page = 13;
-							break;
-						}
-				}
-                // Check if numseme < 3 to display input seme 
-                if (user.indexSemester != -1 && schoolyearArr[user.indexSchoolyear].numSemester < 3) {
-                    inputStartDateSem.isClicked(event,window);
-                    inputEndDateSem.isClicked(event, window);
-                    // Add seme to year
-                    if (addSemeButton.isClicked(window, event)) {
-                        // Create new list of semester with size + 1
-                        schoolyearArr[user.indexSchoolyear].listSemester = loadAddSemester(schoolyearArr[user.indexSchoolyear].listSemester, schoolyearArr[user.indexSchoolyear].numSemester);
-                        // Add data to new semester
-                        schoolyearArr[user.indexSchoolyear].listSemester[schoolyearArr[user.indexSchoolyear].numSemester - 1].startDate = inputEndDateSem.text.getString();
-                        schoolyearArr[user.indexSchoolyear].listSemester[schoolyearArr[user.indexSchoolyear].numSemester - 1].endDate = inputEndDateSem.text.getString();
-						// Create new button for semester
-                        schoolyearButton[user.indexSchoolyear]->linkedButton = loadAddSemeButton(schoolyearArr[user.indexSchoolyear].listSemester, schoolyearButton[user.indexSchoolyear]->linkedButton, schoolyearArr[user.indexSchoolyear].numSemester);
-						inputStartDateSem.text.setString("");
-						inputEndDateSem.text.setString("");
-                    }
-                }
-            }
-
-            //Draw
-            viewingPage.draw(window);
-            backButton.draw(window);
-            rPageButton.draw(window);
-            lPageButton.draw(window);
-            int i = yearPage * 14;
-            for (i ; i < (yearPage + 1) * 14 && i < numSchoolYear; ++i)
-                schoolyearButton[i]->draw(window);
-            inputYear.draw(window);
-            addYearButton.draw(window);
-            viewLine.draw(window);
-            if (user.indexSchoolyear != -1) {
-                semesterBox.text.setString(schoolyearArr[user.indexSchoolyear].period);
-                semesterBox.draw(window);
-                int size = schoolyearArr[user.indexSchoolyear].numSemester;
-                for (int i = 0; i < size; ++i)
-                    schoolyearButton[user.indexSchoolyear]->linkedButton[i]->draw(window);
-            }
-            if (user.indexSemester != -1 && schoolyearArr[user.indexSchoolyear].numSemester < 3) {
-				inputStartDateSem.draw(window);
-				inputEndDateSem.draw(window);
-				addSemeButton.draw(window);
-			}
+            drawStaffClassPage();
             break;
         }
         case 13: // Course Page
         {
             handleEventCoursePage();
-            if (page == 13) drawCoursePage();
+            drawCoursePage();
+            break;
+        }
+        case 14: // Change password
+        {
+            handleChangePassword();
+            drawChangePassword();
             break;
         }
         case 15: // Staff profile
         {
-            //v/iewingPage.text.setString("Viewing profile");
-            while (window.pollEvent(event)) {
-                if (event.type == sf::Event::Closed) window.close();
-                schoolyearsSelect.isHovering(window);
-                classesButtonSelect.isHovering(window);
-
-                if (userIcon.isClicked(window, event)) {}
-                if (userIcon.isSelect) {
-                    profileStaff.isHovering(window);
-                    logOutButton.isHovering(window);
-                    passwordChange.isHovering(window);
-                    if (profileStaff.isClicked(window, event)) {
-                        if (profileText != nullptr) delete profileText;
-                        profileText = new ProfileText(user.staff->firstName, user.staff->lastName, user.staff->staffID);
-                        page = 15;
-                        break;
-                    }
-                    if (logOutButton.isClicked(window, event)) {
-                        user.isStaff = false;
-                        page = 0;
-                        user.staff = nullptr;
-                        clearInput();
-                        break;
-                    }
-                    if (passwordChange.isClicked(window, event)) {}
-                }
-                if (schoolyearsSelect.isClicked(window, event)) {
-                    page = 10;
-                    break;
-                }
-                if (classesButtonSelect.isClicked(window, event)) {
-                    page = 11;
-                    break;
-                }
-            }
-            // Draw
-            viewingPage.draw(window);
-            userIcon.draw(window);
-            if (userIcon.isSelect) {
-                burgerMenu.draw(window);
-                profileStaff.draw(window);
-                logOutButton.draw(window);
-                passwordChange.draw(window);
-            }
-            if (classesButtonSelect.isHover) hrztBarClass.draw(window);
-            else if (schoolyearsSelect.isHover) hrztBarYear.draw(window);
-            classesButtonSelect.draw(window);
-            schoolyearsSelect.draw(window);
-            seeProfile.draw(window);
-            profileText->drawStaff(window);
+            handleProfile();
+            drawProfile();
             break;
         }
-        case 16: // Student in class page
+        case 16: // Class detail
         {
-            //viewingPage.text.setString("Viewing students in class " + classesArr[user.indexClass].classID);
-            int size = classesArr[user.indexClass].numStudent;
-            while (window.pollEvent(event)) {
-                if (event.type == sf::Event::Closed) window.close();
-                if (backButton.isClicked(window, event)) {
-                    page = 11;
-                    break;
-                }
-                int i = stuPage * 14;
-                for (i; i < (stuPage + 1) * 14 && i < size; ++i) {
-                    if (classesButton[user.indexClass]->linkedButton[i]->isClicked(window, event)) {
-                        user.indexStudentInClass = i;
-                        page = 17;
-                        break;
-                    }
-                }
-                if (rPageButton.isClicked(window, event)) {
-                    // If page is not the last page
-                    if (stuPage < classesArr[user.indexClass].numStudent / 14) stuPage++;
-                }
-                if (lPageButton.isClicked(window, event)) {
-                    // If page is not the first page
-                    if (stuPage > 0) stuPage--;
-                }
-
-                // Add student control
-                inputStuID.isClicked(event, window);
-                inputSocialID.isClicked(event, window);
-                inputFirstName.isClicked(event, window);
-                inputLastName.isClicked(event, window);
-                inputDOB.isClicked(event, window);
-                genderCheckBox.isClicked(window, event);
-                if (addStuButton.isClicked(window, event)) {
-                    // Load data into variable
-                    classesArr[user.indexClass].listStudent = loadAddStudent();
-                    int z = classesArr[user.indexClass].numStudent;
-                    classesArr[user.indexClass].listStudent[z - 1].studentID = inputStuID.text.getString();
-                    classesArr[user.indexClass].listStudent[z - 1].socialID = inputSocialID.text.getString();
-                    classesArr[user.indexClass].listStudent[z - 1].firstName = inputFirstName.text.getString();
-                    classesArr[user.indexClass].listStudent[z - 1].lastName = inputLastName.text.getString();
-                    classesArr[user.indexClass].listStudent[z - 1].dob = inputDOB.text.getString();
-                    classesArr[user.indexClass].listStudent[z - 1].femaleGender = genderCheckBox.active;
-
-                    // Load data for UI
-                    classesButton[user.indexClass]->linkedButton = loadAddStuButton();
-                    // Clear input
-                    inputStuID.text.setString("");
-                    inputSocialID.text.setString("");
-                    inputFirstName.text.setString("");
-                    inputLastName.text.setString("");
-                    inputDOB.text.setString("");
-                    genderCheckBox.active = false;  
-                    numStuBox.text.setString("Number students: " + to_string(classesArr[user.indexClass].numStudent));
-                }
-            }
-            //Draw
-            viewingPage.draw(window);
-            backButton.draw(window);
-            rPageButton.draw(window);
-            lPageButton.draw(window);
-            viewLine.draw(window);
-            numStuBox.draw(window);
-            
-            inputStuID.draw(window);
-            inputSocialID.draw(window);
-            inputFirstName.draw(window);
-            inputLastName.draw(window);
-            inputDOB.draw(window);
-            genderCheckBox.draw(window);
-            addStuButton.draw(window);
-            
-            int i = stuPage * 14;
-            for (i; i < (stuPage + 1) * 14 && i < size; ++i)
-                classesButton[user.indexClass]->linkedButton[i]->draw(window);
+            handleStaffClassDetailPage();
+            drawStaffClassDetailPage();
             break;
         }
-        case 17: // See detail of stu in class
+        case 17: // Student detail in class
         {
-            //viewingPage.text.setString("Viewing student profile");
-            while (window.pollEvent(event)) {
-                if (event.type == sf::Event::Closed) window.close();
-                if (backButton.isClicked(window,event)) {
-                    page = 16;
-                    break;
-                }
-            }
-            // Draw
-            viewingPage.draw(window);
-            backButton.draw(window);
+            handleStuDetailPage();
+            drawStuDetailPage();
             break;
         }
         case 18: // Detail course
         {
             handleEventDetailCoursePage();
-            if (page == 18) drawDetailCoursePage();
-            break;
-        }
-        case 19: // Detail Student
-        {   
-            numStudentInClass = schoolyearArr[user.indexSchoolyear].listSemester[user.indexSemester].coursesListInSemester[user.indexCourse].currStudents;
-            numStudentTMP = numStudentInClass;
-            if(numStudentInClass != 0){
-                row = new RowInfor [numStudentInClass];
-                for(int i = 0; i < numStudentInClass; i++){
-                    row[i].LoadInfor(i + 1, schoolyearArr[user.indexSchoolyear].listSemester[user.indexSemester].coursesListInSemester[user.indexCourse].listStudent[i]);
-                }
-                curScoreBoardPage = 1;
-                numScoreBoardPage = (numStudentInClass-1)/5 + 1;
-                numScoreBoardPageText.text.setString(std::to_string(curScoreBoardPage) + "/" + std::to_string(numScoreBoardPage) + " Page");
-                if(numStudentInClass > 1) numStudentInClassText.text.setString(std::to_string(numStudentInClass) + " students");
-                else numStudentInClassText.text.setString(std::to_string(numStudentInClass) + " student");
-                studentStart = 0;
-                studentEnd = min(5, numStudentInClass);
-            }
-            page = 20;
-            break;
-        }
-        case 20:
-        {   
-            
-            handleEventDetailStudentPage();
-            if(page == 20) drawDetailStudentPage();
+            drawDetailCoursePage();
             break;
         }
         case 30: // Student menu page (Page 30 -> Student)
@@ -558,19 +303,8 @@ void RunApp()
                 if (logOutButton.isClicked(window,event)) {
                     user.isStaff = false;
                     page = 0;
-                    delete profileText;
-                    profileText = nullptr;
                     user.student = nullptr;
                     clearInput();
-                    break;
-                }
-                if (profileStu.isClicked(window,event)) {
-                    string gender;
-                    if (user.student->femaleGender) gender = "Female";
-                    else gender = "Male";
-                    profileText = new ProfileText(user.student->firstName, user.student->lastName,
-                        user.student->studentID, user.student->dob, gender, user.student->socialID);
-                    page = 31;
                     break;
                 }
                 passwordChange.isClicked(window, event);
@@ -584,19 +318,6 @@ void RunApp()
         }
         case 31: // Stu profile
         {
-            //viewingPage.text.setString("Viewing profile");
-            while (window.pollEvent(event)) {
-                if (event.type == sf::Event::Closed) window.close();
-                if (backButton.isClicked(window,event)) {
-                    page = 30;
-                    break;
-                }
-            }
-            // Draw
-            viewingPage.draw(window);
-            backButton.draw(window);
-            seeProfile.draw(window);
-            profileText->drawStu(window);
             break;
         }
         default: 
@@ -665,6 +386,81 @@ void clearInput() {
     inputUserBox.text.setString("");
     inputPassBox.text.setString("");
     inputPassBox.star.setString("");
+}
+void searchYear() {
+    string substring = inputSearchYear.text.getString().toAnsiString();
+    if (searchArrUI != nullptr) {
+        searchArrUI->reset();
+		delete searchArrUI;
+        searchArrUI = nullptr;
+    }
+    if (!substring.empty()) {
+		searchArrUI = new SearchArrPointerUI(numSchoolYear);
+        for (int i = 0; i < numSchoolYear; ++i) {
+			string str = schoolyearArr[i].period;
+            if (str.find(substring) != string::npos) {
+				searchArrUI->nameButton[searchArrUI->curNumButton] = str;
+				searchArrUI->idButton[searchArrUI->curNumButton] = i;
+				searchArrUI->curNumButton++;
+				searchArrUI->active = true;
+			}
+		}
+        if (searchArrUI->active) {
+			searchArrUI->loadButtonUI();
+			foundYearAlert.setColor(sf::Color(0, 168, 37));
+			foundYearAlert.trigger = true;
+		}
+        else {
+			delete searchArrUI;
+			searchArrUI = nullptr;
+			notFoundYearAlert.setColor(sf::Color::Red);
+			notFoundYearAlert.trigger = true;
+		}
+	}
+    yearPage = 0;
+    myClock.restart();
+    inputSearchYear.text.setString("");
+    return;
+}
+void searchClass() {
+    string substring = inputSearchClass.text.getString().toAnsiString();
+    if (searchArrUI != nullptr) {
+        searchArrUI->reset();
+        delete searchArrUI;
+        searchArrUI = nullptr;
+    }
+    if (!substring.empty()) {
+        searchArrUI = new SearchArrPointerUI(numClass);
+        for (int i = 0; i < numClass; ++i) {
+            string str = classesArr[i].classID;
+            if (str.find(substring) != string::npos) {
+                searchArrUI->nameButton[searchArrUI->curNumButton] = str;
+                searchArrUI->idButton[searchArrUI->curNumButton] = i;
+                searchArrUI->curNumButton++;
+                searchArrUI->active = true;
+            }
+        }
+        if (searchArrUI->active) {
+            searchArrUI->loadButtonUI();
+            foundClassAlert.setColor(sf::Color(0,168,37));
+            foundClassAlert.trigger = true;
+        }
+        else {
+            delete searchArrUI;
+            searchArrUI = nullptr;
+            notFoundClassAlert.setColor(sf::Color::Red);
+            notFoundClassAlert.trigger = true;
+        }
+    }
+    classPage = 0;
+    myClock.restart();
+    inputSearchClass.text.setString("");
+    return;
+}
+int searchCourse() {
+    for (int i = 0; i < schoolyearArr[user.indexSchoolyear].listSemester[user.indexSemester].numCourses; ++i) 
+		if (schoolyearArr[user.indexSchoolyear].listSemester[user.indexSemester].coursesListInSemester[i].ID == inputSearchCourse.text.getString()) return i;
+    return -1;
 }
 
 // Load UI
@@ -786,6 +582,216 @@ void connectPointerofSessionandDow() {
 }
 
 // Handle and draw in every page
+void handleChangePassword() {
+    while (window.pollEvent(event)) {
+        if (event.type == sf::Event::Closed) window.close();
+        
+        schoolyearsSelect.isHovering(window);
+        if (schoolyearsSelect.isClicked(window, event)) {
+            page = 10;
+            break;
+        }
+
+        classesButtonSelect.isHovering(window);
+        if (classesButtonSelect.isClicked(window, event)) {
+            page = 11;
+            break;
+        }
+
+        if (userIcon.isClicked(window, event)) {}
+        if (userIcon.isSelect) {
+            profileStaff.isHovering(window);
+            logOutButton.isHovering(window);
+            passwordChange.isHovering(window);
+            if (profileStaff.isClicked(window, event)) {
+                prevPage = page;
+                page = 15;
+                break;
+            }
+            if (logOutButton.isClicked(window, event)) {
+                user.isStaff = false;
+                page = 0;
+                user.staff = nullptr;
+                clearInput();
+                break;
+            }
+        }
+
+        currentPassword.isHovering(window);
+        currentPassword.isClicked(event, window);
+        
+        newPassword.isHovering(window);
+        newPassword.isClicked(event, window);
+
+        confirmPassword.isHovering(window);
+        confirmPassword.isClicked(event, window);
+
+        showNewPassButton.isClicked(window,event);
+
+        if (savePasswordButton.isClicked(window, event)) {
+            if (currentPassword.text.getString() == user.staff->password 
+                && newPassword.text.getString() == confirmPassword.text.getString()) {
+					user.staff->password = newPassword.text.getString();
+                    passScAlert.trigger = true;
+			}
+            else {
+                passFlAlert.trigger = true;
+            }
+            currentPassword.text.setString("");
+            newPassword.text.setString("");
+            confirmPassword.text.setString("");
+            myClock.restart();
+            break;
+        }
+
+        if (cancelPasswordButton.isClicked(window, event)) {
+			page = prevPage;
+			break;
+		}
+    }
+    return;
+}
+void drawChangePassword() {
+    viewingPage.draw(window);
+    userIcon.draw(window);
+    if (userIcon.isSelect) {
+        burgerMenu.draw(window);
+        profileStaff.draw(window);
+        logOutButton.draw(window);
+        passwordChange.draw(window);
+    }
+    if (classesButtonSelect.isHover) hrztBarClass.draw(window);
+    if (schoolyearsSelect.isHover) hrztBarYear.draw(window);
+    schoolyearsSelect.draw(window);
+    classesButtonSelect.draw(window);
+    userIcon.draw(window);
+    currentPassword.drawStar(window);
+    if (showNewPassButton.active) {
+		newPassword.drawText(window);
+		confirmPassword.drawText(window);
+	}
+	else {
+    	newPassword.drawStar(window);
+        confirmPassword.drawStar(window);
+    } 
+    cancelPasswordButton.draw(window);
+    savePasswordButton.draw(window);
+    showNewPassButton.draw(window);
+    if (passScAlert.trigger) {
+        if (myClock.getElapsedTime().asSeconds() > 3) {
+            passScAlert.trigger = false;
+            myClock.restart();
+		}
+        passScAlert.setColor(sf::Color(0,168,37));
+        passScAlert.draw(window);
+    }
+    if (passFlAlert.trigger) {
+        if (myClock.getElapsedTime().asSeconds() > 3) {
+            passFlAlert.trigger = false;
+            myClock.restart();
+        }
+        passFlAlert.setColor(sf::Color(255, 0, 0));
+        passFlAlert.draw(window);
+    }
+}
+
+void handleProfile() {
+    if (user.isStaff) {
+		seeProfileID.text.setString(user.staff->staffID);
+        seeProfileSocialID.text.setString(user.staff->socialID);
+		seeProfileFirstName.text.setString(user.staff->firstName);
+		seeProfileLastName.text.setString(user.staff->lastName);
+		seeProfileDOB.text.setString(user.staff->dob);
+        if (user.staff->gender) seeProfileGender.female = true;
+		else seeProfileGender.female = false;
+    }
+    else {
+        seeProfileID.text.setString(user.student->studentID);
+		seeProfileSocialID.text.setString(user.student->socialID);
+		seeProfileFirstName.text.setString(user.student->firstName);
+		seeProfileLastName.text.setString(user.student->lastName);
+		seeProfileDOB.text.setString(user.student->dob);
+        if (user.student->femaleGender) seeProfileGender.female = true;
+        else seeProfileGender.female = false;
+    }
+    
+    while (window.pollEvent(event)) {
+        if (event.type == sf::Event::Closed) window.close();
+        
+        backButton.isHovering(window);
+        if (backButton.isClicked(window, event)) {
+			page = prevPage;
+            prevPage = page;
+			break;
+		}
+        
+        schoolyearsSelect.isHovering(window);
+        classesButtonSelect.isHovering(window);
+
+        if (userIcon.isClicked(window, event)) {}
+        if (userIcon.isSelect) {
+            profileStaff.isHovering(window);
+            logOutButton.isHovering(window);
+            passwordChange.isHovering(window);
+            if (profileStaff.isClicked(window, event)) {
+                prevPage = page;
+                page = 15;
+                break;
+            }
+            if (logOutButton.isClicked(window, event)) {
+                user.isStaff = false;
+                page = 0;
+                prevPage = page;
+                user.staff = nullptr;
+                clearInput();
+                break;
+            }
+            if (passwordChange.isClicked(window, event)) {
+                prevPage = page;
+				page = 14;
+				break;
+            }
+        }
+        if (schoolyearsSelect.isClicked(window, event)) {
+            page = 10;
+            prevPage = page;
+            break;
+        }
+        if (classesButtonSelect.isClicked(window, event)) {
+            page = 11;
+            prevPage = page;
+            break;
+        }
+    }
+}
+void drawProfile() {
+    viewingPage.draw(window);
+    userIcon.draw(window);
+    if (userIcon.isSelect) {
+        burgerMenu.draw(window);
+        profileStaff.draw(window);
+        logOutButton.draw(window);
+        passwordChange.draw(window);
+    }
+    if (classesButtonSelect.isHover) hrztBarClass.draw(window);
+    if (schoolyearsSelect.isHover) hrztBarYear.draw(window);
+    classesButtonSelect.draw(window);
+    schoolyearsSelect.draw(window);
+    backButton.draw(window);
+
+    avatarProfile.draw(window);
+    seeProfileID.draw(window);
+    seeProfileSocialID.draw(window);
+    seeProfileFirstName.draw(window);
+    seeProfileLastName.draw(window);
+    seeProfileDOB.draw(window);
+    seeProfileGender.draw(window);
+
+    //seeProfile.draw(window);
+    //profileText->drawStaff(window);
+    return;
+}
+
 void handleStaffSchoolYearPage() {
     while (window.pollEvent(event)) {
         if (event.type == sf::Event::Closed) window.close();
@@ -808,8 +814,7 @@ void handleStaffSchoolYearPage() {
             logOutButton.isHovering(window);
             passwordChange.isHovering(window);
             if (profileStaff.isClicked(window, event)) {
-                if (profileText != nullptr) delete profileText;
-                profileText = new ProfileText(user.staff->firstName, user.staff->lastName, user.staff->staffID);
+                prevPage = page;
                 page = 15;
                 break;
             }
@@ -820,7 +825,11 @@ void handleStaffSchoolYearPage() {
                 clearInput();
                 break;
             }
-            if (passwordChange.isClicked(window, event)) {}
+            if (passwordChange.isClicked(window, event)) {
+                prevPage = 10;
+                page = 14;
+				break;
+            }
         }
         
         inputYear.isHovering(window);
@@ -834,26 +843,49 @@ void handleStaffSchoolYearPage() {
 
         inputSearchYear.isHovering(window);
         inputSearchYear.isClicked(event, window);
-        if (searchYearButton.isClicked(window, event)) {}
+        if (searchYearButton.isClicked(window, event)) {
+            searchYear();
+            break;
+        }
 
         lPageButton.isHovering(window);
         if (lPageButton.isClicked(window, event)) {
-            // If page is not the first page
             if (yearPage > 0) yearPage--;
         }
         rPageButton.isHovering(window);
         if (rPageButton.isClicked(window, event)) {
-            // If page is not the last page
-            if (yearPage < numSchoolYear / 14) yearPage++;
+            int tmp1;
+            if (searchArrUI == nullptr) {
+                if (numSchoolYear % 12 != 0) tmp1 = numSchoolYear / 12;
+                else tmp1 = numSchoolYear / 12 - 1;
+                if (yearPage < tmp1) yearPage++;
+            }
+            else {
+                if (searchArrUI->curNumButton % 12 != 0) tmp1 = searchArrUI->curNumButton / 12;
+                else tmp1 = searchArrUI->curNumButton / 12 - 1;
+                if (yearPage < tmp1) yearPage++;
+            }
         }
 
-        for (int i = yearPage * 12; i < (yearPage + 1) * 12 && i < numSchoolYear; ++i)
-            schoolyearButton[i]->isHovering(window);
-        for (int i = yearPage * 12; i < (yearPage + 1) * 12 && i < numSchoolYear; ++i)
-            if (schoolyearButton[i]->isClicked(window, event)) {
-                user.indexSchoolyear = i;
-                break;
-            }
+        if (searchArrUI == nullptr) {
+            for (int i = yearPage * 12; i < (yearPage + 1) * 12 && i < numSchoolYear; ++i)
+                schoolyearButton[i]->isHovering(window);
+            for (int i = yearPage * 12; i < (yearPage + 1) * 12 && i < numSchoolYear; ++i)
+                if (schoolyearButton[i]->isClicked(window, event)) {
+                    user.indexSchoolyear = i;
+                    break;
+                }
+        }
+        else {
+            for (int i = yearPage * 12; i < (yearPage + 1) * 12 && i < searchArrUI->curNumButton; ++i)
+				schoolyearButton[i]->isHovering(window);
+			for (int i = yearPage * 12; i < (yearPage + 1) * 12 && i < searchArrUI->curNumButton; ++i)
+                if (schoolyearButton[i]->isClicked(window, event)) {
+					user.indexSchoolyear = searchArrUI->idButton[i];
+					break;
+				}
+        }
+        
         if (user.indexSchoolyear != -1) {
             int size = schoolyearArr[user.indexSchoolyear].numSemester;
             for (int i = 0; i < size; ++i)
@@ -861,6 +893,7 @@ void handleStaffSchoolYearPage() {
             for (int i = 0; i < size; ++i)
                 if (schoolyearButton[user.indexSchoolyear]->linkedButton[i]->isClicked(window, event)) {
                     user.indexSemester = i;
+                    prevPage = page;
                     page = 13;
                     break;
                 }
@@ -885,6 +918,7 @@ void handleStaffSchoolYearPage() {
             }
         }
     }
+    return;
 }
 void drawStaffSchoolYearPage() {
     viewingPage.draw(window);
@@ -907,8 +941,30 @@ void drawStaffSchoolYearPage() {
     addYearButton.draw(window);
     searchYearButton.draw(window);
 
-    for (int i = yearPage * 12; i < (yearPage + 1) * 12 && i < numSchoolYear; ++i)
-        schoolyearButton[i]->draw(window);
+    if (searchArrUI == nullptr) {
+        for (int i = yearPage * 12; i < (yearPage + 1) * 12 && i < numSchoolYear; ++i)
+            schoolyearButton[i]->draw(window);
+    }
+    else {
+		for (int i = yearPage * 12; i < (yearPage + 1) * 12 && i < searchArrUI->curNumButton; ++i)
+            searchArrUI->linkedButton[i]->draw(window);
+	}
+    
+    if (foundYearAlert.trigger) {
+        if (myClock.getElapsedTime().asSeconds() > 3) {
+			foundYearAlert.trigger = false;
+			myClock.restart();
+		}
+		foundYearAlert.draw(window);
+	}
+    if (notFoundYearAlert.trigger) {
+        if (myClock.getElapsedTime().asSeconds() > 3) {
+            notFoundYearAlert.trigger = false;
+            myClock.restart();
+        }
+        notFoundYearAlert.draw(window);
+    }
+
     if (user.indexSchoolyear != -1) {
         semesterBox.text.setString(schoolyearArr[user.indexSchoolyear].period);
         semesterBox.draw(window);
@@ -922,12 +978,13 @@ void drawStaffSchoolYearPage() {
         addSemeButton.draw(window);
     }
 }
+
 void handleEventCoursePage() {
     int size = schoolyearArr[user.indexSchoolyear].listSemester[user.indexSemester].numCourses;
 
     while (window.pollEvent(event)) {
         if (event.type == sf::Event::Closed) window.close();
-        
+
         schoolyearsSelect.isHovering(window);
         if (schoolyearsSelect.isClicked(window, event)) {
             page = 10;
@@ -946,8 +1003,7 @@ void handleEventCoursePage() {
             logOutButton.isHovering(window);
             passwordChange.isHovering(window);
             if (profileStaff.isClicked(window, event)) {
-                if (profileText != nullptr) delete profileText;
-                profileText = new ProfileText(user.staff->firstName, user.staff->lastName, user.staff->staffID);
+                prevPage = page;
                 page = 15;
                 break;
             }
@@ -963,10 +1019,10 @@ void handleEventCoursePage() {
 
         backButton.isHovering(window);
         if (backButton.isClicked(window, event)) {
-			page = 10;
-			break;
-		}
-        
+            page = 10;
+            break;
+        }
+
         // Hovering control
         inputSearchCourse.isHovering(window);
         inputCourseID.isHovering(window);
@@ -976,10 +1032,10 @@ void handleEventCoursePage() {
         inputCredit.isHovering(window);
         inputMaxStuInCourse.isHovering(window);
         inputTeacherName.isHovering(window);
-        for(int i = 0; i < 6; ++i)
-			doWCourseButtonArr[i]->isHovering(window);
+        for (int i = 0; i < 6; ++i)
+            doWCourseButtonArr[i]->isHovering(window);
         for (int i = 0; i < 4; ++i)
-			sessionCourseButtonArr[i]->isHovering(window);
+            sessionCourseButtonArr[i]->isHovering(window);
 
         // Back & subPage control
         rPageButton.isHovering(window);
@@ -1001,26 +1057,40 @@ void handleEventCoursePage() {
         inputCredit.isClicked(event, window);
         inputMaxStuInCourse.isClicked(event, window);
         inputTeacherName.isClicked(event, window);
-        
+
         // Input day of week control
         for (int i = 0; i < 6; ++i) {
             if (doWCourseButtonArr[i]->isClicked(window, event)) {
                 for (int j = 0; j < 6; ++j) {
-					if (j != i) doWCourseButtonArr[j]->isSelect = false;
-				}
-			}
+                    if (j != i) doWCourseButtonArr[j]->isSelect = false;
+                }
+            }
         }
         // Input session control
         for (int i = 0; i < 4; ++i) {
             if (sessionCourseButtonArr[i]->isClicked(window, event)) {
-				for (int j = 0; j < 4; ++j) {
-                	if (j != i) sessionCourseButtonArr[j]->isSelect = false;
+                for (int j = 0; j < 4; ++j) {
+                    if (j != i) sessionCourseButtonArr[j]->isSelect = false;
                 }
             }
         }
 
         // If search course 
-        if (searchCourseButton.isClicked(window,event)) {}
+        if (searchCourseButton.isClicked(window, event)) {
+            int index = searchCourse();
+            if (index != -1) {
+                user.indexCourse = index;
+                notFoundCourseAlert.trigger = false;
+                page = 18;
+            }
+            else {
+                notFoundCourseAlert.trigger = true;
+                notFoundCourseAlert.setColor(sf::Color(255, 0, 0));
+                myClock.restart();
+            }
+            inputSearchCourse.text.setString("");
+            break;
+        }
 
         // Add course control 
         if (addCourseButton.isClicked(window, event)) {
@@ -1033,13 +1103,14 @@ void handleEventCoursePage() {
         // Course button control base on course page
         for (int i = coursePage * 12; i < (coursePage + 1) * 12 && i < size; ++i)
             schoolyearButton[user.indexSchoolyear]->linkedButton[user.indexSemester]->linkedButton[i]->isHovering(window);
-        for (int i = coursePage * 12; i < (coursePage + 1) * 12 && i < size; ++i)
+        for (int i = coursePage * 12; i < (coursePage + 1) * 12 && i < size; ++i) {
             if (schoolyearButton[user.indexSchoolyear]->linkedButton[user.indexSemester]->linkedButton[i]->isClicked(window, event)) {
                 page = 18;
                 user.indexCourse = i;
                 assignCourseForModify();
                 break;
             }
+        }
     }
 }
 void drawCoursePage() {
@@ -1062,6 +1133,14 @@ void drawCoursePage() {
     rPageButton.draw(window);
     backButton.draw(window);
 
+    if (notFoundCourseAlert.trigger) {
+        if (myClock.getElapsedTime().asSeconds() > 3) {
+			notFoundCourseAlert.trigger = false;
+			myClock.restart();
+		}
+		notFoundCourseAlert.draw(window);
+    }
+
     // Draw input course
     inputSearchCourse.draw(window);
     inputCourseID.draw(window);
@@ -1077,11 +1156,13 @@ void drawCoursePage() {
     for (int i = 0; i < 4; ++i)
         sessionCourseButtonArr[i]->draw(window);
 
+
     // Draw course button base on course page
     int i = coursePage * 12;
     for (i; i < (coursePage + 1) * 12 && i < size; ++i)
         schoolyearButton[user.indexSchoolyear]->linkedButton[user.indexSemester]->linkedButton[i]->draw(window);
 }
+
 void handleEventDetailCoursePage() {
     while (window.pollEvent(event)) {
         if (event.type == sf::Event::Closed) window.close();
@@ -1104,8 +1185,7 @@ void handleEventDetailCoursePage() {
             logOutButton.isHovering(window);
             passwordChange.isHovering(window);
             if (profileStaff.isClicked(window, event)) {
-                if (profileText != nullptr) delete profileText;
-                profileText = new ProfileText(user.staff->firstName, user.staff->lastName, user.staff->staffID);
+                prevPage = page;
                 page = 15;
                 break;
             }
@@ -1124,12 +1204,9 @@ void handleEventDetailCoursePage() {
 			page = 18;
 			break;
 		}
-        
+
         studentDetailSelect.isHovering(window);
-        if (studentDetailSelect.isClicked(window, event)) {
-            page = 19;
-            break;
-        }
+        if (studentDetailSelect.isClicked(window, event)) { }
 
         // Hovering control
         modifyCourseID.isHovering(window);
@@ -1139,7 +1216,6 @@ void handleEventDetailCoursePage() {
         modifyCredit.isHovering(window);
         modifyMaxStuInCourse.isHovering(window);
         backButton.isHovering(window);
-        inputStuToCourse.isHovering(window);
         inputImportScore.isHovering(window);
         inputImportStuToCourse.isHovering(window);
         for (int i = 0; i < 6; ++i)
@@ -1153,7 +1229,6 @@ void handleEventDetailCoursePage() {
         }
 
         // Modify course control
-        inputStuToCourse.isClicked(event,window);
         inputImportScore.isClicked(event, window);
         inputImportStuToCourse.isClicked(event, window);
         modifyCourseID.isClicked(event, window);
@@ -1205,8 +1280,6 @@ void handleEventDetailCoursePage() {
 
 	}
 }
-
-
 void drawDetailCoursePage() {
     viewingPage.draw(window);
     schoolyearsSelect.draw(window);
@@ -1226,12 +1299,10 @@ void drawDetailCoursePage() {
     
     courseDetailSelect.draw(window);
     studentDetailSelect.draw(window);
-    addStuToCourseButton.draw(window);
     exportStuButton.draw(window);
     importScoreButton.draw(window);
     importStuButton.draw(window);
     deleteCourseButton.draw(window);
-    inputStuToCourse.draw(window);
     inputImportScore.draw(window);
     inputImportStuToCourse.draw(window);
 
@@ -1246,198 +1317,8 @@ void drawDetailCoursePage() {
         modifyDoWCourseButtonArr[i]->draw(window);
     for (int i = 0; i < 4; ++i)
         modifySessionCourseButtonArr[i]->draw(window);
+
     return;
-}
-
-void handleEventDetailStudentPage()
-{
-    while (window.pollEvent(event))
-    {
-        if (event.type == sf::Event::Closed) window.close();
-        
-        schoolyearsSelect.isHovering(window);
-        if (schoolyearsSelect.isClicked(window, event)) {
-            page = 10;
-            break;
-        }
-        
-        classesButtonSelect.isHovering(window);
-        if (classesButtonSelect.isClicked(window, event)) {
-            page = 11;
-            break;
-        }
-        
-        userIcon.isClicked(window, event);
-        if (userIcon.isSelect) {
-            profileStaff.isHovering(window);
-            logOutButton.isHovering(window);
-            passwordChange.isHovering(window);
-            if (profileStaff.isClicked(window, event)) {
-                if (profileText != nullptr) delete profileText;
-                profileText = new ProfileText(user.staff->firstName, user.staff->lastName, user.staff->staffID);
-                page = 15;
-                break;
-            }
-            if (logOutButton.isClicked(window, event)) {
-                user.isStaff = false;
-                page = 0;
-                user.staff = nullptr;
-                clearInput();
-                break;
-            }
-            if (passwordChange.isClicked(window, event)) {}
-        }
-        
-        searchStudentDetail.isHovering(window);
-        searchStudentDetail.isClicked(event, window);
-
-        searchStudentDetailButton.isHovering(window);
-
-        if(searchStudentDetailButton.isClicked(window, event)){
-            for(int i = 0; i < numStudentInClass; i++){
-                if(row[i].no == 0) continue;
-                if(row[i].ID == searchStudentDetail.text.getString()){
-                    row[i].Active = 1;
-                    curScoreBoardPage = i/5 + 1;
-                    studentStart = findStudentStart(curScoreBoardPage, row, numStudentInClass);
-                    studentEnd = findStudentEnd(curScoreBoardPage, row, numStudentInClass);
-                }
-            }
-        }
-
-        courseDetailSelect.isHovering(window);
-        if (courseDetailSelect.isClicked(window, event)) {
-            page = 18;
-            break;
-        }
-
-        lScoreBoardPage.isHovering(window);
-        if(lScoreBoardPage.isClicked(window, event)) {
-            if(curScoreBoardPage > 1) {
-                curScoreBoardPage--;
-                numScoreBoardPageText.text.setString(std::to_string(curScoreBoardPage) + "/" + std::to_string(numScoreBoardPage) + " Page");
-                studentStart = findStudentStart(curScoreBoardPage, row, numStudentInClass);
-                studentEnd = findStudentEnd(curScoreBoardPage, row, numStudentInClass);
-            }
-        }
-
-        rScoreBoardPage.isHovering(window);
-        if(rScoreBoardPage.isClicked(window, event)) {
-            if(curScoreBoardPage < numScoreBoardPage) {
-                curScoreBoardPage++;
-                numScoreBoardPageText.text.setString(std::to_string(curScoreBoardPage) + "/" + std::to_string(numScoreBoardPage) + " Page");
-                studentStart = findStudentStart(curScoreBoardPage, row, numStudentInClass);
-                studentEnd = findStudentEnd(curScoreBoardPage, row, numStudentInClass);
-                // cout<<studentStart<<" - "<<studentEnd<<"\n";
-            }
-        }
-
-
-
-        int numStudent = schoolyearArr[user.indexSchoolyear].listSemester[user.indexSemester].coursesListInSemester[user.indexCourse].currStudents;
-
-        for(int i = studentStart; i < studentEnd; i++){
-            if(!row[i].isClicked()) row[i].updateAll();
-        }
-
-        saveScoreBoard.isHovering(window);
-        if(saveScoreBoard.isClicked(window, event)){
-            saveStudent(schoolyearArr[user.indexSchoolyear].listSemester[user.indexSemester].coursesListInSemester[user.indexCourse], row);
-            page = 19;
-            break;
-        }
-        if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
-            for(int i = studentStart; i < studentEnd; i++){
-                if(!row[i].no) continue;
-                row[i].quizSelected = row[i].isQuizScoreClicked(event.mouseButton.x, event.mouseButton.y);
-                row[i].midSelected = row[i].isMidScoreClicked(event.mouseButton.x, event.mouseButton.y);
-                row[i].finalSelected = row[i].isFinalScoreClicked(event.mouseButton.x, event.mouseButton.y);
-                row[i].otherSelected = row[i].isOtherScoreClicked(event.mouseButton.x, event.mouseButton.y);
-                row[i].Active = row[i].isActived(event.mouseButton.x, event.mouseButton.y);
-                if(row[i].isRemoveClicked(window)){
-                    // std::cout << "Remove " << row[i].no << "\n";
-                    for(int j = i+1; j < numStudentInClass; j++){
-                        if(row[j].no) {
-                            row[j].no = row[i].no;
-                            row[i].no++;
-                        }
-                    }
-                    numStudentTMP--;
-                    row[i].no = 0;
-                    if(studentEnd == studentStart + 1) curScoreBoardPage--;
-                    studentStart = findStudentStart(curScoreBoardPage, row, numStudentInClass);
-                    studentEnd = findStudentEnd(curScoreBoardPage, row, numStudentInClass);
-                    numScoreBoardPage = (numStudentTMP-1)/5 + 1;
-                    numScoreBoardPageText.text.setString(std::to_string(curScoreBoardPage) + "/" + std::to_string(numScoreBoardPage) + " Page");
-                }
-            }
-        } else if (event.type == sf::Event::TextEntered) {
-            for(int i = studentStart; i < studentEnd; i++){
-                if(!row[i].no) continue;
-                if(row[i].quizSelected)
-                    row[i].handleQuiz(event.text.unicode);
-                if(row[i].midSelected)
-                    row[i].handleMid(event.text.unicode);
-                if(row[i].finalSelected)
-                    row[i].handleFinal(event.text.unicode);
-                if(row[i].otherSelected)
-                    row[i].handleOther(event.text.unicode);
-            }
-        } else if(event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Enter){
-            for(int i = studentStart; i < studentEnd; i++){
-                if(!row[i].no) continue;
-                row[i].updateAll();
-            }
-        }
-    }
-}
-
-void drawDetailStudentPage()
-{
-    viewingPage.draw(window);
-    schoolyearsSelect.draw(window);
-    classesButtonSelect.draw(window);
-    userIcon.draw(window);
-    if (userIcon.isSelect) {
-        burgerMenu.draw(window);
-        profileStaff.draw(window);
-        logOutButton.draw(window);
-        passwordChange.draw(window);
-    }
-    if (classesButtonSelect.isHover) hrztBarClass.draw(window);
-    else if (schoolyearsSelect.isHover) hrztBarYear.draw(window);
-    else if (studentDetailSelect.isHover) hrztBarStudentDetails.draw(window);
-    else hrztBarCourseDetails.draw(window);
-    backButton.draw(window);
-    
-    courseDetailSelect.draw(window);
-    studentDetailSelect.draw(window);
-
-    numStudentInClassText.draw(window);
-    searchStudentDetail.draw(window);
-    addStudentDetail.draw(window);
-    searchStudentDetailButton.draw(window);
-    addStudentDetailButton.draw(window);
-
-
-    lScoreBoardPage.draw(window);
-    rScoreBoardPage.draw(window);
-    numScoreBoardPageText.text.setFillColor(sf::Color::Black); numScoreBoardPageText.draw(window);
-    saveScoreBoard.draw(window);
-
-    for(int i = studentStart; i < studentEnd; i++){
-        row[i].draw(window);
-    }
-    
-    ScoreBoardLine1.draw(window);
-    ScoreBoardLine2.draw(window);
-    ScoreBoardLine3.draw(window);
-    ScoreBoardLine4.draw(window);
-    ScoreBoardLine5.draw(window);
-    ScoreBoardLine6.draw(window);
-    ScoreBoardLine7.draw(window);
-    ScoreBoardLine8.draw(window);
-    InforStudentDetailBar.draw(window);
 }
 
 void handleStaffClassPage() {
@@ -1462,8 +1343,7 @@ void handleStaffClassPage() {
 			logOutButton.isHovering(window);
 			passwordChange.isHovering(window);
             if (profileStaff.isClicked(window, event)) {
-				if (profileText != nullptr) delete profileText;
-				profileText = new ProfileText(user.staff->firstName, user.staff->lastName, user.staff->staffID);
+                prevPage = page;
 				page = 15;
 				break;
 			}
@@ -1477,36 +1357,56 @@ void handleStaffClassPage() {
 			if (passwordChange.isClicked(window, event)) {}
 		}
 
-		backButton.isHovering(window);
-        if (backButton.isClicked(window, event)) {
-			page = 10;
-			break;
-		}
-
 		lPageButton.isHovering(window);
 		rPageButton.isHovering(window);
         if (rPageButton.isClicked(window, event)) {
-			// If page is not the last page
-			if (classPage < numClass / 12) classPage++;
+            int tmp1;
+            if (searchArrUI == nullptr) {
+                if (numClass % 12 != 0) tmp1 = numClass / 12;
+			    else tmp1 = numClass / 12 - 1;
+                if (classPage < tmp1) classPage++;
+            }
+            else {
+                if (searchArrUI->curNumButton % 12 != 0) tmp1 = searchArrUI->curNumButton / 12;
+				else tmp1 = searchArrUI->curNumButton / 12 - 1;
+				if (classPage < tmp1) classPage++;
+            }
 		}
         if (lPageButton.isClicked(window, event)) {
 			// If page is not the first page
 			if (classPage > 0) classPage--;
 		}
 
-        for (int i = classPage * 12; i < (classPage + 1) * 12 && i < numClass; ++i) {
-            classesButton[i]->isHovering(window);
-        }
-        for (int i = classPage * 12; i < (classPage + 1) * 12 && i < numClass; ++i) {
-            if (classesButton[i]->isClicked(window, event)) {
-                user.indexClass = i;
-                page = 16;
-                stuPage = 0;
-                numStuBox.text.setString("Number students: " + to_string(classesArr[i].numStudent));
-                break;
+        if (searchArrUI == nullptr) {
+            for (int i = classPage * 12; i < (classPage + 1) * 12 && i < numClass; ++i) {
+                classesButton[i]->isHovering(window);
+            }
+            for (int i = classPage * 12; i < (classPage + 1) * 12 && i < numClass; ++i) {
+                if (classesButton[i]->isClicked(window, event)) {
+                    user.indexClass = i;
+                    prevPage = page;
+                    page = 16;
+                    stuPage = 0;
+                    numStuBox.text.setString("Number students: " + to_string(classesArr[i].numStudent));
+                    break;
+                }
             }
         }
-
+        else {
+            for (int i = classPage * 12; (classPage + 1) * 12 && i < searchArrUI->curNumButton; ++i) {
+                searchArrUI->linkedButton[i]->isHovering(window);
+			}
+            for (int i = classPage * 12; (classPage + 1) * 12 && i < searchArrUI->curNumButton; ++i) {
+                if (searchArrUI->linkedButton[i]->isClicked(window, event)) {
+					user.indexClass = searchArrUI->idButton[i];
+					prevPage = page;
+					page = 16;
+					stuPage = 0;
+					numStuBox.text.setString("Number students: " + to_string(classesArr[searchArrUI->idButton[i]].numStudent));
+					break;
+				}
+			}
+        }
         inputClass.isHovering(window);
         inputClass.isClicked(event, window);
         if (addClassButton.isClicked(window, event)) {
@@ -1518,7 +1418,10 @@ void handleStaffClassPage() {
 
         inputSearchClass.isHovering(window);
         inputSearchClass.isClicked(event, window);
-        if (searchClassButton.isClicked(window, event)) {}
+        if (searchClassButton.isClicked(window, event)) {
+            searchClass();
+            break;
+        }
     }
 }
 void drawStaffClassPage() {
@@ -1535,21 +1438,294 @@ void drawStaffClassPage() {
 	}
     if (schoolyearsSelect.isHover) hrztBarYear.draw(window);
     else hrztBarClass.draw(window);
-	backButton.draw(window);
     inputSearchClass.draw(window);
     searchClassButton.draw(window);
     inputClass.draw(window);
     addClassButton.draw(window);
 	lPageButton.draw(window);
 	rPageButton.draw(window);
+    
+    if (notFoundClassAlert.trigger) {
+        if (myClock.getElapsedTime().asSeconds() > 3) {
+            notFoundClassAlert.trigger = false;
+            myClock.restart();
+        }
+        notFoundClassAlert.draw(window);
+    }
+    if (foundClassAlert.trigger) {
+        if (myClock.getElapsedTime().asSeconds() > 3) {
+			foundClassAlert.trigger = false;
+			myClock.restart();
+		}
+		foundClassAlert.draw(window);
+	}
 
 	// Draw class button base on class page
-	int i = classPage * 12;
-	for (i; i < (classPage + 1) * 12 && i < numClass; ++i)
-		classesButton[i]->draw(window);
+    if (searchArrUI == nullptr) {
+        for (int i = classPage * 12; i < (classPage + 1) * 12 && i < numClass; ++i)
+            classesButton[i]->draw(window);
+    }
+    else {
+        for (int i = classPage * 12; i < (classPage + 1) * 12 && i < searchArrUI->curNumButton; ++i)
+            searchArrUI->linkedButton[i]->draw(window);
+    }
 
 }
 
+// Page 16
+void handleStaffClassDetailPage() { 
+    int size = classesArr[user.indexClass].numStudent;
+    while (window.pollEvent(event)) {
+        if (event.type == sf::Event::Closed) window.close();
+
+        backButton.isHovering(window);
+        if (backButton.isClicked(window, event)) {
+            page = 11;
+            break;
+        }
+
+        schoolyearsSelect.isHovering(window);
+        if (schoolyearsSelect.isClicked(window, event)) {
+            page = 10;
+            break;
+        }
+
+        classesButtonSelect.isHovering(window);
+        if (classesButtonSelect.isClicked(window, event)) {
+            page = 11;
+            break;
+        }
+
+        userIcon.isClicked(window, event);
+        if (userIcon.isSelect) {
+            profileStaff.isHovering(window);
+            logOutButton.isHovering(window);
+            passwordChange.isHovering(window);
+            if (profileStaff.isClicked(window, event)) {
+                prevPage = 16;
+                page = 15;
+                break;
+            }
+            if (logOutButton.isClicked(window, event)) {
+                user.isStaff = false;
+                page = 0;
+                user.staff = nullptr;
+                clearInput();
+                break;
+            }
+            if (passwordChange.isClicked(window, event)) {
+                prevPage = 16;
+                page = 14;
+                break;
+            }
+        }
+
+        rPageButton.isHovering(window);
+        lPageButton.isHovering(window);
+        if (rPageButton.isClicked(window, event)) {
+            // If page is not the last page
+            if (stuPage < classesArr[user.indexClass].numStudent / 12) stuPage++;
+        }
+        if (lPageButton.isClicked(window, event)) {
+            // If page is not the first page
+            if (stuPage > 0) stuPage--;
+        }
+
+        inputSearchStu.isHovering(window);
+        inputSearchStu.isClicked(event, window);
+        if (searchStuButton.isClicked(window, event)) { }
+        
+        inputClassFile.isHovering(window);
+        inputClassFile.isClicked(event, window);
+        if (importClassButton.isClicked(window, event)) {
+            string path = inputClassFile.text.getString().toAnsiString();
+            int numIc = 0;
+            if (readCSVStuToClass(path, classesArr[user.indexClass], numIc)) {
+                classesButton[user.indexClass]->linkedButton = loadAddCSVStuToClassButton(numIc);
+                inputClassFile.text.setString("");
+                numStuBox.text.setString("Number students: " + to_string(classesArr[user.indexClass].numStudent));
+            }
+            else {}
+            break;
+        }
+
+        inputStuID.isHovering(window);
+        inputStuID.isClicked(event, window);
+
+        inputSocialID.isHovering(window);
+        inputSocialID.isClicked(event, window);
+
+        inputFirstName.isHovering(window);
+        inputFirstName.isClicked(event, window);
+
+        inputLastName.isHovering(window);
+        inputLastName.isClicked(event, window);
+
+        inputDOB.isHovering(window);
+        inputDOB.isClicked(event, window);
+
+        genderCheckBox.isHovering(window);
+        genderCheckBox.isClicked(window, event);
+        int i = stuPage * 12;
+        for (i; i < (stuPage + 1) * 12 && i < size; ++i)  classesButton[user.indexClass]->linkedButton[i]->isHovering(window);
+        i = stuPage * 12;
+        for (i; i < (stuPage + 1) * 12 && i < size; ++i) {
+            if (classesButton[user.indexClass]->linkedButton[i]->isClicked(window, event)) {
+                user.indexStudentInClass = i;
+                prevPage = page;
+                page = 17;
+                break;
+            }
+        }
+
+        if (addStuButton.isClicked(window, event)) {
+            // Load data into variable
+            classesArr[user.indexClass].listStudent = loadAddStudent();
+            int z = classesArr[user.indexClass].numStudent;
+            classesArr[user.indexClass].listStudent[z - 1].studentID = inputStuID.text.getString();
+            classesArr[user.indexClass].listStudent[z - 1].socialID = inputSocialID.text.getString();
+            classesArr[user.indexClass].listStudent[z - 1].firstName = inputFirstName.text.getString();
+            classesArr[user.indexClass].listStudent[z - 1].lastName = inputLastName.text.getString();
+            classesArr[user.indexClass].listStudent[z - 1].dob = inputDOB.text.getString();
+            classesArr[user.indexClass].listStudent[z - 1].femaleGender = genderCheckBox.female;
+
+            // Load data for UI
+            classesButton[user.indexClass]->linkedButton = loadAddStuButton();
+            // Clear input
+            inputStuID.text.setString("");
+            inputSocialID.text.setString("");
+            inputFirstName.text.setString("");
+            inputLastName.text.setString("");
+            inputDOB.text.setString("");
+            genderCheckBox.female = false;
+            numStuBox.text.setString("Number students: " + to_string(classesArr[user.indexClass].numStudent));
+        }
+    }
+    return;
+
+}
+void drawStaffClassDetailPage() {
+    int size = classesArr[user.indexClass].numStudent;
+    viewingPage.draw(window);
+    viewLine.draw(window);
+    schoolyearsSelect.draw(window);
+    classesButtonSelect.draw(window);
+    userIcon.draw(window);
+    if (userIcon.isSelect) {
+        burgerMenu.draw(window);
+        profileStaff.draw(window);
+        logOutButton.draw(window);
+        passwordChange.draw(window);
+    }
+    if (schoolyearsSelect.isHover) hrztBarYear.draw(window);
+    if (classesButtonSelect.isHover) hrztBarClass.draw(window);
+    backButton.draw(window);
+    rPageButton.draw(window);
+    lPageButton.draw(window);
+    viewLine.draw(window);
+    inputSearchStu.draw(window);
+    searchStuButton.draw(window);
+    inputClassFile.draw(window);
+    importClassButton.draw(window);
+    numStuBox.draw(window);
+    inputStuID.draw(window);
+    inputSocialID.draw(window);
+    inputFirstName.draw(window);
+    inputLastName.draw(window);
+    inputDOB.draw(window);
+    genderCheckBox.draw(window);
+    addStuButton.draw(window);
+
+    int i = stuPage * 12;
+    for (i; i < (stuPage + 1) * 12 && i < size; ++i)
+        classesButton[user.indexClass]->linkedButton[i]->draw(window);
+    return;
+}
+
+// Page 17
+void handleStuDetailPage() { 
+    seeStuID.text.setString(classesArr[user.indexClass].listStudent[user.indexStudentInClass].studentID);
+    seeStuSocialID.text.setString(classesArr[user.indexClass].listStudent[user.indexStudentInClass].socialID);
+    seeStuFirstName.text.setString(classesArr[user.indexClass].listStudent[user.indexStudentInClass].firstName);
+    seeStuLastName.text.setString(classesArr[user.indexClass].listStudent[user.indexStudentInClass].lastName);
+    seeStuDOB.text.setString(classesArr[user.indexClass].listStudent[user.indexStudentInClass].dob);
+    if (classesArr[user.indexClass].listStudent[user.indexStudentInClass].femaleGender) seeStuGender.female = true;
+    else seeStuGender.female = false;
+
+    while (window.pollEvent(event)) {
+        if (event.type == sf::Event::Closed) window.close();
+
+        backButton.isHovering(window);
+        if (backButton.isClicked(window, event)) {
+            page = 16;
+            prevPage = page;
+            break;
+        }
+
+        schoolyearsSelect.isHovering(window);
+        if (schoolyearsSelect.isClicked(window, event)) {
+            page = 10;
+            prevPage = page;
+            break;
+        }
+
+        classesButtonSelect.isHovering(window);
+        if (classesButtonSelect.isClicked(window, event)) {
+            page = 11;
+            prevPage = page;
+            break;
+        }
+
+        userIcon.isClicked(window, event);
+        if (userIcon.isSelect) {
+            profileStaff.isHovering(window);
+            logOutButton.isHovering(window);
+            passwordChange.isHovering(window);
+            if (profileStaff.isClicked(window, event)) {
+                prevPage = page;
+                page = 15;
+                break;
+            }
+            if (logOutButton.isClicked(window, event)) {
+                user.isStaff = false;
+                page = 0;
+                user.staff = nullptr;
+                clearInput();
+                break;
+            }
+            if (passwordChange.isClicked(window, event)) {
+                prevPage = page;
+                page = 14;
+                break;
+            }
+        }
+    }
+    return;
+}
+void drawStuDetailPage() {
+    viewingPage.draw(window);
+	schoolyearsSelect.draw(window);
+	classesButtonSelect.draw(window);
+	userIcon.draw(window);
+    if (userIcon.isSelect) {
+		burgerMenu.draw(window);
+		profileStaff.draw(window);
+		logOutButton.draw(window);
+		passwordChange.draw(window);
+	}
+	if (schoolyearsSelect.isHover) hrztBarYear.draw(window);
+	if (classesButtonSelect.isHover) hrztBarClass.draw(window);
+	backButton.draw(window);
+	
+    avatarStu.draw(window);
+    seeStuID.draw(window);
+	seeStuSocialID.draw(window);
+	seeStuFirstName.draw(window);
+	seeStuLastName.draw(window);
+	seeStuDOB.draw(window);
+	seeStuGender.draw(window);
+	return;
+}
 
 // Update data and UI dynamically
 SchoolYear* loadAddSchoolyear(SchoolYear* old, int& numSchoolYear) {
@@ -1730,6 +1906,28 @@ LinkedButton** loadAddCourseButton() {
     return newCourseButton;
 }
 
+LinkedButton** loadAddCSVStuToClassButton(int numIc) {
+    LinkedButton** newStuButton = new LinkedButton * [classesArr[user.indexClass].numStudent];
+    for (int i = 0; i < classesArr[user.indexClass].numStudent - numIc; ++i) {
+        delete classesButton[user.indexClass]->linkedButton[i];
+    }
+    int x = 115, y = 210;
+    for (int i = 0; i < classesArr[user.indexClass].numStudent; ++i) {
+        if (i % 12 == 0 && i != 0) {
+            x = 115;
+			y = 210;
+		}
+        else if (i % 6 == 0 && i != 0) {
+            x += 225;
+            y = 210;
+        }
+        cout << classesArr[user.indexClass].listStudent[i].studentID << endl;
+        newStuButton[i] = new LinkedButton(x, y, "image/Button200x45.png", classesArr[user.indexClass].listStudent[i].studentID);
+		y += 65;
+    }
+    return newStuButton;
+}
+
 // Free memory
 void freeButtons() {
     for (int i = 0; i < numClass; ++i) {
@@ -1764,8 +1962,4 @@ void freeButtons() {
     delete[] schoolyearArr;
     delete[] staffArr;
     //delete[] courseArr;
-
-    if (profileText) delete profileText;
-    delete[] tmp.listStudent;
-    delete[] row;
 }
