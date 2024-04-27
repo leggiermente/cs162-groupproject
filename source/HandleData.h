@@ -17,5 +17,6 @@ void readStudentTXT(string path,Class& classStu);
 Class* readClass(string path, int& numClass);
 void printTest(Class* classArr, int numClass, SchoolYear* schoolYearArr, int numSchoolYear);
 
-void copyCourse(Course src, Course &dis);
+int findStudentStart(int curPage, RowInfor* students, int numStudent);
+int findStudentEnd(int curPage, RowInfor* students, int numStudent);
 void saveStudent(Course &src, RowInfor* &stu);

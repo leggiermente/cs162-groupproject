@@ -148,6 +148,7 @@ int numScoreBoardPage = 0;
 int studentStart = 1;
 int studentEnd = 1;
 int numStudentInClass = 0;
+int numStudentTMP = 0;
 
 
 
@@ -526,6 +527,7 @@ void RunApp()
         case 19: // Detail Student
         {   
             numStudentInClass = schoolyearArr[user.indexSchoolyear].listSemester[user.indexSemester].coursesListInSemester[user.indexCourse].currStudents;
+            numStudentTMP = numStudentInClass;
             if(numStudentInClass != 0){
                 row = new RowInfor [numStudentInClass];
                 for(int i = 0; i < numStudentInClass; i++){
@@ -1297,8 +1299,8 @@ void handleEventDetailStudentPage()
                 if(row[i].ID == searchStudentDetail.text.getString()){
                     row[i].Active = 1;
                     curScoreBoardPage = i/5 + 1;
-                    studentStart = (curScoreBoardPage - 1)*5;
-                    studentEnd = min(studentStart + 5, numStudentInClass);
+                    studentStart = findStudentStart(curScoreBoardPage, row, numStudentInClass);
+                    studentEnd = findStudentEnd(curScoreBoardPage, row, numStudentInClass);
                 }
             }
         }
@@ -1314,8 +1316,8 @@ void handleEventDetailStudentPage()
             if(curScoreBoardPage > 1) {
                 curScoreBoardPage--;
                 numScoreBoardPageText.text.setString(std::to_string(curScoreBoardPage) + "/" + std::to_string(numScoreBoardPage) + " Page");
-                studentStart -= 5;
-                studentEnd = 5*curScoreBoardPage;
+                studentStart = findStudentStart(curScoreBoardPage, row, numStudentInClass);
+                studentEnd = findStudentEnd(curScoreBoardPage, row, numStudentInClass);
             }
         }
 
@@ -1324,8 +1326,9 @@ void handleEventDetailStudentPage()
             if(curScoreBoardPage < numScoreBoardPage) {
                 curScoreBoardPage++;
                 numScoreBoardPageText.text.setString(std::to_string(curScoreBoardPage) + "/" + std::to_string(numScoreBoardPage) + " Page");
-                studentStart += 5;
-                studentEnd = min(5*curScoreBoardPage, numStudentInClass);
+                studentStart = findStudentStart(curScoreBoardPage, row, numStudentInClass);
+                studentEnd = findStudentEnd(curScoreBoardPage, row, numStudentInClass);
+                // cout<<studentStart<<" - "<<studentEnd<<"\n";
             }
         }
 
@@ -1359,8 +1362,13 @@ void handleEventDetailStudentPage()
                             row[i].no++;
                         }
                     }
-                    studentEnd = min(studentEnd + 1, numStudentInClass);
+                    numStudentTMP--;
                     row[i].no = 0;
+                    if(studentEnd == studentStart + 1) curScoreBoardPage--;
+                    studentStart = findStudentStart(curScoreBoardPage, row, numStudentInClass);
+                    studentEnd = findStudentEnd(curScoreBoardPage, row, numStudentInClass);
+                    numScoreBoardPage = (numStudentTMP-1)/5 + 1;
+                    numScoreBoardPageText.text.setString(std::to_string(curScoreBoardPage) + "/" + std::to_string(numScoreBoardPage) + " Page");
                 }
             }
         } else if (event.type == sf::Event::TextEntered) {

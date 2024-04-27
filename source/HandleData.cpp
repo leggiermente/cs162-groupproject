@@ -280,6 +280,26 @@ void printTest(Class* classArr, int numClass, SchoolYear* schoolYearArr, int num
     return;
 }
 
+int findStudentStart(int curPage, RowInfor* students, int numStudent){
+    int k = -1, i = 0;;
+    int start = (curPage - 1)*5;
+    for(; i < numStudent; i++){
+        if(students[i].no) k++;
+        if(k == start) break;
+    }
+    return i;
+}
+
+int findStudentEnd(int curPage, RowInfor* students, int numStudent){
+    int k = findStudentStart(curPage, students, numStudent);
+    int c = 0, i = k;
+    for(; i < numStudent; i++){
+        if(students[i].no) c++;
+        if (c == 6) break;
+    }
+    return i;
+}
+
 void saveStudent(Course &src, RowInfor* &stu){
     if(src.listStudent) {
         delete[] src.listStudent;
