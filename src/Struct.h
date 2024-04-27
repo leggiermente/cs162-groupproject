@@ -5,13 +5,16 @@ using namespace std;
 
 // Temeporary struct for Score
 struct ScoreStu {
-    string course;
+    string courseID;
+    string semester;
+    string year;
     float quiz;
     float mid;
     float final;
+    float other;
 };
 struct Class;
-struct schoolYear;
+struct SchoolYear;
 struct Course;
 struct Semester;
 struct Student;
@@ -21,7 +24,7 @@ struct Class {
     int numStudent = 0; //updating number of Student in a class.
     Student* listStudent = nullptr;
 };
-struct schoolYear {
+struct SchoolYear {
     string period = "";
     //int classCount = 0; //count the number of class in a school year.
     //Class* classList;
@@ -33,10 +36,12 @@ struct Course {
     string courseName = "";
     string className = "";
     string teacher = "";
+    string dayOfWeek = "";
+    string session = "";
     int numCredits = 0; 
     int maxStudents = 50; 
-    int currStudents = 43;
-    Student* listStudentInCourse = nullptr;
+    int currStudents = 0;
+    Student** listStudentInCourse = nullptr;
 };
 struct Semester {
     int numSemesterInSchoolYear = 0;
@@ -47,16 +52,14 @@ struct Semester {
 };
 struct Student {
     string studentID = "";
-    int semesterStudied = 0;
-    string password = "";
     string firstName = "", lastName = "";
-    bool femaleGender = 0;
+    bool femaleGender = false;
     string dob = "";
-    //int DD = 0, MM = 0, YY = 0;
     string socialID = "";
-    double overallGPA = 0; //updating overallGPA in student.csv
+    string password = "";
+    double overallGPA = 0;
+    int semesterStudied = 0;
     ScoreStu* score = nullptr;
-    Course* courseOfStudent = nullptr;
+    //Course* courseOfStudent = nullptr;
 };
-
 #endif // STRUCT_H_INCLUDED
