@@ -6,7 +6,6 @@
 using namespace std;
 
 #include "HandleData.h"
-#include "Struct.h"
 #include "run.h"
 
 Student* readStudentCSV(string filename, int& numStu) {
@@ -45,6 +44,7 @@ Student* readStudentCSV(string filename, int& numStu) {
     file.close();
     return newStudent;
 }
+
 Staff* readStaffCSV(string filename, int& numStaff) {
     ifstream file(filename);
     string line;
@@ -123,15 +123,16 @@ void readSemesterInSchoolYear(string path, Semester& semester) {
 	}
     semester.coursesListInSemester = new Course[semester.numCourses];
     for (int i = 0; i < semester.numCourses; ++i) {
-		getline(file, line); semester.coursesListInSemester[i].ID = line;
+		getline(file, line, '_'); semester.coursesListInSemester[i].ID = line;
+		getline(file, line); semester.coursesListInSemester[i].className = line;
 	}
     return;
 }
-void readCourseInSemester(string path, SchoolYear* schoolYearArr, int numSchoolYear, Class* classArr, int numClass) {
+void readCourseInSemester(string path, SchoolYear* schoolYearArr, int numSchoolYear) {
     for (int i = 0; i < numSchoolYear; ++i) {
         for (int j = 0; j < schoolYearArr[i].numSemester; ++j) {
             for (int v = 0; v < schoolYearArr[i].listSemester[j].numCourses; ++v) {
-                ifstream file(path + "/" + schoolYearArr[i].listSemester[j].coursesListInSemester[v].ID + ".txt");
+                ifstream file(path + "/course/" + schoolYearArr[i].listSemester[j].coursesListInSemester[v].ID + "_" + schoolYearArr[i].listSemester[j].coursesListInSemester[v].className + ".txt");
                 if (!file) {
 					cout << "Can't open course file\n";
                     file.close();
@@ -148,30 +149,43 @@ void readCourseInSemester(string path, SchoolYear* schoolYearArr, int numSchoolY
                 getline(file, line); int curStu = stoi(line); 
                 schoolYearArr[i].listSemester[j].coursesListInSemester[v].currStudents = curStu;
                 if (curStu != 0)
-                    schoolYearArr[i].listSemester[j].coursesListInSemester[v].listStudentInCourse = new Student * [curStu];
+                    schoolYearArr[i].listSemester[j].coursesListInSemester[v].listStudent = new ScoreStu [curStu];
                 
-                // Read and store address of student in course 
-                for (int k = 0; k < curStu; ++k) {
-                    getline(file, line); // Get student ID
-                    bool foundStu = false; // Check if student is found
-                    
-                    // Brute force search for student && store addresss of student in course
-                    for (int u = 0; u < numClass && !foundStu; u++) {
-                        for (int o = 0; o < classArr[u].numStudent && !foundStu; o++) {
-                            if (classArr[u].listStudent[o].studentID == line) {
-								schoolYearArr[i].listSemester[j].coursesListInSemester[v].listStudentInCourse[k] = &classArr[u].listStudent[o];
-                                foundStu = true;
-							}
-						}   
-                    }
-                    //getline(file, line); schoolYearArr[i].listSemester[j].coursesListInSemester[v].listStudentInCourse[k].studentID = line;
+                // Read and store score student in course 
+                for(int k = 0; k < curStu; k++){
+                    getline(file, line); schoolYearArr[i].listSemester[j].coursesListInSemester[v].listStudent[k].ID = line;
                 }
                 file.close();
+
+                for(int k = 0; k < curStu; k++){
+                    ifstream file(path + "/student/" + schoolYearArr[i].listSemester[j].coursesListInSemester[v].listStudent[k].ID + ".txt");
+                    if (!file) {
+                        cout << "Can't open course file\n";
+                        continue;
+				    }
+                    getline(file, line); 
+                    getline(file, line); schoolYearArr[i].listSemester[j].coursesListInSemester[v].listStudent[k].firstName = line;
+                    getline(file, line); schoolYearArr[i].listSemester[j].coursesListInSemester[v].listStudent[k].lastName = line;
+
+                    while (getline(file, line)) {
+                        if (line.find(schoolYearArr[i].period) != string::npos && line.find(schoolYearArr[i].listSemester[j].coursesListInSemester[v].ID) != string::npos) break;
+                    }
+                    stringstream ss(line);
+                    getline(ss, line, ','); getline(ss, line, ',');
+                    getline(ss, line, ','); schoolYearArr[i].listSemester[j].coursesListInSemester[v].listStudent[k].quiz = stof(line);
+                    getline(ss, line, ','); schoolYearArr[i].listSemester[j].coursesListInSemester[v].listStudent[k].mid = stof(line);
+                    getline(ss, line, ','); schoolYearArr[i].listSemester[j].coursesListInSemester[v].listStudent[k].final = stof(line);
+                    getline(ss, line, ','); schoolYearArr[i].listSemester[j].coursesListInSemester[v].listStudent[k].other = stof(line);
+
+                    file.close();
+                }
+                
             }
         }
     }
     return;
 }
+
 Class* readClass(string path, int& numClass) {
     string line;
 	ifstream file(path + "/class.txt");
@@ -264,4 +278,52 @@ void printTest(Class* classArr, int numClass, SchoolYear* schoolYearArr, int num
         cout << endl;*/
     //}
     return;
+}
+
+int findStudentStart(int curPage, RowInfor* students, int numStudent){
+    int k = -1, i = 0;;
+    int start = (curPage - 1)*5;
+    for(; i < numStudent; i++){
+        if(students[i].no) k++;
+        if(k == start) break;
+    }
+    return i;
+}
+
+int findStudentEnd(int curPage, RowInfor* students, int numStudent){
+    int k = findStudentStart(curPage, students, numStudent);
+    int c = 0, i = k;
+    for(; i < numStudent; i++){
+        if(students[i].no) c++;
+        if (c == 6) break;
+    }
+    return i;
+}
+
+void saveStudent(Course &src, RowInfor* &stu){
+    if(src.listStudent) {
+        delete[] src.listStudent;
+    }
+    int num = 0;
+
+    for(int i = 0; i < src.currStudents; i++){
+        if(stu[i].no != 0) num++;
+    }
+
+    src.listStudent = new ScoreStu [num];
+    int c = 0;
+    for(int i = 0; i < src.currStudents; i++){
+        if(stu[i].no != 0){
+            src.listStudent[c].ID = stu[i].ID;
+            src.listStudent[c].firstName = stu[i].firstName;
+            src.listStudent[c].lastName = stu[i].lastName;
+            src.listStudent[c].quiz = stu[i].quiz;
+            src.listStudent[c].mid = stu[i].mid;
+            src.listStudent[c].final = stu[i].final;
+            src.listStudent[c].other = stu[i].other;
+            c++;
+        }
+    }
+    src.currStudents = num;
+    delete [] stu;
 }

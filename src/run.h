@@ -31,25 +31,18 @@ bool validateUser();
 bool isNumber(const std::string& str);
 void assignCourseForModify();
 void clearInput();
-int searchSchoolyear();
-int searchClass();
-int searchCourse();
 
 // Handle event && Draw UI
-void handleChangePassword();
-void drawChangePassword();
-void handleProfile();
-void drawProfile();
 void handleStaffSchoolYearPage();
 void drawStaffSchoolYearPage();
 void handleEventCoursePage();
 void drawCoursePage();
 void handleEventDetailCoursePage();
 void drawDetailCoursePage();
+void handleEventDetailStudentPage();
+void drawDetailStudentPage();
 void handleStaffClassPage();
 void drawStaffClassPage();
-void handleStaffClassDetailPage();
-void drawStaffClassDetailPage();
 
 // Main function
 void RunApp();

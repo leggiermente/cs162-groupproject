@@ -6,6 +6,6 @@
 int main()
 {
     RunApp();
-    //freeButtons();
+    freeButtons();
     return 0;
 }
