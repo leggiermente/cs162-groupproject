@@ -47,7 +47,7 @@ void importScore(string path, Course &course)
         delete[] course.listStudentInCourse[i]->scoreList; // Deallocate previous memory
         course.listStudentInCourse[i]->scoreList = listScore;
         
-        string filename = course.listStudentInCourse[i]->studentID + ".txt";
+        string filename = "database/student/"+ course.listStudentInCourse[i]->studentID + ".txt";
         ofstream fout(filename);
         if (!fout)
         {
