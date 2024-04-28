@@ -91,6 +91,8 @@ InputWithHead seeStuFirstName(115, 375, "image/Input250x45.png", "First Name");
 InputWithHead seeStuLastName(390, 375, "image/Input250x45.png", "Last Name");
 InputWithHead seeStuDOB(115, 445, "image/Input250x45.png", "Date of Birth");
 GenderSelect seeStuGender(390, 425, "image/female.png", "image/male.png", "Gender");
+Button scoreboardInStu(670, 250, "image/ScoreboardInStu.png");
+
 
 // Button in course page
 //Input
@@ -624,6 +626,8 @@ void loadUIfromDatabase() {
                 }
                 classesButton[i]->linkedButton[j] = new LinkedButton(x, y, "image/Button200x45.png", classesArr[i].listStudent[j].studentID);
                 y += 65.0f;
+
+                classesButton[i]->linkedButton[j]->scoreListInStu = new ScoreRowInStu(670,300, classesArr[i].listStudent[j].gpaList);
             }
         }
     }
@@ -1802,6 +1806,9 @@ void drawStuDetailPage() {
 	seeStuLastName.draw(window);
 	seeStuDOB.draw(window);
 	seeStuGender.draw(window);
+
+    scoreboardInStu.draw(window);
+    classesButton[user.indexClass]->linkedButton[user.indexStudentInClass]->scoreListInStu->draw(window);
 	return;
 }
 

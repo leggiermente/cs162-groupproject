@@ -225,8 +225,19 @@ void readStudentTXT(string path, Class& classStu) {
             getline(file, line); classStu.listStudent[i].dob = line;
             getline(file, line); classStu.listStudent[i].socialID = line;
             getline(file, line); classStu.listStudent[i].password = line;
-            getline(file, line); classStu.listStudent[i].numCourse = stoi(line);
             
+            for (int h = 0; h < 4; h++) {
+                getline(file, line); 
+                classStu.listStudent[i].gpaList[h].year = line;
+            }
+            for (int h = 0; h < 4; h++) {
+                getline(file, line, ','); classStu.listStudent[i].gpaList[h].gpaS[0] = stoi(line);
+                getline(file, line, ','); classStu.listStudent[i].gpaList[h].gpaS[1] = stoi(line);
+                getline(file, line, ','); classStu.listStudent[i].gpaList[h].gpaS[2] = stoi(line);
+                getline(file, line); classStu.listStudent[i].gpaList[h].gpaS[3] = stoi(line);
+            }
+
+            getline(file, line); classStu.listStudent[i].numCourse = stoi(line);
             int numC = classStu.listStudent[i].numCourse;
             if (numC != 0) classStu.listStudent[i].scoreList = new ScoreStu[numC];
             for (int t = 0; t < numC; ++t) {
