@@ -3,15 +3,18 @@
 #include <string>
 using namespace std;
 
-// Temeporary struct for Score
+struct GPA {
+    string year = "";
+    float gpaS[4] = {-1};
+};
 struct ScoreStu {
-    string courseID;
-    string semester;
-    string year;
-    float otherMark;
-    float midMark;
-    float finalMark;
-    float totalMark;
+    string year = "";
+    string semester = "";
+    string courseID = "";
+    float totalSc = -1;
+    float finalSc = -1;
+    float midSc = -1;
+    float otherSc = -1;
 };
 struct Class;
 struct SchoolYear;
@@ -32,15 +35,17 @@ struct SchoolYear {
     Semester* listSemester = nullptr;
 };
 struct Course {
+    string year;
+    string semester;
     string ID = "";
     string courseName = "";
     string className = "";
     string teacher = "";
     string dayOfWeek = "";
     string session = "";
-    int numCredits = 0; 
-    int maxStudents = 50; 
-    int currStudents = 43;
+    int numCredits = 0;
+    int maxStudents = 50;
+    int currStudents = 0;
     Student** listStudentInCourse = nullptr;
 };
 struct Semester {
@@ -52,16 +57,15 @@ struct Semester {
 };
 struct Student {
     string studentID = "";
-    int semesterStudied = 0;
-    string password = "";
     string firstName = "", lastName = "";
-    bool femaleGender = 0;
+    bool femaleGender = false;
     string dob = "";
-    //int DD = 0, MM = 0, YY = 0;
     string socialID = "";
-    double overallGPA = 0; //updating overallGPA in student.csv
-    ScoreStu* score = nullptr;
-    Course* courseOfStudent = nullptr;
+    string password = "";
+    float overallGPA = 0;
+    GPA gpaList[4];
+    ScoreStu* scoreList = nullptr;
+    int numCourse = 0;
 };
-
 #endif // STRUCT_H_INCLUDED
+
