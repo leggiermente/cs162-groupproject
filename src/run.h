@@ -89,6 +89,8 @@ void handleStaffClassDetailPage();
 void drawStaffClassDetailPage();
 void handleStuDetailPage();
 void drawStuDetailPage();
+void handleEventScoreboardPage();
+void drawScoreboardPage();
 
 // Main function
 void RunApp();
