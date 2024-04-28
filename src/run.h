@@ -108,7 +108,9 @@ LinkedButton** loadAddStuButton();
 Course* loadAddCourse();
 LinkedButton** loadAddCourseButton();
 ScoreStu* loadAddCourseToStu(Student* stuAdd);
-void loadAddStuToCourseButton(Student* stuAdd);
+void loadNewScoreRowButton(int numOdd);
+void deleteStuInCourse(string stuID);
+void deleteScoreInStu(string courseID, string stuID);
 LinkedButton** loadAddCSVStuToClassButton(int numIc);
 
 // Free memory

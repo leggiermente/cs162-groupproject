@@ -4,13 +4,13 @@
 using namespace std;
 
 struct ScoreStu {
-    string year;
-    string semester;
-    string courseID;
-    float totalSc;
-    float finalSc;
-    float midSc;
-    float otherSc;
+    string year = "";
+    string semester = "";
+    string courseID = "";
+    float totalSc = -1;
+    float finalSc = -1;
+    float midSc = -1;
+    float otherSc = -1;
 };
 struct Class;
 struct SchoolYear;
