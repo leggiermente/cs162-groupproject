@@ -685,3 +685,74 @@ void AvatarProfile::draw(sf::RenderWindow& window) {
 	window.draw(sprite);
 	window.draw(text);
 }
+
+
+//--------------------------------------------------------------
+// ScoreRow
+ScoreRow::ScoreRow(float x, float y, const std::string& imagePath, std::string sNo, std::string sId, std::string sLastName, std::string sFirstName,
+std::string stotal, std::string sFinal, std::string sMid, std::string sOther)
+    : total(x+485, y+12, "image/White40x20.png", ""),
+    final(x+615, y+12, "image/White40x20.png", ""),
+    mid(x+735, y+12, "image/White40x20.png", ""),
+    other(x+860, y+12, "image/White40x20.png", "")
+{
+    total.text.setString(stotal);
+    final.text.setString(sFinal);
+    mid.text.setString(sMid);
+    other.text.setString(sOther);
+
+    if (!font.loadFromFile("font/Roboto-Regular.ttf")) {
+		cout << "Can't load font\n";
+	}
+	if (!deleteTexture.loadFromFile(imagePath)) {
+		cout << "Can't load image\n";
+	}
+	deleteTexture.setSmooth(1);
+	deleteSprite.setTexture(deleteTexture);
+    deleteSprite.setPosition(x+1000, y+12);
+
+	no.setFont(font);
+    no.setCharacterSize(20);
+    no.setPosition(x + 15, y + 12);
+    no.setFillColor(sf::Color::Black);
+    no.setString(sNo);
+
+	id.setFont(font);
+    id.setCharacterSize(20);
+    id.setPosition(x + 75, y + 12);
+    id.setFillColor(sf::Color::Black);
+    id.setString(sId);
+
+	lastName.setFont(font);
+    lastName.setCharacterSize(20);
+    lastName.setPosition(x + 225, y + 12);
+    lastName.setFillColor(sf::Color::Black);
+    lastName.setString(sLastName);
+
+	firstName.setFont(font);
+    firstName.setCharacterSize(20);
+    firstName.setPosition(x + 365, y + 12);
+    firstName.setFillColor(sf::Color::Black);
+    firstName.setString(sFirstName);
+
+}
+bool ScoreRow::clickDelete(sf::RenderWindow& window, sf::Event event) {
+    if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left) {
+		sf::Vector2i mousePos = sf::Mouse::getPosition(window);
+		if (deleteSprite.getGlobalBounds().contains(window.mapPixelToCoords(mousePos))) {
+			return true;
+		}
+	}
+	return false;
+}
+void ScoreRow::draw(sf::RenderWindow& window) {
+    window.draw(no);
+	window.draw(id);
+	window.draw(lastName);
+	window.draw(firstName);
+	total.draw(window);
+	final.draw(window);
+	mid.draw(window);
+	other.draw(window);
+	window.draw(deleteSprite);
+}

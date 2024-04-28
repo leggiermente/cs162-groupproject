@@ -171,13 +171,14 @@ int prevPage = 0,
     yearPage = 0,
     classPage = 0,
     stuPage = 0,
-    coursePage = 0;
+    coursePage = 0,
+    scorePage = 0;
 
 //Size of data from database
 int numStaff = 0,
-    numCourse = 0,
-    numClass = 0,
-    numSchoolYear = 0;
+numCourse = 0,
+numClass = 0,
+numSchoolYear = 0;
 
 //Data from database
 SchoolYear* schoolyearArr = nullptr;
@@ -525,6 +526,37 @@ void loadUIfromDatabase() {
                                 = new LinkedButton(x3, y3, "image/Button200x45.png",
                                 schoolyearArr[i].listSemester[j].coursesListInSemester[k].ID);
                         y3 += 65.0f;
+                        
+                        int nSIC = schoolyearArr[i].listSemester[j].coursesListInSemester[k].currStudents;
+                        if (nSIC != 0) schoolyearButton[i]->linkedButton[j]->linkedButton[k]->scoreList = new ScoreRow * [nSIC];
+                        int xS = 115, yS = 340;
+                        for (int l = 0; l < schoolyearArr[i].listSemester[j].coursesListInSemester[k].currStudents; ++l) {
+                            if (l % 6 == 0) {
+                                xS = 115;
+								yS = 340;
+							}
+                            string noS = to_string(l + 1);
+                            string idS = schoolyearArr[i].listSemester[j].coursesListInSemester[k].listStudentInCourse[l]->studentID;
+                            string firstS = schoolyearArr[i].listSemester[j].coursesListInSemester[k].listStudentInCourse[l]->firstName;
+                            string lastS = schoolyearArr[i].listSemester[j].coursesListInSemester[k].listStudentInCourse[l]->lastName;
+                            int nC = schoolyearArr[i].listSemester[j].coursesListInSemester[k].listStudentInCourse[l]->numCourse;
+                            string idCourse = schoolyearArr[i].listSemester[j].coursesListInSemester[k].ID;
+                            string totalS = "_";
+                            string finalS = "_";
+                            string midS = "_";
+                            string otherS = "_";
+                            for (int r = 0; r < nC; ++r) {
+								if (schoolyearArr[i].listSemester[j].coursesListInSemester[k].listStudentInCourse[l]->scoreList[i].courseID == idCourse) {
+                                    totalS = to_string(schoolyearArr[i].listSemester[j].coursesListInSemester[k].listStudentInCourse[l]->scoreList[i].total);
+                                    finalS = to_string(schoolyearArr[i].listSemester[j].coursesListInSemester[k].listStudentInCourse[l]->scoreList[i].final);
+                                    midS = to_string(schoolyearArr[i].listSemester[j].coursesListInSemester[k].listStudentInCourse[l]->scoreList[i].mid);
+                                    otherS = to_string(schoolyearArr[i].listSemester[j].coursesListInSemester[k].listStudentInCourse[l]->scoreList[i].other);
+                                }
+							}
+                            schoolyearButton[i]->linkedButton[j]->linkedButton[k]->scoreList[l] = new ScoreRow(115, 340, "image/DeleteStu.png",
+                                noS, idS, firstS, lastS, totalS, finalS, midS, otherS);
+                            yS += 50;
+                        }
                     }
                 }
             }
@@ -1847,6 +1879,10 @@ void drawScoreboardPage() {
     searchStuCourseButton.draw(window);
     scoreBar.draw(window);
     scoreSaveButton.draw(window);
+    int size =  schoolyearArr[user.indexSchoolyear].listSemester[user.indexSemester].coursesListInSemester[user.indexCourse].currStudents;
+    for (int i = scorePage * 6; i < (scorePage + 1) * 6 && i < size; ++i) {
+        schoolyearButton[user.indexSchoolyear]->linkedButton[user.indexSemester]->linkedButton[user.indexCourse]->scoreList[i]->draw(window);
+	}
 }
 
 // Update data and UI dynamically

@@ -53,14 +53,6 @@ struct TextBox : Button {
     TextBox(float x, float y, const std::string& imagePath, std::string sText, std::string sColor);
     virtual void draw(sf::RenderWindow& window);
 };
-struct LinkedButton : Button{
-    LinkedButton** linkedButton = nullptr;
-    sf::Font font;
-    sf::Text text;
-    bool isFinding = false;
-    LinkedButton(float x, float y, const std::string& imagePath, std::string sText);
-    void draw(sf::RenderWindow& window);
-};
 struct InputWithHead : InputBox {
     sf::Text tHeadname;
     InputWithHead(float x, float y, const std::string& imagePath, std::string sHeadname);
@@ -138,4 +130,30 @@ struct AvatarProfile : Button {
 	sf::Font font;
 	AvatarProfile(float x, float y, const std::string& imagePath, std::string sText);
 	void draw(sf::RenderWindow& window);
+};
+struct ScoreRow {
+    sf::Font font;
+    sf::Text no;
+    sf::Text id;
+    sf::Text lastName;
+    sf::Text firstName;
+    InputWithHead total;
+    InputWithHead final;
+    InputWithHead mid;
+    InputWithHead other;
+    sf::Sprite deleteSprite;
+    sf::Texture deleteTexture;
+    ScoreRow(float x, float y, const std::string& imagePath, std::string sNo, std::string sId, std::string sLastName, std::string sFirstName,
+        std::string stotal, std::string sFinal, std::string sMid, std::string sOther);
+    bool clickDelete(sf::RenderWindow& window, sf::Event event);
+    void draw(sf::RenderWindow& window);
+};
+struct LinkedButton : Button {
+    LinkedButton** linkedButton = nullptr;
+    ScoreRow** scoreList = nullptr;
+    sf::Font font;
+    sf::Text text;
+    bool isFinding = false;
+    LinkedButton(float x, float y, const std::string& imagePath, std::string sText);
+    void draw(sf::RenderWindow& window);
 };
