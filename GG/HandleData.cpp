@@ -231,10 +231,10 @@ void readStudentTXT(string path, Class& classStu) {
                 if (line != "\n") classStu.listStudent[i].gpaList[h].year = line;
             }
             for (int h = 0; h < 4; h++) {
+                getline(file, line, ','); classStu.listStudent[i].gpaList[h].gpaS[3] = stoi(line);
                 getline(file, line, ','); classStu.listStudent[i].gpaList[h].gpaS[0] = stoi(line);
                 getline(file, line, ','); classStu.listStudent[i].gpaList[h].gpaS[1] = stoi(line);
-                getline(file, line, ','); classStu.listStudent[i].gpaList[h].gpaS[2] = stoi(line);
-                getline(file, line); classStu.listStudent[i].gpaList[h].gpaS[3] = stoi(line);
+                getline(file, line); classStu.listStudent[i].gpaList[h].gpaS[2] = stoi(line);
             }
 
             getline(file, line); classStu.listStudent[i].numCourse = stoi(line);
@@ -328,8 +328,6 @@ bool readCSVStuToCourse(string path, Class* allClass, Course& thatCourse, int& n
 			}
         }
         if (!found) {
-            cout << "Student not found\n";
-            cout << line << endl;
             i--;
             count--;
         }
@@ -342,6 +340,47 @@ bool readCSVStuToCourse(string path, Class* allClass, Course& thatCourse, int& n
 	thatCourse.listStudentInCourse = newStudent;
     thatCourse.currStudents += count;
     numStuAdd = count;
+	return true;
+}
+bool readScoreCSV(string path, Course &thatCourse) {
+    ifstream file(path);
+    if (!file) {
+		cout << "Can't open score file" << path << endl;
+		return false;
+	}
+    string line;
+    for (int i = 0; i < thatCourse.currStudents; ++i) {
+		getline(file, line, ',');
+        bool found = false;
+        for (int j = 0; j < thatCourse.currStudents && !found; ++j) {
+            if (line == thatCourse.listStudentInCourse[j]->studentID) {
+                found = true;
+                ScoreStu* stuSc = nullptr;
+                Student* curStu = thatCourse.listStudentInCourse[j];
+                for (int v = 0; v < curStu->numCourse; ++v) {
+                    if (curStu->scoreList[v].courseID == thatCourse.ID) {
+						stuSc = &curStu->scoreList[v];
+						break;
+					}
+                }
+                getline(file, line, ','); stuSc->totalSc = stoi(line);
+                getline(file, line, ','); stuSc->finalSc = stoi(line);
+                getline(file, line, ','); stuSc->midSc = stoi(line);
+				getline(file, line); stuSc->otherSc = stoi(line);
+            }
+        }
+	}
+}
+bool exportFileIdStu(string path, Course& thatCourse) {
+    ofstream file(path);
+	if (!file) {
+		cout << "Can't open file to export\n";
+		return false;
+	}
+	for (int i = 0; i < thatCourse.currStudents; ++i) {
+		file << thatCourse.listStudentInCourse[i]->studentID << endl;
+	}
+	file.close();
 	return true;
 }
 void printTest(Class* classArr, int numClass, SchoolYear* schoolYearArr, int numSchoolYear) {
