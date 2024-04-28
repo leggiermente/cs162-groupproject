@@ -228,7 +228,7 @@ void readStudentTXT(string path, Class& classStu) {
             
             for (int h = 0; h < 4; h++) {
                 getline(file, line); 
-                classStu.listStudent[i].gpaList[h].year = line;
+                if (line != "\n") classStu.listStudent[i].gpaList[h].year = line;
             }
             for (int h = 0; h < 4; h++) {
                 getline(file, line, ','); classStu.listStudent[i].gpaList[h].gpaS[0] = stoi(line);
@@ -254,6 +254,7 @@ void readStudentTXT(string path, Class& classStu) {
     }
     return;
 }
+
 bool readCSVStuToClass(string path, Class& thatClass, int& numIc) {
     ifstream file(path);
     if (!file) {
@@ -286,7 +287,63 @@ bool readCSVStuToClass(string path, Class& thatClass, int& numIc) {
     numIc = count;
     return true;
 }
-
+bool readCSVStuToCourse(string path, Class* allClass, Course& thatCourse, int& numStuAdd, int numClass) {
+    ifstream file(path);
+	if (!file) {
+		cout << "Can't open student file" << path << endl;
+		return false;
+	}
+	string line;
+	int count = 0;
+	while (getline(file, line)) {
+		count++;
+	}
+	file.close();
+    if (count + thatCourse.currStudents > thatCourse.maxStudents) return false;
+    
+    file.open(path);
+	Student** newStudent = new Student * [thatCourse.maxStudents + count];
+	for (int i = 0; i < thatCourse.currStudents; i++) {
+		newStudent[i] = thatCourse.listStudentInCourse[i];
+	}
+	for (int i = thatCourse.currStudents; i < thatCourse.currStudents + count; ++i) {
+		getline(file,line, ','); // Pass No data in CSV
+		getline(file,line, ','); // Get student ID
+        bool found = false;
+        Student* tmpStu = nullptr;
+        for (int v = 0; v < numClass && !found; ++v) {
+            for (int j = 0; j < allClass[v].numStudent && !found; ++j) {
+                if (allClass[v].listStudent[j].studentID == line) {
+                    tmpStu = &allClass[v].listStudent[j];
+                    found = true;
+				}
+			}
+        }
+        if (found) {
+            for (int k = 0; k < thatCourse.currStudents; ++k) {
+                if (line == newStudent[k]->studentID) {
+					found = false;
+					break;
+				}
+			}
+        }
+        if (!found) {
+            cout << "Student not found\n";
+            cout << line << endl;
+            i--;
+            count--;
+        }
+        if (found) {
+            newStudent[i] = tmpStu;
+        }
+        getline(file, line); // Pass remain data in CSV
+	}
+	delete[] thatCourse.listStudentInCourse;
+	thatCourse.listStudentInCourse = newStudent;
+    thatCourse.currStudents += count;
+    numStuAdd = count;
+	return true;
+}
 void printTest(Class* classArr, int numClass, SchoolYear* schoolYearArr, int numSchoolYear) {
     for (int i = 0; i < numClass; i++) {
 		cout << classArr[i].classID << endl;

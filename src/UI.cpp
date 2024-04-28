@@ -810,8 +810,8 @@ ScoreRowInStu::ScoreRowInStu(float x, float y, GPA* gpaStu) {
     	year[i].setFont(font);
 		year[i].setCharacterSize(20);
 		year[i].setFillColor(sf::Color::Black);
-        year[i].setString(gpaStu[0].year);
-        if (gpaStu[0].year.empty()) year[i].setString("N/A");
+        year[i].setString(gpaStu[i].year);
+        if (gpaStu[i].year.empty()) year[i].setString("N/A");
         year[i].setPosition(x + 10, y + 15 + i * 50);
 
         for (int j = 0; j < 4; j++) {

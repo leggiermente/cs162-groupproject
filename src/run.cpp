@@ -115,6 +115,7 @@ ChooseBoxWithHead inputSessionMid2(840, 580, "image/InputSessionMid.png", "", "S
 ChooseBoxWithHead inputSessionRight(940, 580, "image/InputSessionRight.png", "", "S4 (15:30)");
 Button searchCourseButton(965, 230, "image/EnterButton.png");
 Button addCourseButton(1065, 580, "image/AddButton.png");
+
 // Course features
 Button courseDetailSelect(686,103,"image/CourseDetails.png");
 Button studentDetailSelect(882,103,"image/StudentDetails.png");
@@ -1236,7 +1237,6 @@ void drawCoursePage() {
     for (int i = 0; i < 4; ++i)
         sessionCourseButtonArr[i]->draw(window);
 
-
     // Draw course button base on course page
     int i = coursePage * 12;
     for (i; i < (coursePage + 1) * 12 && i < size; ++i)
@@ -1360,6 +1360,25 @@ void handleEventDetailCoursePage() {
             schoolyearButton[user.indexSchoolyear]->linkedButton[user.indexSemester]->linkedButton[user.indexCourse]->text.setString(modifyCourseID.text.getString());
         }
 
+        if (importStuButton.isClicked(window, event)) {
+            string path = inputImportStuToCourse.text.getString().toAnsiString();
+            if (!path.empty()) {
+                int numStuAdd = 0;
+                if (readCSVStuToCourse(path, classesArr,
+                    schoolyearArr[user.indexSchoolyear].listSemester[user.indexSemester].coursesListInSemester[user.indexCourse], 
+                    numStuAdd, numClass)) 
+                {
+                    int curStuInCourse = schoolyearArr[user.indexSchoolyear].listSemester[user.indexSemester].coursesListInSemester[user.indexCourse].currStudents;
+                    for (int i = curStuInCourse - numStuAdd; i < curStuInCourse; ++i) {
+                        Student* stuC = schoolyearArr[user.indexSchoolyear].listSemester[user.indexSemester].coursesListInSemester[user.indexCourse].listStudentInCourse[i];
+                        stuC->scoreList = loadAddCourseToStu(stuC);
+					}
+                    int numOld = curStuInCourse - numStuAdd;
+                    loadNewScoreRowButton(numOld);
+                }
+            }
+            inputImportStuToCourse.text.setString("");
+		}
 	}
 }
 void drawDetailCoursePage() {

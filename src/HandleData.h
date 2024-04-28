@@ -13,4 +13,5 @@ void readCourseInSemester(string path, SchoolYear* schoolYearArr, int numSchoolY
 void readStudentTXT(string path,Class& classStu);
 Class* readClass(string path, int& numClass);
 bool readCSVStuToClass(string path, Class& thatClass, int& numIc);
+bool readCSVStuToCourse(string path, Class* allClass, Course& thatCourse, int& numStuAdd, int numClass);
 void printTest(Class* classArr, int numClass, SchoolYear* schoolYearArr, int numSchoolYear);
