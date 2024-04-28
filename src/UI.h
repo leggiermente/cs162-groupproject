@@ -131,21 +131,29 @@ struct AvatarProfile : Button {
 	AvatarProfile(float x, float y, const std::string& imagePath, std::string sText);
 	void draw(sf::RenderWindow& window);
 };
+struct InputScore : InputBox {
+    InputScore(float x, float y, const std::string& imagePath);
+    void draw(sf::RenderWindow& window);
+};
+struct ButtonSakura : Button {
+	ButtonSakura(float x, float y, const std::string& imagePath);
+	void draw(sf::RenderWindow& window);
+};
 struct ScoreRow {
     sf::Font font;
     sf::Text no;
     sf::Text id;
     sf::Text lastName;
     sf::Text firstName;
-    InputWithHead total;
-    InputWithHead final;
-    InputWithHead mid;
-    InputWithHead other;
-    sf::Sprite deleteSprite;
-    sf::Texture deleteTexture;
+    InputScore totalS;
+    InputScore finalS;
+    InputScore midS;
+    InputScore otherS;
+    ButtonSakura deleteButton;
     ScoreRow(float x, float y, const std::string& imagePath, std::string sNo, std::string sId, std::string sLastName, std::string sFirstName,
         std::string stotal, std::string sFinal, std::string sMid, std::string sOther);
-    bool clickDelete(sf::RenderWindow& window, sf::Event event);
+    void isHovering(sf::RenderWindow& window);
+    bool clickInput(sf::RenderWindow& window, sf::Event event);
     void draw(sf::RenderWindow& window);
 };
 struct LinkedButton : Button {

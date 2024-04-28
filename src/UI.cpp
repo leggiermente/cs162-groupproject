@@ -32,12 +32,12 @@ bool Button::isClicked(sf::RenderWindow& window, sf::Event event) {
 void Button::isHovering(sf::RenderWindow& window) {
     sf::Vector2i mousePos = sf::Mouse::getPosition(window);
     if (sprite.getGlobalBounds().contains(window.mapPixelToCoords(mousePos))) {
-        isHover = true; // Change color to red when mouse hovers over
+        isHover = true; 
     }
     else {
-        isHover = false; // Change color back to white when mouse is not hovering
+        isHover = false; 
     }
-    window.draw(sprite);
+    return;
 }
 void Button::draw(sf::RenderWindow& window) {
     if (isHover) {
@@ -686,30 +686,67 @@ void AvatarProfile::draw(sf::RenderWindow& window) {
 	window.draw(text);
 }
 
+//--------------------------------------------------------------
+// InputScore
+InputScore::InputScore(float x, float y, const std::string& imagePath) : InputBox(x,y,imagePath) {
+    if (!texture.loadFromFile(imagePath)) {
+        cout << "Can't load image\n";
+    }
+    if (!font.loadFromFile("font/Roboto-Regular.ttf")) {
+		cout << "Can't load font\n";
+	}
+    texture.setSmooth(1);
+    sprite.setTexture(texture);
+    sprite.setPosition(x, y);
+
+    text.setFont(font);
+    text.setCharacterSize(20);
+    text.setPosition(x + 3, y + 2);
+    text.setFillColor(sf::Color::Black);
+
+    textDisplay = text;
+}
+void InputScore::draw(sf::RenderWindow& window) {
+    if (isHover) sprite.setColor(sf::Color(251, 205, 205)); // Sakura color
+    else sprite.setColor(sf::Color::White);
+    if (active) {
+        textDisplay.setString(text.getString() + "|");
+        sprite.setColor(sf::Color(251, 205, 205));
+        window.draw(sprite);
+        window.draw(textDisplay);
+    }
+    else {
+        window.draw(sprite);
+        window.draw(text);
+    }
+}
+
+//--------------------------------------------------------------
+// ButtonSakura
+ButtonSakura::ButtonSakura(float x, float y, const std::string& imagePath) : Button(x, y, imagePath) {}
+void ButtonSakura::draw(sf::RenderWindow& window) {
+    if (isHover) sprite.setColor(sf::Color(251, 205, 205)); // Sakura color
+	else sprite.setColor(sf::Color::White);
+	window.draw(sprite);
+}
 
 //--------------------------------------------------------------
 // ScoreRow
 ScoreRow::ScoreRow(float x, float y, const std::string& imagePath, std::string sNo, std::string sId, std::string sLastName, std::string sFirstName,
 std::string stotal, std::string sFinal, std::string sMid, std::string sOther)
-    : total(x+485, y+12, "image/White40x20.png", ""),
-    final(x+615, y+12, "image/White40x20.png", ""),
-    mid(x+735, y+12, "image/White40x20.png", ""),
-    other(x+860, y+12, "image/White40x20.png", "")
+    : totalS(x+485, y+12, "image/White100x24.png"),
+    finalS(x+615, y+12, "image/White100x24.png"),
+    midS(x+735, y+12, "image/White100x24.png"),
+    otherS(x+860, y+12, "image/White100x24.png"),
+    deleteButton(x+1000, y+12, imagePath)
 {
-    total.text.setString(stotal);
-    final.text.setString(sFinal);
-    mid.text.setString(sMid);
-    other.text.setString(sOther);
-
     if (!font.loadFromFile("font/Roboto-Regular.ttf")) {
-		cout << "Can't load font\n";
-	}
-	if (!deleteTexture.loadFromFile(imagePath)) {
-		cout << "Can't load image\n";
-	}
-	deleteTexture.setSmooth(1);
-	deleteSprite.setTexture(deleteTexture);
-    deleteSprite.setPosition(x+1000, y+12);
+        cout << "Can't load font\n";
+    }
+    totalS.text.setString(stotal);
+    finalS.text.setString(sFinal);
+    midS.text.setString(sMid);
+    otherS.text.setString(sOther);
 
 	no.setFont(font);
     no.setCharacterSize(20);
@@ -734,25 +771,30 @@ std::string stotal, std::string sFinal, std::string sMid, std::string sOther)
     firstName.setPosition(x + 365, y + 12);
     firstName.setFillColor(sf::Color::Black);
     firstName.setString(sFirstName);
-
+    
 }
-bool ScoreRow::clickDelete(sf::RenderWindow& window, sf::Event event) {
-    if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left) {
-		sf::Vector2i mousePos = sf::Mouse::getPosition(window);
-		if (deleteSprite.getGlobalBounds().contains(window.mapPixelToCoords(mousePos))) {
-			return true;
-		}
-	}
-	return false;
+void ScoreRow::isHovering(sf::RenderWindow& window) {
+    totalS.isHovering(window);
+	finalS.isHovering(window);
+	midS.isHovering(window);
+	otherS.isHovering(window);
+	deleteButton.isHovering(window);
+}
+bool ScoreRow::clickInput(sf::RenderWindow& window, sf::Event event) {
+    totalS.isClicked(event, window);
+    finalS.isClicked(event, window);
+    midS.isClicked(event, window); 
+    otherS.isClicked(event, window);
+    return true;
 }
 void ScoreRow::draw(sf::RenderWindow& window) {
     window.draw(no);
 	window.draw(id);
 	window.draw(lastName);
 	window.draw(firstName);
-	total.draw(window);
-	final.draw(window);
-	mid.draw(window);
-	other.draw(window);
-	window.draw(deleteSprite);
+	totalS.draw(window);
+	finalS.draw(window);
+	midS.draw(window);
+	otherS.draw(window);
+    deleteButton.draw(window);
 }

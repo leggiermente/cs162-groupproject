@@ -553,7 +553,7 @@ void loadUIfromDatabase() {
                                     otherS = to_string(schoolyearArr[i].listSemester[j].coursesListInSemester[k].listStudentInCourse[l]->scoreList[i].other);
                                 }
 							}
-                            schoolyearButton[i]->linkedButton[j]->linkedButton[k]->scoreList[l] = new ScoreRow(115, 340, "image/DeleteStu.png",
+                            schoolyearButton[i]->linkedButton[j]->linkedButton[k]->scoreList[l] = new ScoreRow(xS, yS, "image/DeleteStu.png",
                                 noS, idS, firstS, lastS, totalS, finalS, midS, otherS);
                             yS += 50;
                         }
@@ -579,7 +579,6 @@ void loadUIfromDatabase() {
 	}
 
     // Create button for all students of all classes
-    
     for (int i = 0; i < numClass; i++) {
         x = 115; y = 210;
         int numStuClass = classesArr[i].numStudent;
@@ -1852,6 +1851,15 @@ void handleEventScoreboardPage() {
         if (lPageButton.isClicked(window, event)) {}
 
         if (scoreSaveButton.isClicked(window, event)) {}
+
+        int size = schoolyearArr[user.indexSchoolyear].listSemester[user.indexSemester].coursesListInSemester[user.indexCourse].currStudents;
+        for (int i = scorePage * 6; i < (scorePage + 1) * 6 && i < size; ++i) {
+            schoolyearButton[user.indexSchoolyear]->linkedButton[user.indexSemester]->linkedButton[user.indexCourse]->scoreList[i]->isHovering(window);
+        }
+        for (int i = scorePage * 6; i < (scorePage + 1) * 6 && i < size; ++i) {
+            schoolyearButton[user.indexSchoolyear]->linkedButton[user.indexSemester]->linkedButton[user.indexCourse]->scoreList[i]->clickInput(window, event);
+            schoolyearButton[user.indexSchoolyear]->linkedButton[user.indexSemester]->linkedButton[user.indexCourse]->scoreList[i]->deleteButton.isClicked(window,event);
+        }
     }
 }
 void drawScoreboardPage() {
@@ -1879,6 +1887,7 @@ void drawScoreboardPage() {
     searchStuCourseButton.draw(window);
     scoreBar.draw(window);
     scoreSaveButton.draw(window);
+    
     int size =  schoolyearArr[user.indexSchoolyear].listSemester[user.indexSemester].coursesListInSemester[user.indexCourse].currStudents;
     for (int i = scorePage * 6; i < (scorePage + 1) * 6 && i < size; ++i) {
         schoolyearButton[user.indexSchoolyear]->linkedButton[user.indexSemester]->linkedButton[user.indexCourse]->scoreList[i]->draw(window);
