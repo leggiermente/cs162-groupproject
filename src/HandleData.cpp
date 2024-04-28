@@ -147,11 +147,12 @@ void readCourseInSemester(string path, SchoolYear* schoolYearArr, int numSchoolY
                 getline(file, line); schoolYearArr[i].listSemester[j].coursesListInSemester[v].numCredits = stoi(line);
                 getline(file, line); schoolYearArr[i].listSemester[j].coursesListInSemester[v].session = line;
                 getline(file, line); schoolYearArr[i].listSemester[j].coursesListInSemester[v].dayOfWeek = line;
-                getline(file, line); schoolYearArr[i].listSemester[j].coursesListInSemester[v].maxStudents = stoi(line);
+                getline(file, line); int mxStu = stoi(line);
                 getline(file, line); int curStu = stoi(line); 
                 schoolYearArr[i].listSemester[j].coursesListInSemester[v].currStudents = curStu;
-                if (curStu != 0)
-                    schoolYearArr[i].listSemester[j].coursesListInSemester[v].listStudentInCourse = new Student * [curStu];
+                schoolYearArr[i].listSemester[j].coursesListInSemester[v].maxStudents = mxStu;
+                if (mxStu != 0)
+                    schoolYearArr[i].listSemester[j].coursesListInSemester[v].listStudentInCourse = new Student * [mxStu];
                 
                 // Read and store address of student in course 
                 for (int k = 0; k < curStu; ++k) {
@@ -232,10 +233,10 @@ void readStudentTXT(string path, Class& classStu) {
                 getline(file, line, ','); classStu.listStudent[i].scoreList[t].year = line;
                 getline(file, line, ','); classStu.listStudent[i].scoreList[t].semester = line;
                 getline(file, line, ','); classStu.listStudent[i].scoreList[t].courseID = line;
-				getline(file, line, ','); classStu.listStudent[i].scoreList[t].total = stoi(line);
-                getline(file, line, ','); classStu.listStudent[i].scoreList[t].final = stoi(line);
-                getline(file, line, ','); classStu.listStudent[i].scoreList[t].mid = stoi(line);
-                getline(file, line); classStu.listStudent[i].scoreList[t].other = stoi(line);
+				getline(file, line, ','); classStu.listStudent[i].scoreList[t].totalSc = stoi(line);
+                getline(file, line, ','); classStu.listStudent[i].scoreList[t].finalSc = stoi(line);
+                getline(file, line, ','); classStu.listStudent[i].scoreList[t].midSc = stoi(line);
+                getline(file, line); classStu.listStudent[i].scoreList[t].otherSc = stoi(line);
             }
             file.close();
         }
@@ -283,7 +284,7 @@ void printTest(Class* classArr, int numClass, SchoolYear* schoolYearArr, int num
             for (int k = 0; k < classArr[i].listStudent[j].numCourse; k++) {
                 cout << classArr[i].listStudent[j].scoreList[k].courseID << endl;
                 cout << classArr[i].listStudent[j].scoreList[k].year << endl;
-                cout << classArr[i].listStudent[j].scoreList[k].other << endl;
+                cout << classArr[i].listStudent[j].scoreList[k].otherSc << endl;
             }
             cout << endl;
 		}

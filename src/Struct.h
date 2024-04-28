@@ -7,10 +7,10 @@ struct ScoreStu {
     string year;
     string semester;
     string courseID;
-    float total;
-    float final;
-    float mid;
-    float other;
+    float totalSc;
+    float finalSc;
+    float midSc;
+    float otherSc;
 };
 struct Class;
 struct SchoolYear;

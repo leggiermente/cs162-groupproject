@@ -71,6 +71,7 @@ void clearInput();
 void searchYear();
 void searchClass();
 int searchCourse();
+Student* findPointerStu(string stuID);
 
 // Handle event && Draw UI
 void handleChangePassword();
@@ -106,6 +107,8 @@ Student* loadAddStudent();
 LinkedButton** loadAddStuButton();
 Course* loadAddCourse();
 LinkedButton** loadAddCourseButton();
+ScoreStu* loadAddCourseToStu(Student* stuAdd);
+void loadAddStuToCourseButton(Student* stuAdd);
 LinkedButton** loadAddCSVStuToClassButton(int numIc);
 
 // Free memory

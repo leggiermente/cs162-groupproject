@@ -482,6 +482,14 @@ int searchCourse() {
 		if (schoolyearArr[user.indexSchoolyear].listSemester[user.indexSemester].coursesListInSemester[i].ID == inputSearchCourse.text.getString()) return i;
     return -1;
 }
+Student* findPointerStu(string stuID) {
+    for (int i = 0; i < numClass; ++i) {
+		for (int j = 0; j < classesArr[i].numStudent; ++j) {
+			if (classesArr[i].listStudent[j].studentID == stuID) return &classesArr[i].listStudent[j];
+		}
+	}
+	return nullptr;
+}
 
 // Load UI
 void loadUI() {
@@ -531,11 +539,12 @@ void loadUIfromDatabase() {
                                 schoolyearArr[i].listSemester[j].coursesListInSemester[k].ID);
                         y3 += 65.0f;
                         
-                        int nSIC = schoolyearArr[i].listSemester[j].coursesListInSemester[k].currStudents;
-                        if (nSIC != 0) schoolyearButton[i]->linkedButton[j]->linkedButton[k]->scoreList = new ScoreRow * [nSIC];
+                        int mxStu = schoolyearArr[i].listSemester[j].coursesListInSemester[k].maxStudents;
+                        int cStu = schoolyearArr[i].listSemester[j].coursesListInSemester[k].currStudents;
+                        if (mxStu != 0) schoolyearButton[i]->linkedButton[j]->linkedButton[k]->scoreList = new ScoreRow * [mxStu];
                         int xS = 115, yS = 340;
-                        for (int l = 0; l < schoolyearArr[i].listSemester[j].coursesListInSemester[k].currStudents; ++l) {
-                            if (l % 6 == 0) {
+                        for (int l = 0; l < cStu; ++l) {
+                            if (l % 5 == 0) {
                                 xS = 115;
 								yS = 340;
 							}
@@ -551,10 +560,15 @@ void loadUIfromDatabase() {
                             string otherS = "_";
                             for (int r = 0; r < nC; ++r) {
 								if (schoolyearArr[i].listSemester[j].coursesListInSemester[k].listStudentInCourse[l]->scoreList[i].courseID == idCourse) {
-                                    totalS = to_string(schoolyearArr[i].listSemester[j].coursesListInSemester[k].listStudentInCourse[l]->scoreList[i].total);
-                                    finalS = to_string(schoolyearArr[i].listSemester[j].coursesListInSemester[k].listStudentInCourse[l]->scoreList[i].final);
-                                    midS = to_string(schoolyearArr[i].listSemester[j].coursesListInSemester[k].listStudentInCourse[l]->scoreList[i].mid);
-                                    otherS = to_string(schoolyearArr[i].listSemester[j].coursesListInSemester[k].listStudentInCourse[l]->scoreList[i].other);
+                                    int xi = schoolyearArr[i].listSemester[j].coursesListInSemester[k].listStudentInCourse[l]->scoreList[i].totalSc;
+                                    if (xi != -1) totalS = to_string(xi);
+                                    xi = schoolyearArr[i].listSemester[j].coursesListInSemester[k].listStudentInCourse[l]->scoreList[i].finalSc;
+                                    if (xi != -1) finalS = to_string(xi);
+                                    xi = schoolyearArr[i].listSemester[j].coursesListInSemester[k].listStudentInCourse[l]->scoreList[i].midSc;
+                                    if (xi != -1) midS = to_string(xi);
+                                    xi = schoolyearArr[i].listSemester[j].coursesListInSemester[k].listStudentInCourse[l]->scoreList[i].otherSc;
+                                    if (xi != -1) otherS = to_string(xi);
+                                    
                                     totalS = totalS.substr(0, 4);
                                     finalS = finalS.substr(0, 4);
                                     midS = midS.substr(0, 4);
@@ -1789,9 +1803,10 @@ void drawStuDetailPage() {
 void handleEventScoreboardPage() {
     int size = schoolyearArr[user.indexSchoolyear].listSemester[user.indexSemester].coursesListInSemester[user.indexCourse].currStudents;
     numStuInCourse.text.setString(to_string(size) + " students");
+    int mxStu = schoolyearArr[user.indexSchoolyear].listSemester[user.indexSemester].coursesListInSemester[user.indexCourse].maxStudents;
     int maxPage = 0;
-    if (size % 6 != 0) maxPage = size / 6 + 1;
-	else maxPage = size / 6;
+    if (size % 5 != 0) maxPage = size / 5 + 1;
+	else maxPage = size / 5;
     pageScore.text.setString("Page " + to_string(scorePage + 1) + "/" + to_string(maxPage));
     pageScore.setColor(sf::Color::Black);
     while (window.pollEvent(event)) {
@@ -1854,24 +1869,41 @@ void handleEventScoreboardPage() {
 
         inputAddStuCourse.isHovering(window);
         inputAddStuCourse.isClicked(event, window);
-        if (addStuCourseButton.isClicked(window, event)) {}
+        if (addStuCourseButton.isClicked(window, event)) {
+            if (size + 1 < mxStu) {
+                string stuID = inputAddStuCourse.text.getString().toAnsiString();
+                Student* stuAdd = findPointerStu(stuID);
+                if (stuAdd != nullptr) {
+					schoolyearArr[user.indexSchoolyear].listSemester[user.indexSemester].coursesListInSemester[user.indexCourse].listStudentInCourse[size] = stuAdd;
+					schoolyearArr[user.indexSchoolyear].listSemester[user.indexSemester].coursesListInSemester[user.indexCourse].currStudents++;
+					inputAddStuCourse.text.setString("");
+                    loadAddStuToCourseButton(stuAdd);
+                    stuAdd->scoreList = loadAddCourseToStu(stuAdd);
+				}
+				else { }
+            }
+        }
 
         inputSearchStuCourse.isHovering(window);
         inputSearchStuCourse.isClicked(event, window);
         if (searchStuCourseButton.isClicked(window, event)) {}
         
         rScorePageButton.isHovering(window);
-        if (rScorePageButton.isClicked(window, event)) {}
+        if (rScorePageButton.isClicked(window, event)) {
+            if (scorePage < maxPage - 1) scorePage++;
+        }
 
         lScorePageButton.isHovering(window);
-        if (lScorePageButton.isClicked(window, event)) {}
+        if (lScorePageButton.isClicked(window, event)) {
+            if (scorePage > 0) scorePage--;
+        }
 
         if (scoreSaveButton.isClicked(window, event)) {}
 
-        for (int i = scorePage * 6; i < (scorePage + 1) * 6 && i < size; ++i) {
+        for (int i = scorePage * 5; i < (scorePage + 1) * 5 && i < size; ++i) {
             schoolyearButton[user.indexSchoolyear]->linkedButton[user.indexSemester]->linkedButton[user.indexCourse]->scoreList[i]->isHovering(window);
         }
-        for (int i = scorePage * 6; i < (scorePage + 1) * 6 && i < size; ++i) {
+        for (int i = scorePage * 5; i < (scorePage + 1) * 5 && i < size; ++i) {
             schoolyearButton[user.indexSchoolyear]->linkedButton[user.indexSemester]->linkedButton[user.indexCourse]->scoreList[i]->clickInput(window, event);
             schoolyearButton[user.indexSchoolyear]->linkedButton[user.indexSemester]->linkedButton[user.indexCourse]->scoreList[i]->deleteButton.isClicked(window,event);
         }
@@ -1908,7 +1940,8 @@ void drawScoreboardPage() {
     lScorePageButton.draw(window);
     pageScore.draw(window);
     
-    for (int i = scorePage * 6; i < (scorePage + 1) * 6 && i < size; ++i) {
+    for (int i = scorePage * 5; i < (scorePage + 1) * 5 && i < size; ++i) {
+        cout << i + 1 << endl;
         schoolyearButton[user.indexSchoolyear]->linkedButton[user.indexSemester]->linkedButton[user.indexCourse]->scoreList[i]->draw(window);
 	}
 }
@@ -2090,6 +2123,41 @@ LinkedButton** loadAddCourseButton() {
 	
     
     return newCourseButton;
+}
+ScoreStu* loadAddCourseToStu(Student* stuAdd) {
+    stuAdd->numCourse++;
+    int ncis = stuAdd->numCourse;
+    ScoreStu* newCourseInStu = new ScoreStu[ncis];
+    for (int i = 0; i < ncis - 1; ++i) {
+		newCourseInStu[i] = stuAdd->scoreList[i];
+	}
+    newCourseInStu[ncis - 1].courseID = schoolyearArr[user.indexSchoolyear].listSemester[user.indexSemester].coursesListInSemester[user.indexCourse].ID;
+    newCourseInStu[ncis - 1].year = schoolyearArr[user.indexSchoolyear].listSemester[user.indexSemester].coursesListInSemester[user.indexCourse].year;
+    newCourseInStu[ncis - 1].semester = schoolyearArr[user.indexSchoolyear].listSemester[user.indexSemester].coursesListInSemester[user.indexCourse].semester;
+    newCourseInStu[ncis - 1].totalSc = -1;
+    newCourseInStu[ncis - 1].finalSc = -1;
+    newCourseInStu[ncis - 1].midSc = -1;
+	newCourseInStu[ncis - 1].otherSc = -1;
+	delete[] stuAdd->scoreList;
+    return newCourseInStu;
+}
+void loadAddStuToCourseButton(Student* stuAdd) {
+    int curStu = schoolyearArr[user.indexSchoolyear].listSemester[user.indexSemester].coursesListInSemester[user.indexCourse].currStudents; 
+    
+    int row = (curStu - 1) % 5;
+    float xS = 115;
+    float yS = 340 + 50 * row;
+    
+    string no = to_string(curStu);
+    string stuID = stuAdd->studentID;
+    string fn = stuAdd->firstName;
+    string ln = stuAdd->lastName;
+    
+    cout << curStu << "lmao" << endl;
+    schoolyearButton[user.indexSchoolyear]->linkedButton[user.indexSemester]->
+        linkedButton[user.indexCourse]->
+        scoreList[curStu-1] = new ScoreRow(xS,yS,"image/DeleteStu.png", no, stuID, fn, ln, "_", "_", "_", "_");
+    return;
 }
 
 LinkedButton** loadAddCSVStuToClassButton(int numIc) {
