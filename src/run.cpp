@@ -143,12 +143,16 @@ ChooseBoxWithHead modifySessionRight(415, 520, "image/InputSessionRight.png", ""
 Button saveModifyCourseButton(540, 520, "image/SaveButton.png");
 
 //Scoreboard Page
+TextBox numStuInCourse(115, 220, "image/numStuInCourse.png", "");
 Button scoreBar(115, 290, "image/ScoreBar.png");
 Button scoreSaveButton(1065, 595, "image/SaveButton.png");
 Button searchStuCourseButton(930, 220, "image/EnterButton.png");
 Button addStuCourseButton(505,220, "image/AddButton.png");
 InputWithHead inputSearchStuCourse(705, 220, "image/Input200x45.png", "Search Student ID");
 InputWithHead inputAddStuCourse(280, 220, "image/Input200x45.png", "Add student ID");
+NavigateButton lScorePageButton(510, 595, "image/LeftPageButton.png");
+NavigateButton rScorePageButton(725, 595, "image/RightPageButton.png");
+ColorText pageScore(600, 605, 20, "");
 
 //Stu account
 Button profileStu(207.0f, 185.0f, "image/ProfileStu.png");
@@ -551,6 +555,11 @@ void loadUIfromDatabase() {
                                     finalS = to_string(schoolyearArr[i].listSemester[j].coursesListInSemester[k].listStudentInCourse[l]->scoreList[i].final);
                                     midS = to_string(schoolyearArr[i].listSemester[j].coursesListInSemester[k].listStudentInCourse[l]->scoreList[i].mid);
                                     otherS = to_string(schoolyearArr[i].listSemester[j].coursesListInSemester[k].listStudentInCourse[l]->scoreList[i].other);
+                                    totalS = totalS.substr(0, 4);
+                                    finalS = finalS.substr(0, 4);
+                                    midS = midS.substr(0, 4);
+                                    otherS = otherS.substr(0, 4);
+									break;
                                 }
 							}
                             schoolyearButton[i]->linkedButton[j]->linkedButton[k]->scoreList[l] = new ScoreRow(xS, yS, "image/DeleteStu.png",
@@ -1778,6 +1787,13 @@ void drawStuDetailPage() {
 
 //Page 19
 void handleEventScoreboardPage() {
+    int size = schoolyearArr[user.indexSchoolyear].listSemester[user.indexSemester].coursesListInSemester[user.indexCourse].currStudents;
+    numStuInCourse.text.setString(to_string(size) + " students");
+    int maxPage = 0;
+    if (size % 6 != 0) maxPage = size / 6 + 1;
+	else maxPage = size / 6;
+    pageScore.text.setString("Page " + to_string(scorePage + 1) + "/" + to_string(maxPage));
+    pageScore.setColor(sf::Color::Black);
     while (window.pollEvent(event)) {
         if (event.type == sf::Event::Closed) window.close();
 
@@ -1844,15 +1860,14 @@ void handleEventScoreboardPage() {
         inputSearchStuCourse.isClicked(event, window);
         if (searchStuCourseButton.isClicked(window, event)) {}
         
-        rPageButton.isHovering(window);
-        if (rPageButton.isClicked(window, event)) {}
+        rScorePageButton.isHovering(window);
+        if (rScorePageButton.isClicked(window, event)) {}
 
-        lPageButton.isHovering(window);
-        if (lPageButton.isClicked(window, event)) {}
+        lScorePageButton.isHovering(window);
+        if (lScorePageButton.isClicked(window, event)) {}
 
         if (scoreSaveButton.isClicked(window, event)) {}
 
-        int size = schoolyearArr[user.indexSchoolyear].listSemester[user.indexSemester].coursesListInSemester[user.indexCourse].currStudents;
         for (int i = scorePage * 6; i < (scorePage + 1) * 6 && i < size; ++i) {
             schoolyearButton[user.indexSchoolyear]->linkedButton[user.indexSemester]->linkedButton[user.indexCourse]->scoreList[i]->isHovering(window);
         }
@@ -1863,6 +1878,7 @@ void handleEventScoreboardPage() {
     }
 }
 void drawScoreboardPage() {
+    int size = schoolyearArr[user.indexSchoolyear].listSemester[user.indexSemester].coursesListInSemester[user.indexCourse].currStudents;
     viewingPage.draw(window);
     schoolyearsSelect.draw(window);
     classesButtonSelect.draw(window);
@@ -1881,14 +1897,17 @@ void drawScoreboardPage() {
     if (studentDetailSelect.isHover) hrztBarStudentDetails.draw(window);
     backButton.draw(window);
 
+    numStuInCourse.draw(window);
     inputAddStuCourse.draw(window);
     addStuCourseButton.draw(window);
     inputSearchStuCourse.draw(window);
     searchStuCourseButton.draw(window);
     scoreBar.draw(window);
     scoreSaveButton.draw(window);
+    rScorePageButton.draw(window);
+    lScorePageButton.draw(window);
+    pageScore.draw(window);
     
-    int size =  schoolyearArr[user.indexSchoolyear].listSemester[user.indexSemester].coursesListInSemester[user.indexCourse].currStudents;
     for (int i = scorePage * 6; i < (scorePage + 1) * 6 && i < size; ++i) {
         schoolyearButton[user.indexSchoolyear]->linkedButton[user.indexSemester]->linkedButton[user.indexCourse]->scoreList[i]->draw(window);
 	}
