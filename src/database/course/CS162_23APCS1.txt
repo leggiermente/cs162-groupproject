@@ -1,11 +1,14 @@
-MTH252_23APCS1
-Calculus 2
-Nguyen Huu Anh
+2023-2024
+1
+CS162_23APCS1
+Programming 2
+Dinh Ba Tien
 4
 S1 (07:30)
 TUE
 50
-3
+4
 454545
 100000
 999999
+111111

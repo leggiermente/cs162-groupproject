@@ -79,6 +79,7 @@ Staff* readStaffCSV(string filename, int& numStaff) {
     file.close();
     return newStaff;
 }
+
 SchoolYear* readSchoolYear(string path, int& numSchoolYear) {
     string line;
 	ifstream file(path + "/schoolyear.txt");
@@ -138,7 +139,9 @@ void readCourseInSemester(string path, SchoolYear* schoolYearArr, int numSchoolY
                     continue;
 				}
                 string line;
-                getline(file, line); 
+                getline(file, line); schoolYearArr[i].listSemester[j].coursesListInSemester[v].year = line;
+                getline(file, line); schoolYearArr[i].listSemester[j].coursesListInSemester[v].semester = line;
+                getline(file, line); // Pass ID
                 getline(file, line); schoolYearArr[i].listSemester[j].coursesListInSemester[v].courseName = line;
                 getline(file, line); schoolYearArr[i].listSemester[j].coursesListInSemester[v].teacher = line;
                 getline(file, line); schoolYearArr[i].listSemester[j].coursesListInSemester[v].numCredits = stoi(line);
@@ -164,7 +167,6 @@ void readCourseInSemester(string path, SchoolYear* schoolYearArr, int numSchoolY
 							}
 						}   
                     }
-                    //getline(file, line); schoolYearArr[i].listSemester[j].coursesListInSemester[v].listStudentInCourse[k].studentID = line;
                 }
                 file.close();
             }
@@ -212,7 +214,6 @@ void readStudentTXT(string path, Class& classStu) {
         ifstream file(path + "/" + classStu.listStudent[i].studentID + ".txt");
         if (!file) {
             cout << "Can't open student id file\n";
-            //cout << classStu.listStudent[i].studentID << endl;
         }
         else {
             string line;
@@ -223,6 +224,19 @@ void readStudentTXT(string path, Class& classStu) {
             getline(file, line); classStu.listStudent[i].dob = line;
             getline(file, line); classStu.listStudent[i].socialID = line;
             getline(file, line); classStu.listStudent[i].password = line;
+            getline(file, line); classStu.listStudent[i].numCourse = stoi(line);
+            
+            int numC = classStu.listStudent[i].numCourse;
+            if (numC != 0) classStu.listStudent[i].scoreList = new ScoreStu[numC];
+            for (int t = 0; t < numC; ++t) {
+                getline(file, line, ','); classStu.listStudent[i].scoreList[t].year = line;
+                getline(file, line, ','); classStu.listStudent[i].scoreList[t].semester = line;
+                getline(file, line, ','); classStu.listStudent[i].scoreList[t].courseID = line;
+				getline(file, line, ','); classStu.listStudent[i].scoreList[t].total = stoi(line);
+                getline(file, line, ','); classStu.listStudent[i].scoreList[t].final = stoi(line);
+                getline(file, line, ','); classStu.listStudent[i].scoreList[t].mid = stoi(line);
+                getline(file, line); classStu.listStudent[i].scoreList[t].other = stoi(line);
+            }
             file.close();
         }
     }
@@ -260,40 +274,20 @@ bool readCSVStuToClass(string path, Class& thatClass, int& numIc) {
     numIc = count;
     return true;
 }
+
 void printTest(Class* classArr, int numClass, SchoolYear* schoolYearArr, int numSchoolYear) {
     for (int i = 0; i < numClass; i++) {
 		cout << classArr[i].classID << endl;
         for (int j = 0; j < classArr[i].numStudent; j++) {
 			cout << classArr[i].listStudent[j].studentID << endl;
-            //cout << classArr[i].listStudent[j].firstName << endl;
-            //cout << classArr[i].listStudent[j].lastName << endl;
-            //cout << classArr[i].listStudent[j].femaleGender << endl;
-            //cout << classArr[i].listStudent[j].dob << endl;
-            //cout << classArr[i].listStudent[j].socialID << endl;
-            cout << classArr[i].listStudent[j].password << endl;
+            for (int k = 0; k < classArr[i].listStudent[j].numCourse; k++) {
+                cout << classArr[i].listStudent[j].scoreList[k].courseID << endl;
+                cout << classArr[i].listStudent[j].scoreList[k].year << endl;
+                cout << classArr[i].listStudent[j].scoreList[k].other << endl;
+            }
             cout << endl;
 		}
 	}
     cout << endl;
-
-    /*for (int i = 0; i < numSchoolYear; ++i) {
-        cout << schoolYearArr[i].period << endl;
-        cout << schoolYearArr[i].numSemester << endl;
-        for (int j = 0; j < schoolYearArr[i].numSemester; ++j) {
-            cout << schoolYearArr[i].listSemester[j].startDate << endl;
-            cout << schoolYearArr[i].listSemester[j].endDate << endl;
-            cout << schoolYearArr[i].listSemester[j].numSemesterInSchoolYear << endl;
-            cout << schoolYearArr[i].listSemester[j].numCourses << endl;
-            for (int k = 0; k < schoolYearArr[i].listSemester[j].numCourses; ++k) {
-                cout << schoolYearArr[i].listSemester[j].coursesListInSemester[k].ID << endl;
-                cout << schoolYearArr[i].listSemester[j].coursesListInSemester[k].currStudents << endl;
-                cout << schoolYearArr[i].listSemester[j].coursesListInSemester[k].dayOfWeek << endl;
-                for (int v = 0; v < schoolYearArr[i].listSemester[j].coursesListInSemester[k].currStudents; ++v) {
-					cout << schoolYearArr[i].listSemester[j].coursesListInSemester[k].listStudentInCourse[v].studentID << endl;
-				}
-            }
-        }
-        cout << endl;*/
-    //}
     return;
 }

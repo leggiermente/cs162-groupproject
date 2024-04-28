@@ -635,7 +635,7 @@ bool Buttonv2::isClicked(sf::RenderWindow& window, sf::Event event) {
 }
 
 //--------------------------------------------------------------
-// navigateButton
+// NavigateButton
 NavigateButton::NavigateButton(float x, float y, const std::string& imagePath) : Button (x,y,imagePath) {}
 void NavigateButton::draw(sf::RenderWindow& window) {
     if (isHover) sprite.setColor(sf::Color(240, 240, 240));

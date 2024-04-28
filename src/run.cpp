@@ -197,7 +197,7 @@ void RunApp()
     staffArr = readStaffCSV("staff.csv", numStaff);
     schoolyearArr = readSchoolYear("database/schoolyear", numSchoolYear);
     readCourseInSemester("database/course", schoolyearArr, numSchoolYear, classesArr, numClass);
-    
+
     schoolyearButton = new LinkedButton * [numSchoolYear];
     classesButton = new LinkedButton * [numClass];
     loadUI();
