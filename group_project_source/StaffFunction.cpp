@@ -129,7 +129,7 @@ void addStudentintoClass(Class &curClass){ //add a student into class
     }
     outputClass("database/class/"+curClass.classID+".txt",curClass);
 }
-void importSemesterandCourse(schoolYear &schyrs,Semester &sems,int target){ //import semester and course from the function
+void importSemesterandCourse(schoolYear &schyrs,Semester &sems,int target){ //import semester and course from the database
     ifstream inp;
     inp.open("database/semester/"+schyrs.period+"_"+to_string(target)+".txt");
     for (int i=0;i<sems.numCourses;i++){ //delete pointer section
