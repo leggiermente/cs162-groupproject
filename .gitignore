@@ -84,3 +84,17 @@ Temporary Items
 *.vcxproj.filters
 *.vcxproj.user
 **/x64/
+src/bin/main
+src/bin/main.dSYM/Contents/Resources/DWARF/main
+src/Makefile
+Makefile
+.idea/copilot/chatSessions/00000000000.xd
+.idea/copilot/chatSessions/blobs/version
+.idea/copilot/chatSessions/xd.lck
+.idea/workspace.xml
+.vscode/.easycpp
+.vscode/launch.json
+.vscode/tasks.json
+main.dSYM/Contents/Info.plist
+main.dSYM/Contents/Resources/DWARF/main
+main.dSYM/Contents/Resources/Relocations/aarch64/main.yml
