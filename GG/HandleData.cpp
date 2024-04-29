@@ -404,6 +404,125 @@ bool exportFileIdStu(string path, Course& thatCourse) {
 	file.close();
 	return true;
 }
+
+bool saveSchoolyear(SchoolYear* yearArr, int numYear) {
+    // schoolyear.txt
+    ofstream file("database/schoolyear/schoolyear.txt");
+    if (!file) {
+		cout << "Can't open school year file\n";
+		return false;
+	}
+    file << numYear << endl;
+    for (int i = 0; i < numYear; ++i) {
+		file << yearArr[i].period << "," << yearArr[i].numSemester << endl;
+	}
+    file.close();
+
+    // year_seme.txt
+    for (int i = 0; i < numYear; ++i) {
+        for (int j = 0; j < yearArr[i].numSemester; ++j) {
+            string path = "database/semester/" + yearArr[i].period + "_" + to_string(j + 1) + ".txt";
+            replace(path.begin(), path.end(), '-', '_');
+            saveSeme(path, &yearArr[i].listSemester[j]);
+        }
+    }
+    return true;
+}
+bool saveSeme(string path, Semester* thisSeme) {
+    ofstream file(path);
+    if (!file) {
+        cout << "Can't open semester file\n";
+        return false;
+    }
+    file << thisSeme->startDate << "," << thisSeme->endDate << endl;
+    file << thisSeme->numCourses << endl;
+    for (int i = 0; i < thisSeme->numCourses; ++i) {
+		file << thisSeme->coursesListInSemester[i].ID << endl;
+        string path2 = "database/course/" + thisSeme->coursesListInSemester[i].ID + ".txt";
+        saveCourse(path2, &thisSeme->coursesListInSemester[i]);
+	}
+	file.close();
+	return true;
+}
+bool saveCourse(string path, Course* thisCourse) {
+    ofstream file(path);
+    if (!file) {
+        cout << "Can't open course file\n";
+        return false;
+    }
+    file << thisCourse->year << endl;
+    file << thisCourse->semester << endl;
+    file << thisCourse->ID << endl;
+    file << thisCourse->courseName << endl;
+    file << thisCourse->teacher << endl;
+    file << thisCourse->numCredits << endl;
+    file << thisCourse->session << endl;
+    file << thisCourse->dayOfWeek << endl;
+    file << thisCourse->maxStudents << endl;
+    file << thisCourse->currStudents << endl;
+    for (int i = 0; i < thisCourse->currStudents; ++i) {
+        file << thisCourse->listStudentInCourse[i]->studentID << endl;
+    }
+    file.close();
+    return true;
+}
+bool saveClass(Class* classArr, int numClass) {
+    ofstream file("database/class/class.txt");
+    if (!file) {
+		cout << "Can't open class file\n";
+		return false;
+	}
+    file << numClass << endl;
+    for (int i = 0; i < numClass; ++i) {
+        file << classArr[i].classID << endl;
+    }
+    file.close();
+    
+    for (int i = 0; i < numClass; ++i) {
+		string path = "database/class/" + classArr[i].classID + ".txt";
+		ofstream file(path);
+		if (!file) {
+            cout << "Can't open class id file\n";
+            return false;
+        }
+        file << classArr[i].numStudent << endl;
+        for (int j = 0; j < classArr[i].numStudent; ++j) {
+			file << classArr[i].listStudent[j].studentID << endl;
+            string path2 = "database/student/" + classArr[i].listStudent[j].studentID + ".txt";
+            saveStudent(path2, &classArr[i].listStudent[j]);
+		}
+        file.close();
+    }
+    return true;
+}
+bool saveStudent(string path, Student* currStu) {
+    ofstream file(path);
+    if (!file) {
+		cout << "Can't open student id file\n";
+		return false;
+	}
+	file << currStu->studentID << endl;
+	file << currStu->firstName << endl;
+	file << currStu->lastName << endl;
+    file << currStu->femaleGender << endl;
+    file << currStu->dob << endl;
+    file << currStu->socialID << endl;
+    file << currStu->password << endl;
+    for (int i = 0; i < 4; i++) {
+        if (currStu->gpaList[i].year.empty()) file << endl;
+        else file << currStu->gpaList[i].year << endl;
+	}
+    for (int i = 0; i < 4; i++) {
+        file << currStu->gpaList[i].gpaS[3] << "," << currStu->gpaList[i].gpaS[0] << "," << currStu->gpaList[i].gpaS[1] << "," << currStu->gpaList[i].gpaS[2] << endl;
+    }
+    file << currStu->numCourse << endl;
+    for (int i = 0; i < currStu->numCourse; i++) {
+		file << currStu->scoreList[i].year << "," << currStu->scoreList[i].semester << "," << currStu->scoreList[i].courseID << "," << currStu->scoreList[i].totalSc << "," << currStu->scoreList[i].finalSc << "," << currStu->scoreList[i].midSc << "," << currStu->scoreList[i].otherSc << endl;
+	}
+    file.close();
+    return true;
+}
+
 void printTest(Class* classArr, int numClass, SchoolYear* schoolYearArr, int numSchoolYear) {
     for (int i = 0; i < numClass; i++) {
 		cout << classArr[i].classID << endl;

@@ -16,4 +16,11 @@ bool readCSVStuToClass(string path, Class& thatClass, int& numIc);
 bool readCSVStuToCourse(string path, Class* allClass, Course& thatCourse, int& numStuAdd, int numClass);
 bool readScoreCSV(string path, Course& thatCourse);
 bool exportFileIdStu(string path, Course& thatCourse);
+
+bool saveCourse(string path, Course* thisCourse);
+bool saveSeme(string path, Semester* thisSeme);
+bool saveSchoolyear(SchoolYear* yearArr, int numYear);
+bool saveClass(Class* classArr, int numClass);
+bool saveStudent(string path, Student* currStu);
+
 void printTest(Class* classArr, int numClass, SchoolYear* schoolYearArr, int numSchoolYear);

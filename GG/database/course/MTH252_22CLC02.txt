@@ -1,11 +1,10 @@
 2023-2024
 1
 MTH252_22CLC02
-Calculus 2
+Calculus 3
 Nguyen Huu Anh
-4
-S1 (07:30)
-TUE
+5
+S4 (15:30)
+SAT
 50
-1
-100000
+0

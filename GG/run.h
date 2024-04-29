@@ -64,6 +64,7 @@ void loadUIfromDatabase();
 void connectPointerofSessionandDow();
 
 // Support function
+void saveData();
 bool validateUser();
 bool isNumber(const std::string& str);
 void assignCourseForModify();

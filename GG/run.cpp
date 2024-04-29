@@ -173,7 +173,9 @@ ColorText notFoundYearAlert(750, 210, 15, "Oops! Year not found");
 ColorText foundYearAlert(750, 210, 15, "Year found");
 
 // Page control
-bool backToListCourse = false;
+bool backToListCourse = false,
+    savetrigger = false;
+
 int prevPage = 0,
     page = 0,
     yearPage = 0,
@@ -350,6 +352,10 @@ void RunApp()
         }
         }
         window.display();
+        if (savetrigger) {
+			saveData();
+			savetrigger = false;
+		}
     }
     // Console check
     std::cout << "Username: " << user.id << std::endl;
@@ -358,6 +364,10 @@ void RunApp()
 }
 
 // Support function
+void saveData() {
+    saveSchoolyear(schoolyearArr, numSchoolYear);
+    saveClass(classesArr, numClass);
+}
 bool validateUser() {
     if (user.id.empty()) return false;
     if (!isNumber(user.id)) return false;
@@ -833,6 +843,7 @@ void handleChangePassword() {
             newPassword.star.setString("");
             confirmPassword.star.setString("");
             myClock.restart();
+            savetrigger = true;
             break;
         }
 
@@ -984,9 +995,6 @@ void drawProfile() {
     seeProfileLastName.draw(window);
     seeProfileDOB.draw(window);
     seeProfileGender.draw(window);
-
-    //seeProfile.draw(window);
-    //profileText->drawStaff(window);
     return;
 }
 
@@ -1037,6 +1045,8 @@ void handleStaffSchoolYearPage() {
             schoolyearArr[numSchoolYear - 1].period = inputYear.text.getString();
             schoolyearButton = loadAddYearButton(schoolyearArr, schoolyearButton, numSchoolYear);
             inputYear.text.setString("");
+            savetrigger = true;
+            break;
         }
 
         inputSearchYear.isHovering(window);
@@ -1113,6 +1123,8 @@ void handleStaffSchoolYearPage() {
                 schoolyearButton[user.indexSchoolyear]->linkedButton = loadAddSemeButton(schoolyearArr[user.indexSchoolyear].listSemester, schoolyearButton[user.indexSchoolyear]->linkedButton, schoolyearArr[user.indexSchoolyear].numSemester);
                 inputStartDateSem.text.setString("");
                 inputEndDateSem.text.setString("");
+                savetrigger = true;
+                break;
             }
         }
     }
@@ -1214,7 +1226,11 @@ void handleEventCoursePage() {
                 clearInput();
                 break;
             }
-            if (passwordChange.isClicked(window, event)) {}
+            if (passwordChange.isClicked(window, event)) {
+                prevPage = 13;
+				page = 14;
+				break;
+            }
         }
 
         backButton.isHovering(window);
@@ -1298,6 +1314,8 @@ void handleEventCoursePage() {
             schoolyearArr[user.indexSchoolyear].listSemester[user.indexSemester].coursesListInSemester = loadAddCourse();
             // Load data for UI
             schoolyearButton[user.indexSchoolyear]->linkedButton[user.indexSemester]->linkedButton = loadAddCourseButton();
+            savetrigger = true;
+            break;
         }
 
         // Course button control base on course page
@@ -1396,7 +1414,11 @@ void handleEventDetailCoursePage() {
                 clearInput();
                 break;
             }
-            if (passwordChange.isClicked(window, event)) {}
+            if (passwordChange.isClicked(window, event)) {
+                prevPage = 18;
+                page = 14;
+                break;
+            }
         }
 
         courseDetailSelect.isHovering(window);
@@ -1477,6 +1499,7 @@ void handleEventDetailCoursePage() {
             assignCourseForModify();
             // Update UI for course ID outside
             schoolyearButton[user.indexSchoolyear]->linkedButton[user.indexSemester]->linkedButton[user.indexCourse]->text.setString(modifyCourseID.text.getString());
+            savetrigger = true;
         }
 
         if (importStuButton.isClicked(window, event)) {
@@ -1497,6 +1520,7 @@ void handleEventDetailCoursePage() {
                 }
             }
             inputImportStuToCourse.text.setString("");
+            savetrigger = true;
         }
 
         if (exportStuButton.isClicked(window, event)) {
@@ -1519,11 +1543,10 @@ void handleEventDetailCoursePage() {
 				}
 			}
 			inputImportScore.text.setString("");
-
+            savetrigger = true;
 		}
 
         if (deleteCourseButton.isClicked(window, event)) {
-            
             int numStu = schoolyearArr[user.indexSchoolyear].listSemester[user.indexSemester].coursesListInSemester[user.indexCourse].currStudents;
             for (int i = 0; i < numStu; ++i) {
                 string stuID = schoolyearButton[user.indexSchoolyear]->linkedButton[user.indexSemester]->linkedButton[user.indexCourse]->scoreList[i]->id.getString().toAnsiString();
@@ -1540,6 +1563,7 @@ void handleEventDetailCoursePage() {
             
             page = 13;
             backToListCourse = true;
+            savetrigger = true;
             break;
         }
 	}
@@ -1619,7 +1643,11 @@ void handleStaffClassPage() {
 				clearInput();
 				break;
 			}
-			if (passwordChange.isClicked(window, event)) {}
+			if (passwordChange.isClicked(window, event)) {
+                prevPage = page;
+                page = 14;
+                break;
+            }
 		}
 
 		lPageButton.isHovering(window);
@@ -1679,6 +1707,7 @@ void handleStaffClassPage() {
             classesArr[numClass - 1].classID = inputClass.text.getString();
             classesButton = loadAddClassButton();
             inputClass.text.setString("");
+            savetrigger = true;
         }
 
         inputSearchClass.isHovering(window);
@@ -1811,7 +1840,7 @@ void handleStaffClassDetailPage() {
                 numStuBox.text.setString("Number students: " + to_string(classesArr[user.indexClass].numStudent));
             }
             else {}
-            break;
+            savetrigger = true;
         }
 
         inputStuID.isHovering(window);
@@ -1864,6 +1893,7 @@ void handleStaffClassDetailPage() {
             inputDOB.text.setString("");
             genderCheckBox.female = false;
             numStuBox.text.setString("Number students: " + to_string(classesArr[user.indexClass].numStudent));
+            savetrigger = true;
         }
     }
     return;
@@ -2085,6 +2115,7 @@ void handleEventScoreboardPage() {
             }
 			else {}
             inputAddStuCourse.text.setString("");
+            savetrigger = true;
         }
 
         inputSearchStuCourse.isHovering(window);
@@ -2109,6 +2140,7 @@ void handleEventScoreboardPage() {
                 loadNewGPAtoStuInCourse();
             }
             else {}
+            savetrigger = true;
         }
 
         for (int i = scorePage * 5; i < (scorePage + 1) * 5 && i < size; ++i) {
@@ -2128,6 +2160,7 @@ void handleEventScoreboardPage() {
                 size = schoolyearArr[user.indexSchoolyear].listSemester[user.indexSemester].coursesListInSemester[user.indexCourse].currStudents;
                 calculateOneStuGPA(thatStu);
                 loadNewGPAtoStu(thatStuBut->scoreListInStu, thatStu);
+                savetrigger = true;
             }
         }
     }
