@@ -4,7 +4,6 @@
 using namespace std;
 #include "Staff.h"
 #include "Struct.h"
-#include "Student.h"
 schoolYear importSchoolYear(string name){ //import schoolyear from the database
     schoolYear schyrs;
     ifstream inp;
