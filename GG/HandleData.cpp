@@ -47,6 +47,10 @@ Student* readStudentCSV(string filename, int& numStu) {
 }
 Staff* readStaffCSV(string filename, int& numStaff) {
     ifstream file(filename);
+    if (!file) {
+		cout << "Can't open staff file\n";
+		return nullptr;
+	}
     string line;
 
     // Get the row of the csv file
@@ -60,20 +64,19 @@ Staff* readStaffCSV(string filename, int& numStaff) {
 
     //Create array for students
     Staff* newStaff = new Staff[numStaff];
-
     //Store data to a array
     int indexStaff = 0;
     while (getline(file, line)) {
         stringstream s(line);
-
         //Pass No data in CSV
         getline(s, line, ',');
         getline(s, line, ','); newStaff[indexStaff].staffID = line;
         getline(s, line, ','); newStaff[indexStaff].firstName = line;
         getline(s, line, ','); newStaff[indexStaff].lastName = line;
-
-        //Auto generate password = 1
-        newStaff[indexStaff].password = "1";
+        getline(s, line, ','); newStaff[indexStaff].socialID = line;
+        getline(s, line, ','); (line == "1") ? newStaff[indexStaff].gender = false : newStaff[indexStaff].gender = true;
+        getline(s, line, ','); newStaff[indexStaff].dob = line;
+        getline(s, line); newStaff[indexStaff].password = line;
         indexStaff++;
     }
     file.close();
@@ -520,6 +523,18 @@ bool saveStudent(string path, Student* currStu) {
 		file << currStu->scoreList[i].year << "," << currStu->scoreList[i].semester << "," << currStu->scoreList[i].courseID << "," << currStu->scoreList[i].totalSc << "," << currStu->scoreList[i].finalSc << "," << currStu->scoreList[i].midSc << "," << currStu->scoreList[i].otherSc << endl;
 	}
     file.close();
+    return true;
+}
+bool saveStaff(Staff* staffArr, int numStaff) {
+    ofstream file("database/staff/staff.csv");
+    if (!file) {
+        cout << "Can't open staff file\n";
+        return false;
+    }
+    for (int i = 0; i < numStaff; i++) {
+		file << i + 1<< "," << staffArr[i].staffID << "," << staffArr[i].firstName << "," << staffArr[i].lastName << ","
+            << staffArr[i].socialID << "," << staffArr[i].gender << "," << staffArr[i].dob << "," << staffArr[i].password << endl;
+    }
     return true;
 }
 

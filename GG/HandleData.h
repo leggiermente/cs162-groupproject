@@ -22,5 +22,6 @@ bool saveSeme(string path, Semester* thisSeme);
 bool saveSchoolyear(SchoolYear* yearArr, int numYear);
 bool saveClass(Class* classArr, int numClass);
 bool saveStudent(string path, Student* currStu);
+bool saveStaff(Staff* staffArr, int numStaff);
 
 void printTest(Class* classArr, int numClass, SchoolYear* schoolYearArr, int numSchoolYear);

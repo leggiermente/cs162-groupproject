@@ -4,19 +4,11 @@
 struct Staff;
 struct Staff {
     string staffID = "";
-    string socialID = "";
-    string password = "";
     string firstName = "";
     string lastName = "";
-    string dob = "";
+    string socialID = "";
     bool gender = false;
+    string dob = "";
+    string password = "";
 };
-//schoolYear importSchoolYear();
-//Class readClass(string fileName, string nameClass);
-//Student* readStudentCSV(string filename, int& numStu);
-//void updateStudentFromInput(Class& curClass);
-//void addNewSchoolYear(int& sems, schoolYear schyrs, bool& createClassOption);
-//void addStudentintoClass(schoolYear& schyrs, bool createClassOption);
-//void outputClass(string fileName, Class curClass);
-//void outputSchoolYear(schoolYear& schyrs);
 #endif // STAFF_H_INCLU

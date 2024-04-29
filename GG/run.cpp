@@ -174,7 +174,8 @@ ColorText foundYearAlert(750, 210, 15, "Year found");
 
 // Page control
 bool backToListCourse = false,
-    savetrigger = false;
+savetrigger = false,
+saveForStaff = false;
 
 int prevPage = 0,
     page = 0,
@@ -214,7 +215,7 @@ SearchArrPointerUI* searchArrUI = nullptr;
 void RunApp() 
 {
     classesArr = readClass("database/class", numClass);
-    staffArr = readStaffCSV("staff.csv", numStaff);
+    staffArr = readStaffCSV("database/staff/staff.csv", numStaff);
     schoolyearArr = readSchoolYear("database/schoolyear", numSchoolYear);
     readCourseInSemester("database/course", schoolyearArr, numSchoolYear, classesArr, numClass);
     calculateAllStuGPA();
@@ -356,6 +357,10 @@ void RunApp()
 			saveData();
 			savetrigger = false;
 		}
+        if (saveForStaff) {
+            saveStaff(staffArr, numStaff);
+            saveForStaff = false;
+        }
     }
     // Console check
     std::cout << "Username: " << user.id << std::endl;
@@ -844,6 +849,7 @@ void handleChangePassword() {
             confirmPassword.star.setString("");
             myClock.restart();
             savetrigger = true;
+            saveForStaff = true;
             break;
         }
 
