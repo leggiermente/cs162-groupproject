@@ -6,7 +6,7 @@ using namespace std;
 #include "Staff.h"
 #include "Struct.h"
 #include "Student.h"
-schoolYear importSchoolYear(string name){
+schoolYear importSchoolYear(string name){ //import schoolyear from the database
     schoolYear schyrs;
     ifstream inp;
     inp.open("database/schoolyear/"+name+".txt"); //open the data of the class in the school year.
@@ -21,7 +21,7 @@ schoolYear importSchoolYear(string name){
     inp.close();
     return schyrs;
 }
-Class readClass(string fileName,string nameClass){
+Class readClass(string fileName,string nameClass){ //import a class from the database
     ifstream inp;
     string str;
     inp.open(fileName);
@@ -53,10 +53,10 @@ Class readClass(string fileName,string nameClass){
     inp.close();
     return *tmpClass;
 }
-Student *readStudentCSV(string fileName, int& numStu){ //merge from the work of izahai
+Student *readStudentCSV(string fileName, int& numStu){//import Student CSV, merge from the work of izahai
 
 }
-void updateStudentFromInput(Class &curClass){
+void updateStudentFromInput(Class &curClass){ //import students from the input
     system("CLS");
     string str;
     cout << "Please input number of students: ";
@@ -94,14 +94,14 @@ void updateStudentFromInput(Class &curClass){
 void ImportStudentsToCoursesInSemester(Student **students, int numStu, Course thisCourse){ //merge from the work of lehoangan02
 
 }
-void addNewSchoolYear(schoolYear schyrs){
+void addNewSchoolYear(schoolYear schyrs){ //create a new school year
     system("CLS");
     cout << "Please input the period of the new school year below: " << endl;
     getline(cin,schyrs.period);
     outputSchoolYear(schyrs);
     system("CLS");
 }
-void addStudentintoClass(Class &curClass){
+void addStudentintoClass(Class &curClass){ //add a student into class
     system("CLS");
     if (curClass.yearStudied!=1){ //check if there are 1-st year classes to add
         cout << "The class is not 1-st year to add new student." << endl;
@@ -127,11 +127,11 @@ void addStudentintoClass(Class &curClass){
         cout << "Please choose the directory for the import file student.csv";
         string str;
         getline(cin,str);
-        curClass.listStudent=readStudentCSV(str+"student.csv", curClass.numStudent); //work of izahai
+        curClass.listStudent=readStudentCSV(str+"student.csv", curClass.numStudent); //import from CSV, work of izahai
     }
     outputClass("database/class/"+curClass.classID+".txt",curClass);
 }
-void importSemesterandCourse(schoolYear &schyrs,Semester &sems,int target){
+void importSemesterandCourse(schoolYear &schyrs,Semester &sems,int target){ //import semester and course from the function
     ifstream inp;
     inp.open("database/semester/"+schyrs.period+"_"+to_string(target)+".txt");
     for (int i=0;i<sems.numCourses;i++){ //delete pointer section
@@ -152,7 +152,7 @@ void importSemesterandCourse(schoolYear &schyrs,Semester &sems,int target){
     }
     inp.close();
     for (int i=0;i<sems.numCourses;i++){
-        inp.open("database/course/"+sems.coursesListInSemester[i].ID+".txt");
+        inp.open("database/course/"+sems.coursesListInSemester[i].ID+".txt"); //import each course from the semester
         getline(inp,sems.coursesListInSemester[i].ID);
         getline(inp,sems.coursesListInSemester[i].courseName);
         getline(inp,sems.coursesListInSemester[i].className);
@@ -166,14 +166,14 @@ void importSemesterandCourse(schoolYear &schyrs,Semester &sems,int target){
         inp.get();
         int numStu=sems.coursesListInSemester[i].numStudents;
         sems.coursesListInSemester[i].listStudentInCourse=new Student* [numStu];
-        for (int j=0;j<sems.coursesListInSemester[i].numStudents;j++){
+        for (int j=0;j<sems.coursesListInSemester[i].numStudents;j++){ //import each student from each course
             sems.coursesListInSemester[i].listStudentInCourse[j]=new Student;
             getline(inp,sems.coursesListInSemester[i].listStudentInCourse[j]->studentID);
         }
         inp.close();
     }
 }
-void addCourse(schoolYear &schyrs,Semester &sems){
+void addCourse(schoolYear &schyrs,Semester &sems){ //add a course to the current semester
     Course* tmp=sems.coursesListInSemester;
     sems.numCourses++;
     sems.coursesListInSemester=new Course[sems.numCourses]; //update the size of dynamic allocated array to add a new course
@@ -196,7 +196,7 @@ void addCourse(schoolYear &schyrs,Semester &sems){
     cin.get();
     cout << "Please input day of the week, following format (can be uppercase and lowercase): " << endl; //day of the week process
     cout << "MON | TUE | WED | THU | FRI | SAT" << endl;
-    while (getline(cin,sems.coursesListInSemester[curPos].dayoftheWeek) &&
+    while (getline(cin,sems.coursesListInSemester[curPos].dayoftheWeek) && //check if valid input
            !checkFormatDayOfTheWeek(sems.coursesListInSemester[curPos].dayoftheWeek)){
         cout << "Invalid input! Please try again in this line: ";
     }
@@ -206,16 +206,16 @@ void addCourse(schoolYear &schyrs,Semester &sems){
     cout << "Please input the session, follows the following format (must be uppercase): "; //session process
     cout << "S1 | S2 | S3 | S4" << endl;
     cout << "Note: S1 (7:30), S2(9:30), S3(13:30), S4(15:30)" << endl;
-    while (getline(cin,sems.coursesListInSemester[curPos].sessionTime) &&
+    while (getline(cin,sems.coursesListInSemester[curPos].sessionTime) && //check if valid input
            !checkFormatSession(sems.coursesListInSemester[curPos].sessionTime)){
         cout << "Invalid input! Please try again in this line: ";
     }
     ImportStudentsToCoursesInSemester(sems.coursesListInSemester[curPos].listStudentInCourse,sems.coursesListInSemester[curPos].numStudents,
                                       sems.coursesListInSemester[curPos]); //import student.csv, merge later from the work of lehoangan02
     outputSemester(schyrs,sems);
-    outputCourse("database/course/"+sems.coursesListInSemester[curPos].ID+".txt",sems.coursesListInSemester[curPos]);
+    outputCourse("database/course/"+sems.coursesListInSemester[curPos].ID+".txt",sems.coursesListInSemester[curPos]); //save to database
 }
-void removeCourse(schoolYear &schyrs,Semester &sems){
+void removeCourse(schoolYear &schyrs,Semester &sems){ //remove a course from the semester
     if (sems.numCourses==0){
         cout << "You don't have any classes to remove." << endl;
         Sleep(3000);
@@ -231,15 +231,14 @@ void removeCourse(schoolYear &schyrs,Semester &sems){
         cout << "Invalid input! Please try again at this line: ";
     }
     command--;
-    //this line is left for the delete of information at the file that which student learns the course at this semester.
     string tmpdir="database/course/"+sems.coursesListInSemester[command].ID+".txt";
     int dirsize=tmpdir.size()+1;
     char dir[dirsize]="";
     for (int i=0;i<dirsize-1;i++) dir[i]=tmpdir[i];
     dir[dirsize-1]=0;
     remove(dir);
-    sems.numCourses--;
-    if (sems.numCourses==0){
+    sems.numCourses--; //decrease number of course
+    if (sems.numCourses==0){ //copy, edit and replace into the sems structure
         sems.coursesListInSemester=nullptr;
     }
     else{
@@ -261,7 +260,7 @@ void removeCourse(schoolYear &schyrs,Semester &sems){
     }
     outputSemester(schyrs,sems);
 }
-void outputSemester(schoolYear schyrs, Semester sems){
+void outputSemester(schoolYear schyrs, Semester sems){ //save the semester into the database
     ofstream out;
     out.open("database/semester/"+schyrs.period+"-"+to_string(sems.numSemesterInSchoolYear)+".txt");
     out << sems.numSemesterInSchoolYear << endl;
@@ -273,7 +272,7 @@ void outputSemester(schoolYear schyrs, Semester sems){
     }
     out.close();
 }
-void outputClass(string fileName,Class curClass){
+void outputClass(string fileName,Class curClass){ //save the class into the database
     ofstream out;
     string str;
     out.open(fileName);
@@ -296,14 +295,14 @@ void outputClass(string fileName,Class curClass){
         cout << endl;
     }
 }
-void outputSchoolYear(schoolYear &schyrs){
+void outputSchoolYear(schoolYear &schyrs){ //save the school year into the database
     ofstream out;
     string str;
     out.open("database/schoolyear/"+schyrs.period+".txt"); //output the period, number of classes, and list of classes.
     out << schyrs.period << endl;
     out.close();
 }
-void outputCourse(string fileName,Course curCourse){
+void outputCourse(string fileName,Course curCourse){ //save the course into the database
     ofstream out;
     string str;
     out.open(fileName); //output the information of courses, and student ID involved in course.
@@ -321,7 +320,7 @@ void outputCourse(string fileName,Course curCourse){
     }
     out.close();
 }
-void outputCourseScoreBoard(schoolYear schyrs, Semester sems, Course curCourse){
+void outputCourseScoreBoard(schoolYear schyrs, Semester sems, Course curCourse){ //import the scoreboard from a database and output to screen
     ifstream inp;
     inp.precision(2);
     for (int i=0;i<curCourse.numStudents;i++){ //open student's file
@@ -344,7 +343,7 @@ void outputCourseScoreBoard(schoolYear schyrs, Semester sems, Course curCourse){
             other=stof(str);
             if (yearCourse==schyrs.period && stoi(semCourse)==sems.numSemesterInSchoolYear && curCourse.ID==nameCourse){
                 cout << curStu->studentID << " " << curStu->firstName << " " << curStu->lastName << " "
-                    << total << " " << fin << " " << mid << " " << other << endl;
+                    << total << " " << fin << " " << mid << " " << other << endl; //outputx
                 break;
             }
         }
@@ -352,7 +351,7 @@ void outputCourseScoreBoard(schoolYear schyrs, Semester sems, Course curCourse){
         inp.close();
     }
 }
-void outputClassResult(Class curClass, Semester sems, schoolYear schyrs){
+void outputClassResult(Class curClass, Semester sems, schoolYear schyrs){ //output class result into the screen
     int numStudent=curClass.numStudent;
     system("CLS");
     cout << "Number of students in the class: " << numStudent << endl;
