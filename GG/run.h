@@ -119,6 +119,8 @@ void deleteStuInCourse(string stuID);
 void deleteScoreInStu(string courseID, string stuID);
 void loadNewGPAtoStu(ScoreRowInStu*& thatRowArr, Student* thatStu);
 void loadNewGPAtoStuInCourse();
+void deleteCourse();
+void loadNewCourseButton();
 LinkedButton** loadAddCSVStuToClassButton(int numIc);
 
 // Free memory
