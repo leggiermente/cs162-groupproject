@@ -9,7 +9,7 @@ using namespace std;
 schoolYear importSchoolYear(string name){
     schoolYear schyrs;
     ifstream inp;
-    inp.open("../database/schoolyear/"+name+".txt"); //open the data of the class in the school year.
+    inp.open("database/schoolyear/"+name+".txt"); //open the data of the class in the school year.
     if (!inp.is_open()){
         inp.close();
         return {}; //there's no data of the current school year that needs to make new school year.
@@ -129,11 +129,11 @@ void addStudentintoClass(Class &curClass){
         getline(cin,str);
         curClass.listStudent=readStudentCSV(str+"student.csv", curClass.numStudent); //work of izahai
     }
-    outputClass("../database/class/"+curClass.classID+".txt",curClass);
+    outputClass("database/class/"+curClass.classID+".txt",curClass);
 }
 void importSemesterandCourse(schoolYear &schyrs,Semester &sems,int target){
     ifstream inp;
-    inp.open("../database/semester/"+schyrs.period+"_"+to_string(target)+".txt");
+    inp.open("database/semester/"+schyrs.period+"_"+to_string(target)+".txt");
     for (int i=0;i<sems.numCourses;i++){ //delete pointer section
         for (int j=0;j<sems.coursesListInSemester[i].numStudents;j++){
             delete []sems.coursesListInSemester[i].listStudentInCourse[j]->scoreOfStudent;
@@ -152,7 +152,7 @@ void importSemesterandCourse(schoolYear &schyrs,Semester &sems,int target){
     }
     inp.close();
     for (int i=0;i<sems.numCourses;i++){
-        inp.open("../database/course/"+sems.coursesListInSemester[i].ID+".txt");
+        inp.open("database/course/"+sems.coursesListInSemester[i].ID+".txt");
         getline(inp,sems.coursesListInSemester[i].ID);
         getline(inp,sems.coursesListInSemester[i].courseName);
         getline(inp,sems.coursesListInSemester[i].className);
@@ -213,7 +213,7 @@ void addCourse(schoolYear &schyrs,Semester &sems){
     ImportStudentsToCoursesInSemester(sems.coursesListInSemester[curPos].listStudentInCourse,sems.coursesListInSemester[curPos].numStudents,
                                       sems.coursesListInSemester[curPos]); //import student.csv, merge later from the work of lehoangan02
     outputSemester(schyrs,sems);
-    outputCourse("../database/course/"+sems.coursesListInSemester[curPos].ID+".txt",sems.coursesListInSemester[curPos]);
+    outputCourse("database/course/"+sems.coursesListInSemester[curPos].ID+".txt",sems.coursesListInSemester[curPos]);
 }
 void removeCourse(schoolYear &schyrs,Semester &sems){
     if (sems.numCourses==0){
@@ -232,7 +232,7 @@ void removeCourse(schoolYear &schyrs,Semester &sems){
     }
     command--;
     //this line is left for the delete of information at the file that which student learns the course at this semester.
-    string tmpdir="../database/course/"+sems.coursesListInSemester[command].ID+".txt";
+    string tmpdir="database/course/"+sems.coursesListInSemester[command].ID+".txt";
     int dirsize=tmpdir.size()+1;
     char dir[dirsize]="";
     for (int i=0;i<dirsize-1;i++) dir[i]=tmpdir[i];
@@ -263,7 +263,7 @@ void removeCourse(schoolYear &schyrs,Semester &sems){
 }
 void outputSemester(schoolYear schyrs, Semester sems){
     ofstream out;
-    out.open("../database/semester/"+schyrs.period+"-"+to_string(sems.numSemesterInSchoolYear)+".txt");
+    out.open("database/semester/"+schyrs.period+"-"+to_string(sems.numSemesterInSchoolYear)+".txt");
     out << sems.numSemesterInSchoolYear << endl;
     out << sems.startDate << " " << sems.startMonth << " " << sems.startYear << endl;
     out << sems.endDate << " " << sems.endMonth << " " << sems.endYear << endl;
@@ -299,7 +299,7 @@ void outputClass(string fileName,Class curClass){
 void outputSchoolYear(schoolYear &schyrs){
     ofstream out;
     string str;
-    out.open("../database/schoolyear/"+schyrs.period+".txt"); //output the period, number of classes, and list of classes.
+    out.open("database/schoolyear/"+schyrs.period+".txt"); //output the period, number of classes, and list of classes.
     out << schyrs.period << endl;
     out.close();
 }
@@ -327,7 +327,7 @@ void outputCourseScoreBoard(schoolYear schyrs, Semester sems, Course curCourse){
     for (int i=0;i<curCourse.numStudents;i++){ //open student's file
         Student* curStu=curCourse.listStudentInCourse[i];
         string ID=curStu->studentID,str="";
-        inp.open("../database/scoreboard/"+ID+".txt");
+        inp.open("database/scoreboard/"+ID+".txt");
         do{
             string yearCourse="",semCourse="",nameCourse="",str="";
             double total=0,fin=0,mid=0,other=0;
@@ -359,7 +359,7 @@ void outputClassResult(Class curClass, Semester sems, schoolYear schyrs){
     for (int i=0;i<curClass.numStudent;i++){
         Student curStu=curClass.listStudent[i];
         int numCoursesSemester=0,numCoursesTotal=0,s,quiz,mid,fin,total; float sumGPASem=0,sumGPATotal=0;
-        string dir="../database/student/"+curStu.studentID+".txt";
+        string dir="database/student/"+curStu.studentID+".txt";
         ifstream inp(dir);
         string tmp,period,curCourse;
         cout << "Student ID: " << curStu.studentID << endl;
