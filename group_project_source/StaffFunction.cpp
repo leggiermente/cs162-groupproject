@@ -1,7 +1,6 @@
 #include <windows.h>
 #include <iostream>
 #include <fstream>
-#include <cstring>
 using namespace std;
 #include "Staff.h"
 #include "Struct.h"
