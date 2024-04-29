@@ -72,6 +72,8 @@ void searchYear();
 void searchClass();
 int searchCourse();
 Student* findPointerStu(string stuID);
+bool isStuNotInCourse(string stuID);
+void calculateOneStuGPA(Student* thatStu);
 
 // Handle event && Draw UI
 void handleChangePassword();
@@ -108,7 +110,10 @@ LinkedButton** loadAddStuButton();
 Course* loadAddCourse();
 LinkedButton** loadAddCourseButton();
 ScoreStu* loadAddCourseToStu(Student* stuAdd);
-void loadAddStuToCourseButton(Student* stuAdd);
+void loadNewScoreRowButton(int numOdd);
+void deleteStuInCourse(string stuID);
+void deleteScoreInStu(string courseID, string stuID);
+void loadNewGPAtoStu(ScoreRowInStu*& thatRowArr, Student* thatStu);
 LinkedButton** loadAddCSVStuToClassButton(int numIc);
 
 // Free memory

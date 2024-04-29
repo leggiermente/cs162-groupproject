@@ -5,6 +5,7 @@
 #include "UI.h"
 #include "run.h"
 #include "HandleData.h"
+#include "Struct.h"
 
 //--------------------------------------------------------------
 // Button
@@ -797,4 +798,41 @@ void ScoreRow::draw(sf::RenderWindow& window) {
 	midS.draw(window);
 	otherS.draw(window);
     deleteButton.draw(window);
+}
+
+//--------------------------------------------------------------
+// ScoreRowInStu
+ScoreRowInStu::ScoreRowInStu(float x, float y, GPA* gpaStu) {
+    if (!font.loadFromFile("font/Roboto-Regular.ttf")) {
+        cout << "Can't load font\n";
+    }
+    for (int i = 0; i < 4; ++i) {
+    	year[i].setFont(font);
+		year[i].setCharacterSize(20);
+		year[i].setFillColor(sf::Color::Black);
+        year[i].setString(gpaStu[i].year);
+        if (gpaStu[i].year.empty()) year[i].setString("N/A");
+        year[i].setPosition(x + 10, y + 15 + i * 50);
+
+        for (int j = 0; j < 4; j++) {
+            semester[i][j].setFont(font);
+			semester[i][j].setCharacterSize(20);
+			semester[i][j].setFillColor(sf::Color::Black);
+            string s = "_";
+            if (gpaStu[i].gpaS[j] != -1) {
+                s = to_string(gpaStu[i].gpaS[j]);
+                s = s.substr(0, 4);
+            }
+			semester[i][j].setString(s);    	
+			semester[i][j].setPosition(795 + j * 100, y + 15 + i * 50);
+        }
+    }
+}
+void ScoreRowInStu::draw(sf::RenderWindow& window) {
+    for (int i = 0; i < 4; ++i) {
+		window.draw(year[i]);
+		for (int j = 0; j < 4; ++j) {
+			window.draw(semester[i][j]);
+		}
+	}
 }

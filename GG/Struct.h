@@ -3,14 +3,18 @@
 #include <string>
 using namespace std;
 
+struct GPA {
+    string year = "";
+    float gpaS[4] = {-1};
+};
 struct ScoreStu {
-    string year;
-    string semester;
-    string courseID;
-    float totalSc;
-    float finalSc;
-    float midSc;
-    float otherSc;
+    string year = "";
+    string semester = "";
+    string courseID = "";
+    float totalSc = -1;
+    float finalSc = -1;
+    float midSc = -1;
+    float otherSc = -1;
 };
 struct Class;
 struct SchoolYear;
@@ -59,8 +63,8 @@ struct Student {
     string socialID = "";
     string password = "";
     float overallGPA = 0;
+    GPA gpaList[4];
     ScoreStu* scoreList = nullptr;
     int numCourse = 0;
-    //Course* courseOfStudent = nullptr;
 };
 #endif // STRUCT_H_INCLUDED

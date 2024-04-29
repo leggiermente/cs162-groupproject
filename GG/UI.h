@@ -1,6 +1,7 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <string>
+#include "Struct.h"
 
 struct Button {
     sf::Texture texture;
@@ -156,9 +157,17 @@ struct ScoreRow {
     bool clickInput(sf::RenderWindow& window, sf::Event event);
     void draw(sf::RenderWindow& window);
 };
+struct ScoreRowInStu {
+    sf::Font font;
+    sf::Text year[4];
+    sf::Text semester[4][4];
+    ScoreRowInStu(float x, float y, GPA* gpaStu);
+    void draw(sf::RenderWindow& window);
+};
 struct LinkedButton : Button {
     LinkedButton** linkedButton = nullptr;
     ScoreRow** scoreList = nullptr;
+    ScoreRowInStu* scoreListInStu = nullptr;
     sf::Font font;
     sf::Text text;
     bool isFinding = false;
