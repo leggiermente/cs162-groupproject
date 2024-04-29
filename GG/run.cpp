@@ -214,7 +214,7 @@ void RunApp()
     staffArr = readStaffCSV("staff.csv", numStaff);
     schoolyearArr = readSchoolYear("database/schoolyear", numSchoolYear);
     readCourseInSemester("database/course", schoolyearArr, numSchoolYear, classesArr, numClass);
-
+    calculateAllStuGPA();
     schoolyearButton = new LinkedButton * [numSchoolYear];
     classesButton = new LinkedButton * [numClass];
     loadUI();
@@ -410,6 +410,15 @@ void clearInput() {
     inputPassBox.text.setString("");
     inputPassBox.star.setString("");
 }
+bool isFloat(const std::string& s) {
+    try {
+        std::stof(s);
+    }
+    catch (std::invalid_argument&) {
+        return false;
+    }
+    return true;
+}
 void searchYear() {
     string substring = inputSearchYear.text.getString().toAnsiString();
     if (searchArrUI != nullptr) {
@@ -502,9 +511,11 @@ bool isStuNotInCourse(string stuID) {
 }
 void calculateOneStuGPA(Student* thatStu) {
     float sumAll = 0;
+    float dvAll = 0;
     for (int v = 0; v < 4; ++v) {
         if (thatStu->gpaList[v].year.empty()) continue;
         float sumY = 0;
+        float dvY = 0;
         for (int k = 0; k < 3; ++k) {
             float sum = 0;
             int numC = thatStu->numCourse;
@@ -519,13 +530,74 @@ void calculateOneStuGPA(Student* thatStu) {
 			}
             if (divisor != 0) thatStu->gpaList[v].gpaS[k] = sum / divisor;
 			else thatStu->gpaList[v].gpaS[k] = -1;
-            if (divisor != 0) sumY += sum / divisor;
+            if (divisor != 0) {
+                sumY += sum / divisor;
+                dvY++;
+            }
         }
         if (sumY == 0) thatStu->gpaList[v].gpaS[3] = -1;
-		else thatStu->gpaList[v].gpaS[3] = sumY / 3;
-        sumAll += sumY /3;
+        else {
+            thatStu->gpaList[v].gpaS[3] = sumY / dvY;
+            sumAll += sumY / dvY;
+            dvAll++;
+        }
     }
-    thatStu->overallGPA = sumAll / 4;
+    if (sumAll == 0) thatStu->overallGPA = -1;
+	else thatStu->overallGPA = sumAll / dvAll;
+}
+bool isScoreHandValid() {
+    ScoreRow** thatScore = schoolyearButton[user.indexSchoolyear]->linkedButton[user.indexSemester]->linkedButton[user.indexCourse]->scoreList;
+    Course* thatCourse = &schoolyearArr[user.indexSchoolyear].listSemester[user.indexSemester].coursesListInSemester[user.indexCourse];
+    for (int i = 0; i < thatCourse->currStudents; ++i) {
+        if (!isFloat(thatScore[i]->totalS.text.getString().toAnsiString())) return false;
+        if (!isFloat(thatScore[i]->midS.text.getString().toAnsiString())) return false;
+        if (!isFloat(thatScore[i]->finalS.text.getString().toAnsiString())) return false;
+        if (!isFloat(thatScore[i]->otherS.text.getString().toAnsiString())) return false;
+    }
+    return true;
+}
+void updateScoreByHand() {
+    Course* thatCourse = &schoolyearArr[user.indexSchoolyear].listSemester[user.indexSemester].coursesListInSemester[user.indexCourse];
+    for (int i = 0; i < thatCourse->currStudents; ++i) {
+		Student* thatStu = thatCourse->listStudentInCourse[i];
+        ScoreRow* thatScore = schoolyearButton[user.indexSchoolyear]->linkedButton[user.indexSemester]->linkedButton[user.indexCourse]->scoreList[i];
+        for (int j = 0; j < thatStu->numCourse; ++j) {
+            if (thatStu->scoreList[j].courseID == thatCourse->ID) {
+				thatStu->scoreList[j].totalSc = stof(thatScore->totalS.text.getString().toAnsiString());
+                thatStu->scoreList[j].finalSc = stof(thatScore->finalS.text.getString().toAnsiString());
+                thatStu->scoreList[j].midSc = stof(thatScore->midS.text.getString().toAnsiString());
+                thatStu->scoreList[j].otherSc = stof(thatScore->otherS.text.getString().toAnsiString());
+                break;
+			}
+		}
+		calculateOneStuGPA(thatStu);
+	}   
+}
+void calculateAllStuGPA() {
+    for (int i = 0; i < numClass; ++i) {
+        for (int j = 0; j < classesArr[i].numStudent; ++j) {
+			calculateOneStuGPA(&classesArr[i].listStudent[j]);
+		}
+	}
+}
+void addYearToStu(Course* thatCourse, Student* thatStu) {
+    bool addYear = true;
+    for (int u = 0; u < 4; u++) {
+        if (thatCourse->year == thatStu->gpaList[u].year) {
+            addYear = false;
+            break;
+        }
+
+    }
+    if (addYear) {
+        for (int u = 0; u < 4; u++) {
+            if (thatStu->gpaList[u].year.empty())
+            {
+                thatStu->gpaList[u].year = thatCourse->year;
+                break;
+            }
+        }
+    }
 }
 
 // Load UI
@@ -1423,24 +1495,7 @@ void handleEventDetailCoursePage() {
 				if (readScoreCSV(path, schoolyearArr[user.indexSchoolyear].listSemester[user.indexSemester].coursesListInSemester[user.indexCourse])) {
 					int numStu = schoolyearArr[user.indexSchoolyear].listSemester[user.indexSemester].coursesListInSemester[user.indexCourse].currStudents;
 					loadNewScoreRowButton(numStu);
-                    
-                    for (int k = 0; k < numStu; ++k) {
-						Student* stu = schoolyearArr[user.indexSchoolyear].listSemester[user.indexSemester].coursesListInSemester[user.indexCourse].listStudentInCourse[k];
-                        string stuID = stu->studentID;
-                        calculateOneStuGPA(stu);
-                        bool found = false;
-                        for (int n = 0; n < numClass && !found; n++) {
-                            for (int m = 0; m < classesArr[n].numStudent && !found; m++) {
-								if (classesArr[n].listStudent[m].studentID == stuID) {
-									found = true;
-                                    loadNewGPAtoStu(classesButton[n]->linkedButton[m]->scoreListInStu, stu);
-                                    break;
-								}
-							}
-                        }
-                        if (found) cout << "Found" << endl;
-						else cout << "Not found" << endl;
-					}
+                    loadNewGPAtoStuInCourse();
 				}
 			}
 			inputImportScore.text.setString("");
@@ -1975,11 +2030,13 @@ void handleEventScoreboardPage() {
                 if (isStuNotInCourse(stuID)) {
                     Student* stuAdd = findPointerStu(stuID);
                     if (stuAdd != nullptr) {
+                        Course* thatCourse1 = &schoolyearArr[user.indexSchoolyear].listSemester[user.indexSemester].coursesListInSemester[user.indexCourse];
                         schoolyearArr[user.indexSchoolyear].listSemester[user.indexSemester].coursesListInSemester[user.indexCourse].listStudentInCourse[currStu] = stuAdd;
                         schoolyearArr[user.indexSchoolyear].listSemester[user.indexSemester].coursesListInSemester[user.indexCourse].currStudents++;
                         inputAddStuCourse.text.setString("");
-                        loadNewScoreRowButton(currStu);
                         stuAdd->scoreList = loadAddCourseToStu(stuAdd);
+                        addYearToStu(thatCourse1, stuAdd);
+                        loadNewScoreRowButton(currStu);
                     }
                 }
                 else {}
@@ -2002,7 +2059,15 @@ void handleEventScoreboardPage() {
             if (scorePage > 0) scorePage--;
         }
 
-        if (scoreSaveButton.isClicked(window, event)) {}
+        if (scoreSaveButton.isClicked(window, event)) {
+            size = schoolyearArr[user.indexSchoolyear].listSemester[user.indexSemester].coursesListInSemester[user.indexCourse].currStudents;
+            if (isScoreHandValid()) {
+                updateScoreByHand();
+                loadNewScoreRowButton(size);
+                loadNewGPAtoStuInCourse();
+            }
+            else {}
+        }
 
         for (int i = scorePage * 5; i < (scorePage + 1) * 5 && i < size; ++i) {
             schoolyearButton[user.indexSchoolyear]->linkedButton[user.indexSemester]->linkedButton[user.indexCourse]->scoreList[i]->isHovering(window);
@@ -2279,7 +2344,7 @@ void loadNewScoreRowButton(int numOdd) {
         string otherS = "_";
         for (int r = 0; r < nC; ++r) {
             if (cls[l]->scoreList[r].courseID == idCourse) {
-                int xi = cls[l]->scoreList[r].totalSc;
+                float xi = cls[l]->scoreList[r].totalSc;
                 if (xi != -1) totalS = to_string(xi);
                 xi = cls[l]->scoreList[r].finalSc;
                 if (xi != -1) finalS = to_string(xi);
@@ -2341,6 +2406,28 @@ void deleteScoreInStu(string cID, string stuID) {
 void loadNewGPAtoStu(ScoreRowInStu* &thatRowArr, Student* thatStu) {
     delete thatRowArr;
     thatRowArr = new ScoreRowInStu(670, 300, thatStu->gpaList);
+}
+void loadNewGPAtoStuInCourse() {
+    int numStu = schoolyearArr[user.indexSchoolyear].listSemester[user.indexSemester].coursesListInSemester[user.indexCourse].currStudents;
+    loadNewScoreRowButton(numStu);
+
+    for (int k = 0; k < numStu; ++k) {
+        Student* stu = schoolyearArr[user.indexSchoolyear].listSemester[user.indexSemester].coursesListInSemester[user.indexCourse].listStudentInCourse[k];
+        string stuID = stu->studentID;
+        calculateOneStuGPA(stu);
+        bool found = false;
+        for (int n = 0; n < numClass && !found; n++) {
+            for (int m = 0; m < classesArr[n].numStudent && !found; m++) {
+                if (classesArr[n].listStudent[m].studentID == stuID) {
+                    found = true;
+                    loadNewGPAtoStu(classesButton[n]->linkedButton[m]->scoreListInStu, stu);
+                    break;
+                }
+            }
+        }
+        //if (found) cout << "Found" << endl;
+        //else cout << "Not found" << endl;
+    }
 }
 LinkedButton** loadAddCSVStuToClassButton(int numIc) {
     LinkedButton** newStuButton = new LinkedButton * [classesArr[user.indexClass].numStudent];

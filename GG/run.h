@@ -68,12 +68,16 @@ bool validateUser();
 bool isNumber(const std::string& str);
 void assignCourseForModify();
 void clearInput();
+bool isFloat(const std::string& s);
 void searchYear();
 void searchClass();
 int searchCourse();
 Student* findPointerStu(string stuID);
 bool isStuNotInCourse(string stuID);
 void calculateOneStuGPA(Student* thatStu);
+bool isScoreHandValid();
+void updateScoreByHand();
+void calculateAllStuGPA();
 
 // Handle event && Draw UI
 void handleChangePassword();
@@ -114,6 +118,7 @@ void loadNewScoreRowButton(int numOdd);
 void deleteStuInCourse(string stuID);
 void deleteScoreInStu(string courseID, string stuID);
 void loadNewGPAtoStu(ScoreRowInStu*& thatRowArr, Student* thatStu);
+void loadNewGPAtoStuInCourse();
 LinkedButton** loadAddCSVStuToClassButton(int numIc);
 
 // Free memory

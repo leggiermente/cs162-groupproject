@@ -160,14 +160,35 @@ void readCourseInSemester(string path, SchoolYear* schoolYearArr, int numSchoolY
                     bool foundStu = false; // Check if student is found
                     
                     // Brute force search for student && store addresss of student in course
+                    Student* thatStu = nullptr;
                     for (int u = 0; u < numClass && !foundStu; u++) {
                         for (int o = 0; o < classArr[u].numStudent && !foundStu; o++) {
                             if (classArr[u].listStudent[o].studentID == line) {
 								schoolYearArr[i].listSemester[j].coursesListInSemester[v].listStudentInCourse[k] = &classArr[u].listStudent[o];
+                                thatStu = &classArr[u].listStudent[o];
                                 foundStu = true;
 							}
 						}   
                     }
+
+                    bool addYear = true;
+                    for (int u = 0; u < 4; u++) {
+                        if (schoolYearArr[i].listSemester[j].coursesListInSemester[v].year == thatStu->gpaList[u].year) {
+                            addYear = false;
+							break;
+                        }
+                            
+                    }
+                    if (addYear) {
+                        for (int u = 0; u < 4; u++) {
+                            if (thatStu->gpaList[u].year.empty())
+                            {
+                                thatStu->gpaList[u].year = schoolYearArr[i].listSemester[j].coursesListInSemester[v].year;
+								break;
+							}
+                        }
+                    }
+
                 }
                 file.close();
             }
@@ -244,10 +265,10 @@ void readStudentTXT(string path, Class& classStu) {
                 getline(file, line, ','); classStu.listStudent[i].scoreList[t].year = line;
                 getline(file, line, ','); classStu.listStudent[i].scoreList[t].semester = line;
                 getline(file, line, ','); classStu.listStudent[i].scoreList[t].courseID = line;
-				getline(file, line, ','); classStu.listStudent[i].scoreList[t].totalSc = stoi(line);
-                getline(file, line, ','); classStu.listStudent[i].scoreList[t].finalSc = stoi(line);
-                getline(file, line, ','); classStu.listStudent[i].scoreList[t].midSc = stoi(line);
-                getline(file, line); classStu.listStudent[i].scoreList[t].otherSc = stoi(line);
+				getline(file, line, ','); classStu.listStudent[i].scoreList[t].totalSc = stof(line);
+                getline(file, line, ','); classStu.listStudent[i].scoreList[t].finalSc = stof(line);
+                getline(file, line, ','); classStu.listStudent[i].scoreList[t].midSc = stof(line);
+                getline(file, line); classStu.listStudent[i].scoreList[t].otherSc = stof(line);
             }
             file.close();
         }
@@ -363,10 +384,10 @@ bool readScoreCSV(string path, Course &thatCourse) {
 						break;
 					}
                 }
-                getline(file, line, ','); stuSc->totalSc = stoi(line);
-                getline(file, line, ','); stuSc->finalSc = stoi(line);
-                getline(file, line, ','); stuSc->midSc = stoi(line);
-				getline(file, line); stuSc->otherSc = stoi(line);
+                getline(file, line, ','); stuSc->totalSc = stof(line);
+                getline(file, line, ','); stuSc->finalSc = stof(line);
+                getline(file, line, ','); stuSc->midSc = stof(line);
+				getline(file, line); stuSc->otherSc = stof(line);
             }
         }
 	}
