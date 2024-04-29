@@ -352,7 +352,7 @@ void outputCourseScoreBoard(schoolYear schyrs, Semester sems, Course curCourse){
         inp.close();
     }
 }
-void outputClassResult(Class curClass, Semester sems, schoolYear schyrs){ //not tested yet
+void outputClassResult(Class curClass, Semester sems, schoolYear schyrs){
     int numStudent=curClass.numStudent;
     system("CLS");
     cout << "Number of students in the class: " << numStudent << endl;
