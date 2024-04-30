@@ -5,7 +5,7 @@ using namespace std;
 
 struct GPA {
     string year = "";
-    float gpaS[4] = {-1};
+    float gpaS[4] = {-1,-1,-1,-1};
 };
 struct ScoreStu {
     string year = "";
@@ -61,7 +61,7 @@ struct Student {
     bool femaleGender = false;
     string dob = "";
     string socialID = "";
-    string password = "";
+    string password = "1";
     float overallGPA = 0;
     GPA gpaList[4];
     ScoreStu* scoreList = nullptr;

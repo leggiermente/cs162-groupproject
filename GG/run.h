@@ -59,8 +59,7 @@ struct SearchArrPointerUI {
 };
 
 // Load UI
-void loadUI();
-void loadUIfromDatabase();
+void loadUIv2();
 void connectPointerofSessionandDow();
 
 // Support function
@@ -79,6 +78,7 @@ void calculateOneStuGPA(Student* thatStu);
 bool isScoreHandValid();
 void updateScoreByHand();
 void calculateAllStuGPA();
+void addYearToStu(Course* thatCourse, Student* thatStu);
 
 // Handle event && Draw UI
 void handleChangePassword();
@@ -104,25 +104,15 @@ void drawScoreboardPage();
 void RunApp();
 
 // Update data and UI dynamically
-LinkedButton** loadAddYearButton(SchoolYear* schoolYearArr, LinkedButton** old, int& numSchoolYear);
-LinkedButton** loadAddSemeButton(Semester* semeArr, LinkedButton** old, int& numSeme);
 SchoolYear* loadAddSchoolyear(SchoolYear* schoolYearArr, int& numSchoolYear);
 Semester* loadAddSemester(Semester* old, int& numSemester);
 Class* loadAddClass();
-LinkedButton** loadAddClassButton();
 Student* loadAddStudent();
-LinkedButton** loadAddStuButton();
 Course* loadAddCourse();
-LinkedButton** loadAddCourseButton();
 ScoreStu* loadAddCourseToStu(Student* stuAdd);
-void loadNewScoreRowButton(int numOdd);
 void deleteStuInCourse(string stuID);
 void deleteScoreInStu(string courseID, string stuID);
-void loadNewGPAtoStu(ScoreRowInStu*& thatRowArr, Student* thatStu);
-void loadNewGPAtoStuInCourse();
 void deleteCourse();
-void loadNewCourseButton();
-LinkedButton** loadAddCSVStuToClassButton(int numIc);
 
 // Free memory
 void freeButtons();

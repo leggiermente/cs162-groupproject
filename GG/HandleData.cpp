@@ -144,7 +144,8 @@ void readCourseInSemester(string path, SchoolYear* schoolYearArr, int numSchoolY
                 string line;
                 getline(file, line); schoolYearArr[i].listSemester[j].coursesListInSemester[v].year = line;
                 getline(file, line); schoolYearArr[i].listSemester[j].coursesListInSemester[v].semester = line;
-                getline(file, line); // Pass ID
+                getline(file, line); schoolYearArr[i].listSemester[j].coursesListInSemester[v].ID = line;
+                getline(file, line); schoolYearArr[i].listSemester[j].coursesListInSemester[v].className = line;
                 getline(file, line); schoolYearArr[i].listSemester[j].coursesListInSemester[v].courseName = line;
                 getline(file, line); schoolYearArr[i].listSemester[j].coursesListInSemester[v].teacher = line;
                 getline(file, line); schoolYearArr[i].listSemester[j].coursesListInSemester[v].numCredits = stoi(line);
@@ -357,6 +358,7 @@ bool readCSVStuToCourse(string path, Class* allClass, Course& thatCourse, int& n
         }
         if (found) {
             newStudent[i] = tmpStu;
+            addYearToStu(&thatCourse, tmpStu);
         }
         getline(file, line); // Pass remain data in CSV
 	}
@@ -456,6 +458,7 @@ bool saveCourse(string path, Course* thisCourse) {
     file << thisCourse->year << endl;
     file << thisCourse->semester << endl;
     file << thisCourse->ID << endl;
+    file << thisCourse->className << endl;
     file << thisCourse->courseName << endl;
     file << thisCourse->teacher << endl;
     file << thisCourse->numCredits << endl;

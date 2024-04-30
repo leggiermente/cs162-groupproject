@@ -153,7 +153,9 @@ struct ScoreRow {
     ButtonSakura deleteButton;
     ScoreRow(float x, float y, const std::string& imagePath, std::string sNo, std::string sId, std::string sLastName, std::string sFirstName,
         std::string stotal, std::string sFinal, std::string sMid, std::string sOther);
+    ScoreRow(float x, float y, const std::string& imagePath);
     void isHovering(sf::RenderWindow& window);
+    void loadIfm(string sNo, string sId, string sLName, string sFName, ScoreStu* sScoreStu);
     bool clickInput(sf::RenderWindow& window, sf::Event event);
     void draw(sf::RenderWindow& window);
 };
@@ -162,6 +164,8 @@ struct ScoreRowInStu {
     sf::Text year[4];
     sf::Text semester[4][4];
     ScoreRowInStu(float x, float y, GPA* gpaStu);
+    ScoreRowInStu(float x, float y);
+    void loadScore(GPA* gpaStu);
     void draw(sf::RenderWindow& window);
 };
 struct LinkedButton : Button {
@@ -172,5 +176,6 @@ struct LinkedButton : Button {
     sf::Text text;
     bool isFinding = false;
     LinkedButton(float x, float y, const std::string& imagePath, std::string sText);
+    void setPositionForText();
     void draw(sf::RenderWindow& window);
 };

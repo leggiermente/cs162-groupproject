@@ -333,6 +333,12 @@ LinkedButton::LinkedButton(float x, float y, const std::string& imagePath, std::
     text.setPosition(spriteRect.left + spriteRect.width / 2.0f, spriteRect.top + spriteRect.height / 2.0f);
     
 }
+void LinkedButton::setPositionForText() {
+    sf::FloatRect textRect = text.getLocalBounds();
+    text.setOrigin(textRect.left + textRect.width / 2.0f, textRect.top + textRect.height / 2.0f);
+    sf::FloatRect spriteRect = sprite.getGlobalBounds();
+    text.setPosition(spriteRect.left + spriteRect.width / 2.0f, spriteRect.top + spriteRect.height / 2.0f);
+}
 void LinkedButton::draw(sf::RenderWindow& window) {
     if (isHover) {
         sprite.setColor(sf::Color(240, 251, 255));
@@ -774,12 +780,95 @@ std::string stotal, std::string sFinal, std::string sMid, std::string sOther)
     firstName.setString(sFirstName);
     
 }
+ScoreRow::ScoreRow(float x, float y, const std::string& imagePath)
+    : totalS(x + 485, y + 12, "image/White100x24.png"),
+    finalS(x + 615, y + 12, "image/White100x24.png"),
+    midS(x + 735, y + 12, "image/White100x24.png"),
+    otherS(x + 860, y + 12, "image/White100x24.png"),
+    deleteButton(x + 1000, y + 12, imagePath)
+{
+    if (!font.loadFromFile("font/Roboto-Regular.ttf")) {
+		cout << "Can't load font\n";
+	}
+	totalS.text.setString("_");
+	finalS.text.setString("_");
+	midS.text.setString("_");
+	otherS.text.setString("_");
+
+	no.setFont(font);
+	no.setCharacterSize(20);
+	no.setPosition(x + 15, y + 12);
+	no.setFillColor(sf::Color::Black);
+	no.setString("");
+
+	id.setFont(font);
+	id.setCharacterSize(20);
+	id.setPosition(x + 75, y + 12);
+	id.setFillColor(sf::Color::Black);
+	id.setString("");
+
+	lastName.setFont(font);
+	lastName.setCharacterSize(20);
+	lastName.setPosition(x + 225, y + 12);
+	lastName.setFillColor(sf::Color::Black);
+	lastName.setString("");
+
+	firstName.setFont(font);
+	firstName.setCharacterSize(20);
+	firstName.setPosition(x + 365, y + 12);
+	firstName.setFillColor(sf::Color::Black);
+	firstName.setString("");
+}
 void ScoreRow::isHovering(sf::RenderWindow& window) {
     totalS.isHovering(window);
 	finalS.isHovering(window);
 	midS.isHovering(window);
 	otherS.isHovering(window);
 	deleteButton.isHovering(window);
+}
+void ScoreRow::loadIfm(string sNo, string sId, string sLName, string sFName, ScoreStu* sScoreStu) {
+    no.setString(sNo);
+    id.setString(sId);
+	lastName.setString(sLName);
+	firstName.setString(sFName);
+    
+    if (sScoreStu) {
+        string s;
+        float x = sScoreStu->totalSc;
+        if (x == -1) s = "_";
+        else {
+            s = to_string(x);
+            s = s.substr(0, 4);
+        }
+        totalS.text.setString(s);
+        x = sScoreStu->finalSc;
+        if (x == -1) s = "_";
+        else {
+            s = to_string(x);
+            s = s.substr(0, 4);
+        }
+        finalS.text.setString(s);
+        x = sScoreStu->midSc;
+        if (x == -1) s = "_";
+        else {
+            s = to_string(x);
+            s = s.substr(0, 4);
+        }
+        midS.text.setString(s);
+        x = sScoreStu->otherSc;
+        if (x == -1) s = "_";
+        else {
+            s = to_string(x);
+            s = s.substr(0, 4);
+        }
+        otherS.text.setString(s);
+    }
+    else {
+		totalS.text.setString("");
+		finalS.text.setString("");
+        midS.text.setString("");
+		otherS.text.setString("");
+	}
 }
 bool ScoreRow::clickInput(sf::RenderWindow& window, sf::Event event) {
     totalS.isClicked(event, window);
@@ -827,6 +916,40 @@ ScoreRowInStu::ScoreRowInStu(float x, float y, GPA* gpaStu) {
 			semester[i][j].setPosition(795 + j * 100, y + 15 + i * 50);
         }
     }
+}
+ScoreRowInStu::ScoreRowInStu(float x, float y) {
+    if (!font.loadFromFile("font/Roboto-Regular.ttf")) {
+		cout << "Can't load font\n";
+	}
+    for (int i = 0; i < 4; ++i) {
+		year[i].setFont(font);
+		year[i].setCharacterSize(20);
+		year[i].setFillColor(sf::Color::Black);
+		year[i].setString("N/A");
+		year[i].setPosition(x + 10, y + 15 + i * 50);
+
+        for (int j = 0; j < 4; j++) {
+			semester[i][j].setFont(font);
+			semester[i][j].setCharacterSize(20);
+			semester[i][j].setFillColor(sf::Color::Black);
+			semester[i][j].setString("_");
+			semester[i][j].setPosition(795 + j * 100, y + 15 + i * 50);
+		}
+	}
+}
+void ScoreRowInStu::loadScore(GPA* gpaStu) {
+    for (int i = 0; i < 4; ++i) {
+        year[i].setString(gpaStu[i].year);
+        if (gpaStu[i].year.empty()) year[i].setString("N/A");
+        for (int j = 0; j < 4; ++j) {
+			string s = "_";
+            if (gpaStu[i].gpaS[j] != -1) {
+				s = to_string(gpaStu[i].gpaS[j]);
+				s = s.substr(0, 4);
+			}
+			semester[i][j].setString(s);
+		}
+	}
 }
 void ScoreRowInStu::draw(sf::RenderWindow& window) {
     for (int i = 0; i < 4; ++i) {
