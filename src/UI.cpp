@@ -739,47 +739,6 @@ void ButtonSakura::draw(sf::RenderWindow& window) {
 
 //--------------------------------------------------------------
 // ScoreRow
-ScoreRow::ScoreRow(float x, float y, const std::string& imagePath, std::string sNo, std::string sId, std::string sLastName, std::string sFirstName,
-std::string stotal, std::string sFinal, std::string sMid, std::string sOther)
-    : totalS(x+485, y+12, "image/White100x24.png"),
-    finalS(x+615, y+12, "image/White100x24.png"),
-    midS(x+735, y+12, "image/White100x24.png"),
-    otherS(x+860, y+12, "image/White100x24.png"),
-    deleteButton(x+1000, y+12, imagePath)
-{
-    if (!font.loadFromFile("font/Roboto-Regular.ttf")) {
-        cout << "Can't load font\n";
-    }
-    totalS.text.setString(stotal);
-    finalS.text.setString(sFinal);
-    midS.text.setString(sMid);
-    otherS.text.setString(sOther);
-
-	no.setFont(font);
-    no.setCharacterSize(20);
-    no.setPosition(x + 15, y + 12);
-    no.setFillColor(sf::Color::Black);
-    no.setString(sNo);
-
-	id.setFont(font);
-    id.setCharacterSize(20);
-    id.setPosition(x + 75, y + 12);
-    id.setFillColor(sf::Color::Black);
-    id.setString(sId);
-
-	lastName.setFont(font);
-    lastName.setCharacterSize(20);
-    lastName.setPosition(x + 225, y + 12);
-    lastName.setFillColor(sf::Color::Black);
-    lastName.setString(sLastName);
-
-	firstName.setFont(font);
-    firstName.setCharacterSize(20);
-    firstName.setPosition(x + 365, y + 12);
-    firstName.setFillColor(sf::Color::Black);
-    firstName.setString(sFirstName);
-    
-}
 ScoreRow::ScoreRow(float x, float y, const std::string& imagePath)
     : totalS(x + 485, y + 12, "image/White100x24.png"),
     finalS(x + 615, y + 12, "image/White100x24.png"),
@@ -891,36 +850,15 @@ void ScoreRow::draw(sf::RenderWindow& window) {
 
 //--------------------------------------------------------------
 // ScoreRowInStu
-ScoreRowInStu::ScoreRowInStu(float x, float y, GPA* gpaStu) {
-    if (!font.loadFromFile("font/Roboto-Regular.ttf")) {
-        cout << "Can't load font\n";
-    }
-    for (int i = 0; i < 4; ++i) {
-    	year[i].setFont(font);
-		year[i].setCharacterSize(20);
-		year[i].setFillColor(sf::Color::Black);
-        year[i].setString(gpaStu[i].year);
-        if (gpaStu[i].year.empty()) year[i].setString("N/A");
-        year[i].setPosition(x + 10, y + 15 + i * 50);
-
-        for (int j = 0; j < 4; j++) {
-            semester[i][j].setFont(font);
-			semester[i][j].setCharacterSize(20);
-			semester[i][j].setFillColor(sf::Color::Black);
-            string s = "_";
-            if (gpaStu[i].gpaS[j] != -1) {
-                s = to_string(gpaStu[i].gpaS[j]);
-                s = s.substr(0, 4);
-            }
-			semester[i][j].setString(s);    	
-			semester[i][j].setPosition(795 + j * 100, y + 15 + i * 50);
-        }
-    }
-}
 ScoreRowInStu::ScoreRowInStu(float x, float y) {
     if (!font.loadFromFile("font/Roboto-Regular.ttf")) {
 		cout << "Can't load font\n";
 	}
+    orGPA.setFont(font);
+    orGPA.setCharacterSize(20);
+    orGPA.setFillColor(sf::Color(39,54,116));
+    orGPA.setString("Overall GPA: ");
+    orGPA.setPosition(680, 227);
     for (int i = 0; i < 4; ++i) {
 		year[i].setFont(font);
 		year[i].setCharacterSize(20);
@@ -938,6 +876,8 @@ ScoreRowInStu::ScoreRowInStu(float x, float y) {
 	}
 }
 void ScoreRowInStu::loadScore(GPA* gpaStu) {
+    float forgpa = 0;
+    float dv = 0;
     for (int i = 0; i < 4; ++i) {
         year[i].setString(gpaStu[i].year);
         if (gpaStu[i].year.empty()) year[i].setString("N/A");
@@ -949,7 +889,18 @@ void ScoreRowInStu::loadScore(GPA* gpaStu) {
 			}
 			semester[i][j].setString(s);
 		}
+        if (gpaStu[i].gpaS[0] != -1) {
+            forgpa += gpaStu[i].gpaS[0];
+            dv++;
+        }
 	}
+    if (dv != 0) {
+		forgpa /= dv;
+		string s = to_string(forgpa);
+		s = s.substr(0, 4);
+		orGPA.setString("Overall GPA: " + s);
+	}
+	else orGPA.setString("Overall GPA: N/A");
 }
 void ScoreRowInStu::draw(sf::RenderWindow& window) {
     for (int i = 0; i < 4; ++i) {
@@ -958,4 +909,5 @@ void ScoreRowInStu::draw(sf::RenderWindow& window) {
 			window.draw(semester[i][j]);
 		}
 	}
+    window.draw(orGPA);
 }

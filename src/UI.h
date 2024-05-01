@@ -151,8 +151,6 @@ struct ScoreRow {
     InputScore midS;
     InputScore otherS;
     ButtonSakura deleteButton;
-    ScoreRow(float x, float y, const std::string& imagePath, std::string sNo, std::string sId, std::string sLastName, std::string sFirstName,
-        std::string stotal, std::string sFinal, std::string sMid, std::string sOther);
     ScoreRow(float x, float y, const std::string& imagePath);
     void isHovering(sf::RenderWindow& window);
     void loadIfm(string sNo, string sId, string sLName, string sFName, ScoreStu* sScoreStu);
@@ -163,19 +161,64 @@ struct ScoreRowInStu {
     sf::Font font;
     sf::Text year[4];
     sf::Text semester[4][4];
-    ScoreRowInStu(float x, float y, GPA* gpaStu);
+    sf::Text orGPA;
     ScoreRowInStu(float x, float y);
     void loadScore(GPA* gpaStu);
     void draw(sf::RenderWindow& window);
 };
 struct LinkedButton : Button {
-    LinkedButton** linkedButton = nullptr;
-    ScoreRow** scoreList = nullptr;
-    ScoreRowInStu* scoreListInStu = nullptr;
     sf::Font font;
     sf::Text text;
     bool isFinding = false;
     LinkedButton(float x, float y, const std::string& imagePath, std::string sText);
     void setPositionForText();
     void draw(sf::RenderWindow& window);
+};
+struct Prompt {
+    sf::Font* font;
+    sf::Text text;
+    sf::Texture* texture1;
+    sf::Sprite sprite1;
+    sf::Texture* texture2;
+    sf::Sprite sprite2;
+    bool loadImage(float x, float y, sf::Texture &inTexture1, sf::Texture& inTexture2) {
+        texture1 = &inTexture1;
+        sprite1.setTexture(*texture1);
+        sprite1.setPosition(x, y);
+
+        texture2 = &inTexture2;
+        sprite2.setTexture(*texture2);
+        sprite2.setPosition(x, y);
+        return true;
+    }
+
+    bool loadFont(sf::Font &inFont) {
+        font = &inFont;
+        text.setFont(*font);
+        text.setCharacterSize(20);
+        text.setFillColor(sf::Color(39,54,116));
+        return true;
+    }
+
+    void setText(const std::string& str) {
+        text.setString(str);
+        sf::FloatRect bounds = text.getLocalBounds();
+        text.setOrigin(bounds.left + bounds.width / 2.0f, bounds.top + bounds.height / 2.0f);
+        sf::Vector2f spriteCenter = sprite1.getPosition() + sf::Vector2f(sprite1.getGlobalBounds().width / 2.0f, sprite1.getGlobalBounds().height / 2.0f);
+        text.setPosition(spriteCenter);
+    }
+
+    void displayPrompt1(sf::RenderWindow& window, const std::string& sText) {
+        text.setString(sText);
+
+        sf::FloatRect bounds = text.getLocalBounds();
+        text.setOrigin(bounds.left + bounds.width / 2.0f, bounds.top + bounds.height / 2.0f);
+        sf::Vector2f spriteCenter = sprite1.getPosition() + sf::Vector2f(sprite1.getGlobalBounds().width / 2.0f, sprite1.getGlobalBounds().height / 2.0f);
+        text.setPosition(spriteCenter);
+
+        window.draw(text);
+        sf::sleep(sf::seconds(2));
+    }
+
+
 };

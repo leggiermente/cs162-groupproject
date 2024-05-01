@@ -79,8 +79,16 @@ bool isScoreHandValid();
 void updateScoreByHand();
 void calculateAllStuGPA();
 void addYearToStu(Course* thatCourse, Student* thatStu);
+void loadUIAll();
 
 // Handle event && Draw UI
+void handleStudentPage();
+void drawStudentPage();
+void handleStuProfilePage();
+void drawStuProfilePage();
+void handleStuPw();
+void drawStuPw();
+
 void handleChangePassword();
 void drawChangePassword();
 void handleProfile();
@@ -111,7 +119,7 @@ Student* loadAddStudent();
 Course* loadAddCourse();
 ScoreStu* loadAddCourseToStu(Student* stuAdd);
 void deleteStuInCourse(string stuID);
-void deleteScoreInStu(string courseID, string stuID);
+void deleteScoreInStu(string cID, Student* currStu);
 void deleteCourse();
 
 // Free memory
