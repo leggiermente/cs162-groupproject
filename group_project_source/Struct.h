@@ -21,7 +21,6 @@ struct Student{
 };
 struct Class{
     string classID=""; //ID of the class
-    int yearStudied=0; //state of the class, 1-st year, 2-nd year,...
     int numStudent=0; //updating number of Student in a class.
     Student* listStudent=nullptr; //list of student in the class
 };

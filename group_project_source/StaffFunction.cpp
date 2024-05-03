@@ -25,7 +25,6 @@ Class readClass(string fileName,string nameClass){ //import a class from the dat
     inp.open(fileName);
     Class *tmpClass=new Class; //class file format
     tmpClass->classID=nameClass;
-    inp >> tmpClass->yearStudied; //year studied in this class
     inp >> tmpClass->numStudent; //number of students in this class
     if (tmpClass->numStudent>0) tmpClass->listStudent=new Student[tmpClass->numStudent];
     else tmpClass->listStudent=nullptr;
@@ -101,11 +100,6 @@ void addNewSchoolYear(schoolYear schyrs){ //create a new school year
 }
 void addStudentintoClass(Class &curClass){ //add a student into class
     system("CLS");
-    if (curClass.yearStudied!=1){ //check if there are 1-st year classes to add
-        cout << "The class is not 1-st year to add new student." << endl;
-        Sleep(3000);
-        return;
-    }
     system("CLS");
     cout << "Please choose an option for updating new student to the class." << endl;
     int options=0; //variable to check for the option
@@ -273,7 +267,6 @@ void outputClass(string fileName,Class curClass){ //save the class into the data
     ofstream out;
     string str;
     out.open(fileName);
-    out << curClass.yearStudied << endl;
     out << curClass.numStudent << endl;
     for (int i=0;i<curClass.numStudent;i++){
         Student curStudent=curClass.listStudent[i];
@@ -283,7 +276,6 @@ void outputClass(string fileName,Class curClass){ //save the class into the data
     }
     out.close();
     system("CLS");
-    cout << curClass.yearStudied << endl;
     cout << curClass.numStudent << endl;
     for (int i=0;i<curClass.numStudent;i++){
         Student curStudent=curClass.listStudent[i];
