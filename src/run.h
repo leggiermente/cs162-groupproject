@@ -69,9 +69,7 @@ bool isNumber(const std::string& str);
 void assignCourseForModify();
 void clearInput();
 bool isFloat(const std::string& s);
-void searchYear();
-void searchClass();
-int searchCourse();
+bool isInt(const std::string& str);
 Student* findPointerStu(string stuID);
 bool isStuNotInCourse(string stuID);
 void calculateOneStuGPA(Student* thatStu);
@@ -125,4 +123,4 @@ void deleteScoreInStu(string cID, Student* currStu);
 void deleteCourse();
 
 // Free memory
-void freeButtons();
+void freeMemory();

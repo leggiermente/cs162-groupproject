@@ -973,9 +973,9 @@ CourseBoard::CourseBoard(float x, float y, const std::string& imagePath) {
 	}
 }
 void CourseBoard::loadCourseScoreRow(ScoreStu* sScoreStu, int idx) {
-    scoreRow[idx].courseId.setString(sScoreStu->courseID);
-	scoreRow[idx].year.setString(sScoreStu->year);
-	scoreRow[idx].semester.setString(sScoreStu->semester);
+    scoreRow[idx].courseId.setString("ID: " + sScoreStu->courseID);
+	scoreRow[idx].year.setString("Year: " + sScoreStu->year);
+	scoreRow[idx].semester.setString("Semester: "+sScoreStu->semester);
 	string s;
 	float x = sScoreStu->totalSc;
 	if (x == -1) s = "_";
