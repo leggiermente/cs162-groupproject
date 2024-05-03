@@ -105,6 +105,8 @@ void handleStaffClassDetailPage();
 void drawStaffClassDetailPage();
 void handleStuDetailPage();
 void drawStuDetailPage();
+void handleScoreInStuPage();
+void drawScoreInStuPage();
 void handleEventScoreboardPage();
 void drawScoreboardPage();
 

@@ -92,7 +92,7 @@ InputWithHead seeStuLastName(390, 375, "image/Input250x45.png", "Last Name");
 InputWithHead seeStuDOB(115, 445, "image/Input250x45.png", "Date of Birth");
 GenderSelect seeStuGender(390, 425, "image/female.png", "image/male.png", "Gender");
 Button scoreboardInStu(670, 250, "image/ScoreboardInStu.png");
-
+Button scoreOfStu(465, 445, "image/ScoreDetails.png");
 
 // Button in course page
 //Input
@@ -264,6 +264,7 @@ void RunApp()
                     if (validateUser()) {
                         if (user.isStaff) page = 10;                        
                         else page = 30;
+                        loadUIAll();
                         break;
                     }
                     else {
@@ -339,6 +340,12 @@ void RunApp()
 			drawScoreboardPage();
 			break;
 		}
+        case 20: // Score Detail 
+        {
+            handleScoreInStuPage();
+            drawScoreInStuPage();
+            break;
+        }
         case 30: // Student view main
         {
             handleStudentPage();
@@ -647,6 +654,7 @@ void loadUIAll() {
     eCoursePage = true;
     eStuPfPage = true;
     eScorePage = true;
+    eStuViewPage = true;
 }
 
 // Load UI
@@ -2250,6 +2258,11 @@ void handleStuDetailPage() {
                 break;
             }
         }
+
+        if (scoreOfStu.isClicked(window, event)) {
+			page = 20;
+			break;
+		}
     }
     return;
 }
@@ -2275,10 +2288,45 @@ void drawStuDetailPage() {
 	seeStuLastName.draw(window);
 	seeStuDOB.draw(window);
 	seeStuGender.draw(window);
+    scoreOfStu.draw(window);
 
     scoreboardInStu.draw(window);
     scbInStu->draw(window);
 	return;
+}
+
+// Page 20
+void handleScoreInStuPage() {
+    Student* thatStu = &classesArr[user.indexClass].listStudent[user.indexStudentInClass];
+    for (int i = 0; i < 10; i++) courseBoard.resetRow(i);
+    for (int i = stuViewPage * 10; i < thatStu->numCourse; ++i) {
+        courseBoard.loadCourseScoreRow(&thatStu->scoreList[i], i % 10);
+    }
+    
+    while (window.pollEvent(event)) {
+        if (backButton.isClicked(window, event)) {
+			page = 17;
+			loadUIAll();
+			break;
+		}
+
+        if (rightSmall.isClicked(window, event)) {
+            if (stuViewPage < thatStu->numCourse / 10) {
+                stuViewPage++;
+            }
+        }
+        
+        if (leftSmall.isClicked(window, event)) {
+            if (stuViewPage > 0) {
+                stuViewPage--;
+            }
+        }
+    }
+}
+void drawScoreInStuPage() {
+    viewingPage.draw(window);
+    backButton.draw(window);
+    courseBoard.draw(window);
 }
 
 //Page 19
@@ -2542,6 +2590,7 @@ Course* loadAddCourse() {
     newCourseArr[n - 1].numCredits = stoi(inputCredit.text.getString().toAnsiString());
     newCourseArr[n - 1].maxStudents = stoi(inputMaxStuInCourse.text.getString().toAnsiString());
     newCourseArr[n - 1].teacher = inputTeacherName.text.getString().toAnsiString();
+    newCourseArr[n - 1].listStudentInCourse = new Student * [newCourseArr[n - 1].maxStudents];
     for (int i = 0; i < 6; ++i) {
         if (doWCourseButtonArr[i]->isSelect) {
 			newCourseArr[n - 1].dayOfWeek = doWCourseButtonArr[i]->text.getString().toAnsiString();
