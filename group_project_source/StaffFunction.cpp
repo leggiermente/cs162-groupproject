@@ -172,6 +172,7 @@ void importSemesterandCourse(schoolYear &schyrs,Semester &sems,int target){ //im
     }
 }
 void addCourse(schoolYear &schyrs,Semester &sems){ //add a course to the current semester
+    system("CLS");
     Course* tmp=sems.coursesListInSemester;
     sems.numCourses++;
     sems.coursesListInSemester=new Course[sems.numCourses]; //update the size of dynamic allocated array to add a new course
@@ -211,6 +212,7 @@ void addCourse(schoolYear &schyrs,Semester &sems){ //add a course to the current
     outputCourse("database/course/"+sems.coursesListInSemester[curPos].ID+".txt",sems.coursesListInSemester[curPos]); //save to database
 }
 void removeCourse(schoolYear &schyrs,Semester &sems){ //remove a course from the semester
+    system("CLS");
     if (sems.numCourses==0){
         cout << "You don't have any classes to remove." << endl;
         Sleep(3000);
