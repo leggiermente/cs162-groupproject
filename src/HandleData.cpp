@@ -396,6 +396,7 @@ bool readScoreCSV(string path, Course &thatCourse) {
             }
         }
 	}
+    return true;
 }
 bool exportFileIdStu(string path, Course& thatCourse) {
     ofstream file(path);
