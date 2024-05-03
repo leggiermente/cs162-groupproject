@@ -1,7 +1,6 @@
 #include <iostream>
 using namespace std;
 #include "Staff.h"
-#include "Student.h"
 int sems=1;
 Semester curSem;
 schoolYear s;
