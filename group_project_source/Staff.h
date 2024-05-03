@@ -23,6 +23,6 @@ void outputSchoolYear(schoolYear &schyrs); //save the school year into the datab
 void outputCourse(string fileName,Course curCourse); //save the course into the database
 void outputCourseScoreBoard(schoolYear schyrs, Semester sems, Course curCourse); //import the scoreboard from a database and output to screen
 void outputClassResult(Class curClass, Semester sems, schoolYear schyrs); //output class result into the screen
-bool checkFormatDayOfTheWeek(string format); //return true if it's in the right format of day of the week
+bool checkFormatDayOfTheWeek(string& format); //return true if it's in the right format of day of the week
 bool checkFormatSession(string format); //return true if it's in the right format of session
 #endif // STAFF_H_INCLUDED
