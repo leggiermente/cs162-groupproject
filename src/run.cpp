@@ -158,6 +158,9 @@ NavigateButton rScorePageButton(725, 595, "image/RightPageButton.png");
 ColorText pageScore(600, 605, 20, "");
 
 //Stu account
+CourseBoard courseBoard(115, 200, "image/CourseBoard.png");
+NavigateButton leftSmall(145,615,"image/LeftSmall.png");
+NavigateButton rightSmall(525,615,"image/RightSmall.png");
 
 // Color Text alert
 ColorText passScAlert(115, 545, 20, "Password changed!");
@@ -184,12 +187,13 @@ eScorePage = true,
 eStuViewPage = true;
 
 int prevPage = 0,
-    page = 0,
-    yearPage = 0,
-    classPage = 0,
-    stuPage = 0,
-    coursePage = 0,
-    scorePage = 0;
+page = 0,
+yearPage = 0,
+classPage = 0,
+stuPage = 0,
+coursePage = 0,
+scorePage = 0,
+stuViewPage = 0;
 
 //Size of data from database
 int numStaff = 0,
@@ -209,7 +213,6 @@ LinkedButton* arrButton12[12];
 LinkedButton* semeButton3[3];
 ScoreRowInStu* scbInStu = nullptr;
 ScoreRow* scoreRowArr[5];
-
 
 ChooseBoxWithHead** sessionCourseButtonArr = new ChooseBoxWithHead * [4];
 ChooseBoxWithHead** doWCourseButtonArr = new ChooseBoxWithHead * [6];
@@ -574,29 +577,36 @@ bool isScoreHandValid() {
     Course* thatCourse = &schoolyearArr[user.indexSchoolyear].listSemester[user.indexSemester].coursesListInSemester[user.indexCourse];
     for (int i = 0; i < 5; ++i) {
         string s = scoreRowArr[i]->totalS.text.getString().toAnsiString();
-        if (!isFloat(s) && s != "_") return false;
+        if (!isFloat(s) && s != "_" && s != "") return false;
         s = scoreRowArr[i]->midS.text.getString().toAnsiString();
-        if (!isFloat(s) && s != "_") return false;
+        if (!isFloat(s) && s != "_" && s != "") return false;
         s = scoreRowArr[i]->finalS.text.getString().toAnsiString();
-        if (!isFloat(s) && s != "_") return false;
+        if (!isFloat(s) && s != "_" && s != "") return false;
         s = scoreRowArr[i]->otherS.text.getString().toAnsiString();
-        if (!isFloat(s) && s != "_") return false;
+        if (!isFloat(s) && s != "_" && s != "") return false;
     }
     return true;
 }
 void updateScoreByHand() {
     Course* thatCourse = &schoolyearArr[user.indexSchoolyear].listSemester[user.indexSemester].coursesListInSemester[user.indexCourse];
-    for (int i = scorePage * 5; i < scorePage * 5 + 5; ++i) {
+    for (int i = scorePage * 5; i < scorePage * 5 + 5 && i < thatCourse->currStudents; ++i) {
 		Student* thatStu = thatCourse->listStudentInCourse[i];
         for (int j = 0; j < thatStu->numCourse; ++j) {
             if (thatStu->scoreList[j].courseID == thatCourse->ID) {
-				if (scoreRowArr[i % 5]->totalS.text.getString().toAnsiString() == "_") thatStu->scoreList[j].totalSc = -1;
+				if (scoreRowArr[i % 5]->totalS.text.getString().toAnsiString() == "_" || 
+                    scoreRowArr[i % 5]->totalS.text.getString().toAnsiString() == "") thatStu->scoreList[j].totalSc = -1;
                 else thatStu->scoreList[j].totalSc = stof(scoreRowArr[i % 5]->totalS.text.getString().toAnsiString());
-                if (scoreRowArr[i % 5]->finalS.text.getString().toAnsiString() == "_") thatStu->scoreList[j].finalSc = -1;
+                
+                if (scoreRowArr[i % 5]->finalS.text.getString().toAnsiString() == "_" || 
+                    scoreRowArr[i % 5]->finalS.text.getString().toAnsiString() == "" ) thatStu->scoreList[j].finalSc = -1;
                 else thatStu->scoreList[j].finalSc = stof(scoreRowArr[i % 5]->finalS.text.getString().toAnsiString());
-                if (scoreRowArr[i % 5]->midS.text.getString().toAnsiString() == "_") thatStu->scoreList[j].midSc = -1;
+                
+                if (scoreRowArr[i % 5]->midS.text.getString().toAnsiString() == "_" ||
+                    scoreRowArr[i % 5]->midS.text.getString().toAnsiString() == "") thatStu->scoreList[j].midSc = -1;
 				else thatStu->scoreList[j].midSc = stof(scoreRowArr[i % 5]->midS.text.getString().toAnsiString());
-                if (scoreRowArr[i % 5]->otherS.text.getString().toAnsiString() == "_") thatStu->scoreList[j].otherSc = -1;
+                
+                if (scoreRowArr[i % 5]->otherS.text.getString().toAnsiString() == "_" ||
+                    scoreRowArr[i % 5]->otherS.text.getString().toAnsiString() == "") thatStu->scoreList[j].otherSc = -1;
 				else thatStu->scoreList[j].otherSc = stof(scoreRowArr[i % 5]->otherS.text.getString().toAnsiString());
                 break;
 			}
@@ -697,6 +707,10 @@ void connectPointerofSessionandDow() {
 void handleStudentPage() {
     if (eStuViewPage) {
         scbInStu->loadScore(user.student->gpaList);
+        for (int i = 0; i < 10; i++) courseBoard.resetRow(i);
+        for (int i = stuViewPage * 10; i < user.student->numCourse; ++i) {
+			courseBoard.loadCourseScoreRow(&user.student->scoreList[i], i % 10);
+		}
         eStuViewPage = false;
     }
     while (window.pollEvent(event)) {
@@ -722,9 +736,24 @@ void handleStudentPage() {
                 page = 0;
                 user.staff = nullptr;
                 user.student = nullptr;
-                eYearPage = true;
+                eStuViewPage = true;
                 clearInput();
                 break;
+            }
+        }
+
+        leftSmall.isHovering(window);
+        rightSmall.isHovering(window);
+        if (leftSmall.isClicked(window, event)) {
+            if (stuViewPage > 0) {
+				stuViewPage--;
+				eStuViewPage = true;
+			}
+		}
+        if (rightSmall.isClicked(window, event)) {
+			if (stuViewPage < user.student->numCourse / 10) {
+            	stuViewPage++;
+                eStuViewPage = true;
             }
         }
     }
@@ -740,6 +769,9 @@ void drawStudentPage() {
     }
     scoreboardInStu.draw(window);
     scbInStu->draw(window);
+    courseBoard.draw(window);
+    leftSmall.draw(window);
+    rightSmall.draw(window);
     return;
 }
 
@@ -778,6 +810,7 @@ void handleStuProfilePage() {
                 user.staff = nullptr;
                 user.student = nullptr;
                 eYearPage = true;
+                eStuViewPage = true;
                 clearInput();
                 break;
             }
@@ -823,6 +856,7 @@ void handleStuPw() {
                 page = 0;
                 user.staff = nullptr;
                 eYearPage = true;
+                eStuViewPage = true;
                 clearInput();
                 break;
             }
@@ -2347,7 +2381,7 @@ void handleEventScoreboardPage() {
         inputAddStuCourse.isClicked(event, window);
         if (addStuCourseButton.isClicked(window, event)) {
             int currStu = schoolyearArr[user.indexSchoolyear].listSemester[user.indexSemester].coursesListInSemester[user.indexCourse].currStudents;
-            if (currStu + 1 < mxStu) {
+            if (currStu + 1 <= mxStu) {
                 string stuID = inputAddStuCourse.text.getString().toAnsiString();
                 if (isStuNotInCourse(stuID)) {
                     Student* stuAdd = findPointerStu(stuID);
@@ -2390,11 +2424,12 @@ void handleEventScoreboardPage() {
 
         if (scoreSaveButton.isClicked(window, event)) {
             if (isScoreHandValid()) {
+                cout << "Valid\n";
                 updateScoreByHand();
                 savetrigger = true;
                 eScorePage = true;
             }
-            else {}
+            else { cout << "Error to save score\n"; }
         }
         
         for (int i = 0; i < 5; i++) {

@@ -911,3 +911,123 @@ void ScoreRowInStu::draw(sf::RenderWindow& window) {
 	}
     window.draw(orGPA);
 }
+
+
+//--------------------------------------------------------------
+// CourseBoard
+CourseBoard::CourseBoard(float x, float y, const std::string& imagePath) {
+    if (!font.loadFromFile("font/Roboto-Regular.ttf")) {
+		cout << "Can't load font\n";
+	}
+    if (!texture.loadFromFile(imagePath)) {
+		cout << "Can't load image\n";
+	}
+	texture.setSmooth(1);
+	sprite.setTexture(texture);
+	sprite.setPosition(x, y);
+
+    int xS = x + 30, yS = y + 10;
+    for (int i = 0; i < 10; ++i) {
+		scoreRow[i].courseId.setFont(font);
+        scoreRow[i].courseId.setCharacterSize(13);
+        scoreRow[i].courseId.setFillColor(sf::Color::White);
+        scoreRow[i].courseId.setString("");
+        scoreRow[i].courseId.setPosition(xS, yS);
+
+        scoreRow[i].year.setFont(font);
+        scoreRow[i].year.setCharacterSize(13);
+        scoreRow[i].year.setFillColor(sf::Color::White);
+        scoreRow[i].courseId.setString("");
+        scoreRow[i].year.setPosition(xS + 200, yS);
+
+        scoreRow[i].semester.setFont(font);
+        scoreRow[i].semester.setCharacterSize(13);
+        scoreRow[i].semester.setFillColor(sf::Color::White);
+        scoreRow[i].courseId.setString("");
+        scoreRow[i].semester.setPosition(xS + 335, yS);
+        
+        scoreRow[i].tTotal.setFont(font);
+        scoreRow[i].tTotal.setCharacterSize(13);
+        scoreRow[i].tTotal.setFillColor(sf::Color::White);
+        scoreRow[i].tTotal.setString("");
+        scoreRow[i].tTotal.setPosition(xS, yS+20);
+
+        scoreRow[i].tFinal.setFont(font);
+        scoreRow[i].tFinal.setCharacterSize(13);
+        scoreRow[i].tFinal.setFillColor(sf::Color::White);
+        scoreRow[i].tFinal.setString("");
+        scoreRow[i].tFinal.setPosition(xS + 100, yS + 20);
+
+        scoreRow[i].tMid.setFont(font);
+        scoreRow[i].tMid.setCharacterSize(13);
+        scoreRow[i].tMid.setFillColor(sf::Color::White);
+        scoreRow[i].tMid.setString("");
+        scoreRow[i].tMid.setPosition(xS + 200, yS + 20);
+
+        scoreRow[i].tOther.setFont(font);
+        scoreRow[i].tOther.setCharacterSize(13);
+        scoreRow[i].tOther.setFillColor(sf::Color::White);
+        scoreRow[i].tOther.setString("");
+        scoreRow[i].tOther.setPosition(xS + 335, yS + 20);
+        yS += 40;
+	}
+}
+void CourseBoard::loadCourseScoreRow(ScoreStu* sScoreStu, int idx) {
+    scoreRow[idx].courseId.setString(sScoreStu->courseID);
+	scoreRow[idx].year.setString(sScoreStu->year);
+	scoreRow[idx].semester.setString(sScoreStu->semester);
+	string s;
+	float x = sScoreStu->totalSc;
+	if (x == -1) s = "_";
+    else {
+		s = to_string(x);
+		s = s.substr(0, 4);
+	}
+	scoreRow[idx].tTotal.setString("Total: " + s);
+	x = sScoreStu->finalSc;
+	if (x == -1) s = "_";
+    else {
+		s = to_string(x);
+		s = s.substr(0, 4);
+	}
+	scoreRow[idx].tFinal.setString("Final: " + s);
+	x = sScoreStu->midSc;
+	if (x == -1) s = "_";
+    else {
+		s = to_string(x);
+		s = s.substr(0, 4);
+	}
+	scoreRow[idx].tMid.setString("Mid: " + s);
+	x = sScoreStu->otherSc;
+	if (x == -1) s = "_";
+    else {
+		s = to_string(x);
+		s = s.substr(0, 4);
+	}
+	scoreRow[idx].tOther.setString("Other: " + s);
+    scoreRow[idx].active = true;
+}
+void CourseBoard::resetRow(int idx) {
+    scoreRow[idx].courseId.setString("");
+    scoreRow[idx].year.setString("");
+    scoreRow[idx].semester.setString("");
+    scoreRow[idx].tTotal.setString("");
+    scoreRow[idx].tFinal.setString("");
+    scoreRow[idx].tMid.setString("");
+    scoreRow[idx].tOther.setString("");
+    scoreRow[idx].active = false;
+}
+void CourseBoard::draw(sf::RenderWindow& window) {
+    window.draw(sprite);
+    for (int i = 0; i < 10; ++i) {
+        if (scoreRow[i].active) {
+			window.draw(scoreRow[i].courseId);
+			window.draw(scoreRow[i].year);
+			window.draw(scoreRow[i].semester);
+			window.draw(scoreRow[i].tTotal);
+			window.draw(scoreRow[i].tFinal);
+			window.draw(scoreRow[i].tMid);
+			window.draw(scoreRow[i].tOther);
+		}
+	}
+}

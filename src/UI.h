@@ -222,3 +222,24 @@ struct Prompt {
 
 
 };
+struct CourseScore {
+    sf::Text courseId;
+    sf::Text year;
+    sf::Text semester;
+    sf::Text tTotal;
+    sf::Text tFinal;
+    sf::Text tMid;
+    sf::Text tOther;
+    bool active = false;
+};
+struct CourseBoard {
+    sf::Font font;
+	sf::Text text;
+    sf::Texture texture;
+    sf::Sprite sprite;
+    CourseScore scoreRow[10];
+	CourseBoard(float x, float y, const std::string& imagePath);
+    void loadCourseScoreRow(ScoreStu* sScoreStu, int idx);
+    void resetRow(int idx);
+    void draw(sf::RenderWindow& window);
+};
