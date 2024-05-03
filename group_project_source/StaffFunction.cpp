@@ -198,9 +198,6 @@ void addCourse(schoolYear &schyrs,Semester &sems){ //add a course to the current
            !checkFormatDayOfTheWeek(sems.coursesListInSemester[curPos].dayoftheWeek)){
         cout << "Invalid input! Please try again in this line: ";
     }
-    for (int i=0;i<sems.coursesListInSemester[curPos].dayoftheWeek.size();i++){
-        sems.coursesListInSemester[curPos].dayoftheWeek[i]=toupper(sems.coursesListInSemester[curPos].dayoftheWeek[i]);
-    }
     cout << "Please input the session, follows the following format (must be uppercase): "; //session process
     cout << "S1 | S2 | S3 | S4" << endl;
     cout << "Note: S1 (7:30), S2(9:30), S3(13:30), S4(15:30)" << endl;
@@ -386,7 +383,7 @@ void outputClassResult(Class curClass, Semester sems, schoolYear schyrs){ //outp
     }
     Sleep(5000);
 }
-bool checkFormatDayOfTheWeek(string format){ //return true if it's in the right format of day of the week
+bool checkFormatDayOfTheWeek(string& format){ //return true if it's in the right format of day of the week
     for (unsigned int i=0;i<format.size();i++){
         format[i]=toupper(format[i]);
     }
